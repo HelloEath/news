@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs xmlns:android="http://schemas.android.com/apk/res/android">
+    <tab
+        id="@+id/tab_home"
+        icon="@drawable/ic_home"
+        title="主页"
+        barColorWhenSelected="#7B1FA2"
+        />
+    <tab
+        id="@+id/tab_video"
+        icon="@drawable/ic_ondemand_video"
+        barColorWhenSelected="#FF5252"
+        title="视频" />
+    <tab
+        id="@+id/tab_add_video"
+        icon="@drawable/ic_add_a_photo"
+        barColorWhenSelected="#5D3C35"
+        title="发布" />
+    <tab
+        id="@+id/tab_my"
+        icon="@drawable/ic_settings_applications"
+        barColorWhenSelected="#FF9800"
+        title="我的" />
+</tabs>
