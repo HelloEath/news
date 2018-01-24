@@ -8,12 +8,12 @@
 
     tools:context="com.glut.news.MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <com.glut.news.CustomViewPager
         android:id="@+id/viewger"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+    </com.glut.news.CustomViewPager>
 
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
