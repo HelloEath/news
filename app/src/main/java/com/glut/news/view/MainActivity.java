@@ -1,4 +1,4 @@
-package com.glut.news;
+package com.glut.news.view;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.glut.news.R;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;

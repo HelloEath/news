@@ -2,9 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="#F6F6F6"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 <LinearLayout
+    android:background="#F6F6F6"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -20,20 +22,19 @@
 
 
 
-
-<scut.carson_ho.searchview.SearchView
+<com.glut.news.searchview.SearchView
     android:id="@+id/search"
     android:layout_width="match_parent"
-    android:layout_margin="10dp"
-    android:layout_height="30dp"
+    android:layout_height="wrap_content"
     app:textSizeSearch="5dp"
     app:textColorSearch="#3F51B5"
     app:textHintSearch="输入查询关键字"
-    app:searchBlockHeight="100"
-    app:searchBlockColor="#ffffff">
+    app:searchBlockHeight="150"
+    app:searchBlockColor="#F6F6F6"
 
-</scut.carson_ho.searchview.SearchView>
+    >
 
+</com.glut.news.searchview.SearchView>
 </LinearLayout>
 
     <LinearLayout

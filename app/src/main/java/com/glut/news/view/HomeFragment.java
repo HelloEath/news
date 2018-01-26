@@ -1,4 +1,4 @@
-package com.glut.news;
+package com.glut.news.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,15 +11,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.glut.news.R;
+import com.glut.news.searchview.ICallBack;
+import com.glut.news.searchview.SearchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import scut.carson_ho.searchview.ICallBack;
-import scut.carson_ho.searchview.SearchView;
+
+
 
 
 
@@ -88,12 +90,12 @@ public class HomeFragment extends android.support.v4.app.Fragment implements  Ra
         ImageView i=v.findViewById(R.id.circlrimage);
         String url="https://upload.jianshu.io/users/upload_avatars/2581696/a4b480b2987d.jpeg?imageMogr2/auto-orient/strip|imageView2/1/w/120/h/120";
         Glide.with(getContext()).load(R.drawable.logo).transform(new CircleImage(getContext())).into(i);
-s.setOnClickSearch(new ICallBack() {
-    @Override
-    public void SearchAciton(String string) {
-        Toast.makeText(getContext(),"wosdd",Toast.LENGTH_SHORT).show();
-    }
-});
+     s.setOnClickSearch(new ICallBack() {
+         @Override
+         public void SearchAciton(String string) {
+
+         }
+     });
 
 
     }
