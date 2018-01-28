@@ -1,4 +1,4 @@
-package com.glut.news.searchview;
+package com.glut.news.view.searchview;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

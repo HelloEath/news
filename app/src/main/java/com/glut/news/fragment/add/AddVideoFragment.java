@@ -1,4 +1,4 @@
-package com.glut.news.view;
+package com.glut.news.fragment.add;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

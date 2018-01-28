@@ -1,4 +1,4 @@
-package com.glut.news.model;
+package com.glut.news.entity;
 
 import com.glut.news.entity.Data;
 import com.google.gson.annotations.SerializedName;

@@ -1,4 +1,4 @@
-package com.glut.news.view;
+package com.glut.news.fragment.home;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,8 +14,10 @@ import android.widget.RadioGroup;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
-import com.glut.news.searchview.ICallBack;
-import com.glut.news.searchview.SearchView;
+import com.glut.news.fragment.HomeTypeFragment;
+import com.glut.news.view.searchview.ICallBack;
+import com.glut.news.view.searchview.SearchView;
+import com.glut.news.view.CircleImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,12 +62,12 @@ public class HomeFragment extends android.support.v4.app.Fragment implements  Ra
         btn_fun=v.findViewById(R.id.fun);
         viewpager=v.findViewById(R.id.viewger_home);
 
-        lf.add(new Fragment1());
-        lf.add(new Fragment1());
-        lf.add(new Fragment1());
-        lf.add(new Fragment1());
-        lf.add(new Fragment1());
-        lf.add(new Fragment1());
+        lf.add(new HomeTypeFragment());
+        lf.add(new HomeTypeFragment());
+        lf.add(new HomeTypeFragment());
+        lf.add(new HomeTypeFragment());
+        lf.add(new HomeTypeFragment());
+        lf.add(new HomeTypeFragment());
         viewpager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getItem(int position) {

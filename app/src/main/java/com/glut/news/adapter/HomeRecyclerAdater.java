@@ -1,4 +1,4 @@
-package com.glut.news.model;
+package com.glut.news.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
+import com.glut.news.model.NewsTest;
 
 import java.util.List;
 

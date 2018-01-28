@@ -1,4 +1,4 @@
-package com.glut.news.view;
+package com.glut.news.fragment.home;
 
 
 import android.content.Intent;
@@ -15,12 +15,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.glut.news.R;
-import com.glut.news.model.HomeRecyclerAdater;
-import com.glut.news.model.News;
+import com.glut.news.adapter.HomeRecyclerAdater;
+import com.glut.news.entity.News;
 import com.glut.news.model.NewsTest;
+import com.glut.news.view.ArticleDetailActivity;
+import com.glut.news.view.customview.VideoTitleHorizontalScrollView;
 import com.google.gson.Gson;
 
 import org.jsoup.Jsoup;
@@ -42,13 +45,15 @@ import okhttp3.Response;
 /**
  * Created by yy on 2018/1/24.
  */
-public class Fragment1 extends Fragment {
+public class HomeTypeFragment extends Fragment {
 
     private boolean isloading=false;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private HomeRecyclerAdater adapter;
     private SwipeRefreshLayout refresh;
+    private VideoTitleHorizontalScrollView titleScroll;
+    private LinearLayout addTitleLayout;
     private List<NewsTest> newslist=new ArrayList<>();
     private static  final String URL="http://v.juhe.cn/toutiao/index?key=1b679531f9e0beb0d6cbc93ea73b4ac8";
     @Nullable
@@ -57,7 +62,6 @@ public class Fragment1 extends Fragment {
         View v=inflater.inflate(R.layout.fragment_home_type,container,false);
         initRefresh(v);
         //getDataFromServer(URL);
-
         initRecycleVIew(v);
 
         return v;
