@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.glut.news.R;
+import com.glut.news.view.customview.VideoTitleHorizontalScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 /**
@@ -24,51 +24,107 @@ import java.util.List;
 public class DicoverFragment extends android.support.v4.app.Fragment{
 
     private ViewPager mViewPager;
-    private TabLayout mpager;
+    private VideoTitleHorizontalScrollView mpager;
     private List<Fragment> flist;
+    private TabLayout tabLayout;
+    private List<String> titles=new ArrayList<>();
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dicover, container, false);
-
+       /* //透明状态栏
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);*/
 
         initView(view);
         return view;
     }
 
     private void initView(View view) {
+
+        titles.add("知乎日报");
+        titles.add("果壳精选");
+        titles.add("One轻阅");
+        titles.add("每日开眼");
         flist=new ArrayList<>();
         flist.add(new ZhiHuFragment());
         flist.add(new GuoKrFragment());
-        flist.add(new DouBanFragment());
-        mViewPager=view.findViewById(R.id.viewger);
-        mpager=view.findViewById(R.id.tabs);
+        flist.add(new OneFragment());
+        flist.add(new KaiYanFragment());
+        mViewPager=view.findViewById(R.id.dviewpager);
+        mpager=view.findViewById(R.id.myHorizeontal);
+        tabLayout= view.findViewById(R.id.tabLayout);
+
+        //给tab添加title
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(0)));
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(1)));
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(2)));
+        tabLayout.addTab(tabLayout.newTab().setText(titles.get(3)));
 
 
-        mpager.setupWithViewPager(mViewPager);//将TabLayout和ViewPager关联起来。
-        mViewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
-            private String titles[]={"知乎日报","果壳精选","豆瓣一刻"};
-            @Override
-            public Fragment getItem(int position) {
-                return flist.get(position);
-            }
+       /* mpager.changeTextViewTitle(titles[0],0);
+        mpager.changeTextViewTitle(titles[1],1);
+        mpager.changeTextViewTitle(titles[2],2);
+        mpager.addTextViewTitle(titles[3],getContext());*/
 
-            @Override
-            public CharSequence getPageTitle(int position) {
+FragmentPagerAdapter f=new FragmentPagerAdapter(getChildFragmentManager()) {
 
-                return titles[position];
-            }
+    @Override
+    public Fragment getItem(int position) {
+        return flist.get(position);
+    }
 
-            @Override
-            public int getCount() {
-                return flist.size();
-            }
-        });
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return titles.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return flist.size();
+    }
+};
+        mViewPager.setAdapter(f);
         mViewPager.setCurrentItem(0);
 
+        mViewPager.setOffscreenPageLimit(3);
 
+        //把tablayout和viewpager联系起来
+        tabLayout.setupWithViewPager(mViewPager);
+        //mViewPager.addOnPageChangeListener(new OnPagerChangeListener());//设置监听函数
+/*
+
+        mpager.setOnItemClickListener(new VideoTitleHorizontalScrollView.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                mViewPager.setCurrentItem(position);
+
+            }
+        });
+*/
 
     }
 
 
+    private class OnPagerChangeListener implements ViewPager.OnPageChangeListener{
+
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            //标题下划线联动
+        mpager.setPagerChangeListenerToTextView(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    }
 }

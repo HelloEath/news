@@ -20,5 +20,5 @@
         id="@+id/tab_my"
         icon="@drawable/ic_settings_applications"
         barColorWhenSelected="#FF9800"
-        title="我的" />
+        title="发现" />
 </tabs>

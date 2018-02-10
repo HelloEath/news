@@ -10,12 +10,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
-import com.glut.news.entity.DouBanList;
+import com.glut.news.entity.OneData;
 import com.glut.news.view.CircleImage;
 
 import java.util.List;
-
-import static com.glut.news.R.string.image_from;
 
 /**
  * Created by yy on 2018/2/6.
@@ -23,43 +21,29 @@ import static com.glut.news.R.string.image_from;
 public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener {
     private LayoutInflater l;
     private Context c;
-    private List<DouBanList.DoubanMomentNewsPosts> douBanList;
+    private List<OneData.OneList> oneList;
     private OnItemClickListener o;
 
     public interface OnItemClickListener{
-        void OnItemclick(View v,String url,String image,String image_from);
+        void OnItemclick(View v,String id,String author);
     }
     public void setOnItemClickListener(OnItemClickListener o){
         this.o=o;
     }
 
-    public OneAdater(Context c, List<DouBanList.DoubanMomentNewsPosts> douBanList){
+    public OneAdater(Context c, List<OneData.OneList> oneList){
         l= LayoutInflater.from(c);
         this.c=c;
-        this.douBanList=douBanList;
+        this.oneList=oneList;
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (douBanList.get(position).getThumbs().size()==0){
-
-            return 1;
-        }else{
-            if (douBanList.get(position).getThumbs().get(0).getLarge().getHeight()>douBanList.get(position).getThumbs().get(0).getLarge().getWidth()){
-                return 2;
-            }else {
-                return 3;
-            }
-
-        }
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v=null;
         RecyclerView.ViewHolder viewHolderl=null;
-        if (viewType==2){
+        /*if (viewType==2){
             v=l.inflate(R.layout.item_dicover_douban2,parent,false);
             viewHolderl=new DouBanViewHolder2(v);
         }else if (viewType==1){
@@ -67,10 +51,11 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
             viewHolderl=new DouBanViewHolder3(v);
         }else {
 
-            v=l.inflate(R.layout.item_dicover_douban,parent,false);
+            v=l.inflate(R.layout.item_dicover_one,parent,false);
             viewHolderl=new DouBanViewHolder(v);
-        }
-
+        }*/
+        v=l.inflate(R.layout.item_dicover_one,parent,false);
+        viewHolderl=new OneViewHolder(v);
 
 
 
@@ -81,110 +66,71 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (holder instanceof DouBanViewHolder){
+        if (oneList.get(position).getCategory().equals("0")){
+            ((OneViewHolder)holder).mType.setText("- 摄影 -");
 
-            ((DouBanViewHolder)holder).itemView.setTag(R.string.douban_url,douBanList.get(position).getUrl());
-            ((DouBanViewHolder)holder).itemView.setTag(image_from,douBanList.get(position).getColumn());
-            if (douBanList.get(position).getThumbs().size()==0){
+        }else if (oneList.get(position).getCategory().equals("1")){
+            ((OneViewHolder)holder).mType.setText("- 阅读 -");
+        }else if (oneList.get(position).getCategory().equals("2")){
 
-            }else{
-                ((DouBanViewHolder)holder).itemView.setTag(R.string.image_url,douBanList.get(position).getThumbs().get(0).getLarge().getUrl());
-                Glide.with(c).load(douBanList.get(position).getThumbs().get(0).getLarge().getUrl()).into(((DouBanViewHolder)holder).mImageview);
+            ((OneViewHolder)holder).mType.setText("- 连载 -");
+        }else if(oneList.get(position).getCategory().equals("3")){
+            ((OneViewHolder)holder).mType.setText("- 问答 -");
 
+        }else if (oneList.get(position).getCategory().equals("4")) {
 
-            }
-            ((DouBanViewHolder)holder).mTitle.setText(douBanList.get(position).getTitle());
-            if (null==douBanList.get(position).getAuthor()){
-
-            }else{
-                Glide.with(c).load(douBanList.get(position).getAuthor().getAvatar()).transform(new CircleImage(c)).into(((DouBanViewHolder)holder).mAuthor_logo);
-                ((DouBanViewHolder)holder).mAuthor_name.setText(douBanList.get(position).getAuthor().getName());
-            }
-
-            ((DouBanViewHolder)holder).mType.setText("#"+douBanList.get(position).getColumn());
-            //((DouBanViewHolder)holder).mTime.setText(douBanList.get(position).getDate());
-
-        }else if (holder instanceof DouBanViewHolder2){
-            ((DouBanViewHolder2)holder).itemView.setTag(R.string.douban_url,douBanList.get(position).getUrl());
-            ((DouBanViewHolder2)holder).itemView.setTag(image_from,douBanList.get(position).getColumn());
-            if (douBanList.get(position).getThumbs().size()==0){
-
-            }else{
-                ((DouBanViewHolder2)holder).itemView.setTag(R.string.image_url,douBanList.get(position).getThumbs().get(0).getLarge().getUrl());
-                Glide.with(c).load(douBanList.get(position).getThumbs().get(0).getLarge().getUrl()).into(((DouBanViewHolder2)holder).mImageview);
-
-
-            }
-            ((DouBanViewHolder2)holder).mTitle.setText(douBanList.get(position).getTitle());
-            if (null==douBanList.get(position).getAuthor()){
-
-            }else{
-                Glide.with(c).load(douBanList.get(position).getAuthor().getAvatar()).transform(new CircleImage(c)).into(((DouBanViewHolder2)holder).mAuthor_logo);
-                ((DouBanViewHolder2)holder).mAuthor_name.setText(douBanList.get(position).getAuthor().getName());
-            }
-
-            ((DouBanViewHolder2)holder).mType.setText("#"+douBanList.get(position).getColumn());
-            //((DouBanViewHolder2)holder).mTime.setText(douBanList.get(position).getDate());
-
-        }else {
-            ((DouBanViewHolder3)holder).itemView.setTag(R.string.douban_url,douBanList.get(position).getUrl());
-            ((DouBanViewHolder3)holder).itemView.setTag(image_from,douBanList.get(position).getColumn());
-            if (douBanList.get(position).getThumbs().size()==0){
-
-            }else{
-               /* ((DouBanViewHolder3)holder).itemView.setTag(R.string.image_url,douBanList.get(position).getThumbs().get(0).getLarge().getUrl());
-                Glide.with(c).load(douBanList.get(position).getThumbs().get(0).getLarge().getUrl()).into(((DouBanViewHolder3)holder).mImageview);
-*/
-
-            }
-            ((DouBanViewHolder3)holder).mTitle.setText(douBanList.get(position).getTitle());
-            if (null==douBanList.get(position).getAuthor()){
-
-            }else{
-                Glide.with(c).load(douBanList.get(position).getAuthor().getAvatar()).transform(new CircleImage(c)).into(((DouBanViewHolder3)holder).mAuthor_logo);
-                ((DouBanViewHolder3)holder).mAuthor_name.setText(douBanList.get(position).getAuthor().getName());
-            }
-
-            ((DouBanViewHolder3)holder).mType.setText("#"+douBanList.get(position).getColumn());
-            //((DouBanViewHolder3)holder).mTime.setText(douBanList.get(position).getDate());
-
+            ((OneViewHolder) holder).mType.setText("- 音乐 -");
         }
+
+        holder.itemView.setTag(R.string.content,oneList.get(position).getItem_id());
+        holder.itemView.setTag(R.string.author,"文/"+oneList.get(position).getAuthor().getUser_name());
+        Glide.with(c).load(oneList.get(position).getImg_url()).into(((OneViewHolder)holder).mImageview);
+        ((OneViewHolder)holder).mTitle.setText(oneList.get(position).getTitle());
+        ((OneViewHolder)holder).mAuthor_name.setText(oneList.get(position).getAuthor().getUser_name());
+        Glide.with(c).load(oneList.get(position).getAuthor().getWeb_url()).transform(new CircleImage(c)).into(((OneViewHolder)holder).mAuthor_logo);
+        ((OneViewHolder)holder).mDesc.setText(oneList.get(position).getForward().substring(0,oneList.get(position).getForward().length()-1)+"...");
+        ((OneViewHolder)holder).mTime.setText(oneList.get(position).getPost_date().substring(5,10));
+        Glide.with(c).load(R.drawable.like).into(((OneViewHolder)holder).mLike_logo);
+        ((OneViewHolder)holder).mLike_num.setText(oneList.get(position).getLike_count());
 
         holder.itemView.setOnClickListener(this);
     }
 
     @Override
     public int getItemCount() {
-        return douBanList.size();
+        return oneList.size();
     }
 
-    public void changeData(List<DouBanList.DoubanMomentNewsPosts> posts) {
-        douBanList=posts;
+    public void changeData(List<OneData.OneList> posts) {
+        oneList=posts;
         notifyDataSetChanged();
     }
 
-    public void addData(List<DouBanList.DoubanMomentNewsPosts> postses){
-        if (douBanList==null){
+    public void addData(List<OneData.OneList> postses){
+        if (oneList==null){
             changeData(postses);
         }else{
-            douBanList.addAll(postses);
+            oneList.addAll(postses);
             notifyDataSetChanged();
         }
     }
     @Override
     public void onClick(View v) {
-        o.OnItemclick(v,v.getTag(R.string.douban_url)+"",v.getTag(R.string.image_url)+"",v.getTag(image_from)+"");
+        o.OnItemclick(v,v.getTag(R.string.content)+"",v.getTag(R.string.author)+"");
 
     }
 
-    private class DouBanViewHolder extends RecyclerView.ViewHolder {
+    private class OneViewHolder extends RecyclerView.ViewHolder {
         private ImageView mImageview;
         private ImageView mAuthor_logo;
         private TextView mAuthor_name;
         private TextView mTime;
         private TextView mTitle;
         private TextView mType;
-        public DouBanViewHolder(View v) {
+        private TextView mDesc;
+        private ImageView mLike_logo;
+        private TextView mLike_num;
+        public OneViewHolder(View v) {
             super(v);
             mImageview=v.findViewById(R.id.image);
             mAuthor_logo=v.findViewById(R.id.author_logo);
@@ -192,9 +138,12 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
             mTime=v.findViewById(R.id.time);
             mTitle=v.findViewById(R.id.title);
             mType=v.findViewById(R.id.type);
+            mDesc=v.findViewById(R.id.dec);
+            mLike_logo=v.findViewById(R.id.like_logo);
+            mLike_num=v.findViewById(R.id.like_num);
         }
     }
-    private class DouBanViewHolder2 extends RecyclerView.ViewHolder{
+  /*  private class DouBanViewHolder2 extends RecyclerView.ViewHolder{
         private ImageView mImageview;
         private ImageView mAuthor_logo;
         private TextView mAuthor_name;
@@ -228,5 +177,5 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
             mTitle=v.findViewById(R.id.title);
             mType=v.findViewById(R.id.type);
         }
-    }
+    }*/
 }

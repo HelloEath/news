@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
-    <dbname value="cool_weather" ></dbname>
-    <version value="1" ></version>
+
+    <dbname value="weiyuedb">
+    </dbname>
+    <version value="2">
+    </version>
     <list>
-    <mapping class="com.example.yy.coolweather.db.Province" />
-        <mapping class="com.example.yy.coolweather.db.City" />
-
-        <mapping class="com.example.yy.coolweather.db.County" />
-
+        <mapping class="com.will.weiyue.bean.Channel">
+        </mapping>
     </list>
+
 </litepal>

@@ -6,4 +6,5 @@
     <color name="color_tab_1">#303F9F</color>
     <color name="color_tab_2">#303F9F</color>
     <color name="color_tab_3">#303F9F</color>
+    <color name="background_tab_pressed">#6633B5E5</color>
 </resources>

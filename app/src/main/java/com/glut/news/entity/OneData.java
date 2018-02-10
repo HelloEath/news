@@ -1,5 +1,7 @@
 package com.glut.news.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,9 +9,11 @@ import java.util.List;
  */
 
 public class OneData {
+    @SerializedName("id")
    private String id;//	"4676"
 
     private String date;//	"2018-02-08 06:00:00"
+    @SerializedName("content_list")
     private List<OneList> content_list;//	[…]
 
     public String getId() {
@@ -47,7 +51,7 @@ public class OneData {
         private String like_count	;//1795
         private String post_date	;//"2018-02-08 06:00:00"
         private String last_update_date	;//"2018-02-03 19:25:11"
-        private String  author;//	{}
+        private Author  author;//	{}
         private String video_url;//	""
         private String audio_url	;//""
         private String audio_platform;//2
@@ -61,7 +65,7 @@ public class OneData {
         private String content_type;//	"0"
 
         private String share_url	;//"http://m.wufazhuce.com/one/1981"
-        private String share_info	;//{…}
+       // private String share_info	;//{…}
 
         public String getId() {
             return id;
@@ -143,11 +147,11 @@ public class OneData {
             this.last_update_date = last_update_date;
         }
 
-        public String getAuthor() {
+        public Author getAuthor() {
             return author;
         }
 
-        public void setAuthor(String author) {
+        public void setAuthor(Author author) {
             this.author = author;
         }
 
@@ -239,12 +243,63 @@ public class OneData {
             this.share_url = share_url;
         }
 
-        public String getShare_info() {
+       /* public String getShare_info() {
             return share_info;
         }
 
         public void setShare_info(String share_info) {
             this.share_info = share_info;
+        }*/
+    }
+
+    public class Author {
+
+
+       private String user_name;//	"许无"
+        private String desc	;//"“我要WhatYouNeed”作者（ID：newWhatYouNeed），一个年轻人的聚集地。"
+
+        private String  summary	;//"公众号“我要WhatYouNeed”作者"
+        private String fans_total;//	"207"
+        private String  web_url;//	"http://image.wufazhuce.com/FkefOpcuqwISl_RcYGyonITPFHnt"
+
+        public String getUser_name() {
+            return user_name;
+        }
+
+        public void setUser_name(String user_name) {
+            this.user_name = user_name;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public void setDesc(String desc) {
+            this.desc = desc;
+        }
+
+        public String getSummary() {
+            return summary;
+        }
+
+        public void setSummary(String summary) {
+            this.summary = summary;
+        }
+
+        public String getFans_total() {
+            return fans_total;
+        }
+
+        public void setFans_total(String fans_total) {
+            this.fans_total = fans_total;
+        }
+
+        public String getWeb_url() {
+            return web_url;
+        }
+
+        public void setWeb_url(String web_url) {
+            this.web_url = web_url;
         }
     }
 }

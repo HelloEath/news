@@ -18,8 +18,9 @@ import com.glut.news.R;
 import com.glut.news.adapter.ZhiHuAdater;
 import com.glut.news.entity.ZhiHuNews;
 import com.glut.news.net.manager.RetrofitManager;
+import com.glut.news.net.service.RetrofitService;
 import com.glut.news.net.service.ZhiHuList;
-import com.glut.news.view.DicoverDetailActivity;
+import com.glut.news.view.ZhiHuDetailActivity;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -30,6 +31,8 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+
 
 /**
  * Created by yy on 2018/2/4.
@@ -54,6 +57,10 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my, container, false);
+       /* //透明状态栏
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        //透明导航栏
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);*/
         initView(v);
         loadDta();
         return v;
@@ -80,7 +87,7 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
         zhiHuAdater.setOnItemClickListener(new ZhiHuAdater.OnItemClickListener() {
             @Override
             public void itemClick(View v, String id) {
-                Intent i = new Intent(getActivity(), DicoverDetailActivity.class);
+                Intent i = new Intent(getActivity(), ZhiHuDetailActivity.class);
                 i.putExtra("id", id);
                 startActivity(i);
             }
@@ -162,7 +169,7 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
             }
         });*/
 
-        RetrofitManager.builder(RetrofitManager.BASE_ZHIHU_URL).getLatestNews()
+        RetrofitManager.builder(RetrofitService.BASE_ZHIHU_URL,"ZhuHuService").getLatestNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -212,7 +219,7 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
     }
     //加载以前的数据
     private void loadDataBefore() {
-        RetrofitManager.builder(RetrofitManager.BASE_ZHIHU_URL).getBeforeData(currentDate)
+        RetrofitManager.builder(RetrofitService.BASE_ZHIHU_URL,"ZhuHuService").getBeforeData(currentDate)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {

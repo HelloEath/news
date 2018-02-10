@@ -57,6 +57,8 @@ public class VideoTitleHorizontalScrollView extends HorizontalScrollView impleme
     }
 
 
+
+
     public interface OnItemClickListener {
         void onClick(int position);
     }
@@ -68,8 +70,9 @@ public class VideoTitleHorizontalScrollView extends HorizontalScrollView impleme
 /*初始化加载进来的布局*/
     private void initView() {
         this.inflater=LayoutInflater.from(getContext());
-        view=this.inflater.inflate(R.layout.news_title_horizontalscroll,null);
+        view=this.inflater.inflate(R.layout.video_title_horizontalscroll,null);
         this.titles=view.findViewById(R.id.news_title_horizontalscrollview_titletxt_layout);
+
         //获得当前布局下所有孩子,并放进titleList中,并设置监听
         for (int i=0;i<this.titles.getChildCount();i++){
             this.titlesList.add((TextView) this.titles.getChildAt(i));
@@ -112,12 +115,13 @@ public class VideoTitleHorizontalScrollView extends HorizontalScrollView impleme
     public void setPagerChangeListenerToTextView(int pos){
         int scrollStartX=0;//动画起始位置
         int scrollendX=0;//动画结束位置
-       // 设置其他未选中标题颜色
+
+        // 设置其他未选中标题颜色
         for (int i=0;i<this.titlesList.size();i++){
             if (i==pos){
                 //判断滑动方向，里面为左向有
                 if (mlastPosition<i){
-                 scrollBy(100,0);
+                 scrollBy(120,0);
                   for (int j=0;j<mlastPosition;j++){
                       scrollStartX+=this.titlesList.get(j).getWidth()+dip2px(getContext(), 20);
                   }
@@ -126,7 +130,7 @@ public class VideoTitleHorizontalScrollView extends HorizontalScrollView impleme
                     }
                     slideview(scrollStartX,scrollendX);
                 }else{
-                    scrollBy(0-100,0);
+                    scrollBy(0-120,0);
                     for (int j = 0; j <mlastPosition; j++) {
                         scrollStartX += this.titlesList.get(j).getWidth() + dip2px(getContext(), 20);
                     }
@@ -204,5 +208,37 @@ public class VideoTitleHorizontalScrollView extends HorizontalScrollView impleme
                 }
             }
         });
+
+
     }
+/*动态改变标题*/
+    public void changeTextViewTitle(String title,int position){
+
+        ((TextView)(this.titles.getChildAt(position))).setText(title);
+
+        new Handler().post(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(10);
+                    int left = titles.getMeasuredWidth() - getWidth();
+
+                    Log.d("getMeasuredWidth()",titles.getMeasuredWidth()+"");
+                    Log.d("getWidth()",getWidth()+"");
+                    if (left < 0) {
+                        left = 0;
+                    }
+                    scrollTo(left, 0);
+                    Log.d("left2",left+"");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+
+    }
+
+
+
 }

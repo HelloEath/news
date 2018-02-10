@@ -71,6 +71,19 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
+    public void changeData(List<NewsTest> mnewsList){
+        newsList=mnewsList;
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<NewsTest> mnewsList){
+        if (newsList==null){
+            changeData(mnewsList);
+        }else {
+          newsList.addAll(mnewsList);
+            notifyDataSetChanged();
+        }
+    }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
@@ -82,7 +95,7 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 break;
             case 1:
-                view=layoutInflater.inflate(R.layout.item_home_layout,parent,false);
+                view=layoutInflater.inflate(R.layout.item_home_main,parent,false);
                 viewHolder=new ItemViewHolder(view);
                 view.setOnClickListener(this);
                 break;
@@ -123,11 +136,12 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         }*/
         if (holder instanceof ItemViewHolder){
             holder.itemView.setTag(position);
-            ((ItemViewHolder)holder).title.setText(newsList.get(position).getTitle());
+            ((ItemViewHolder)holder).title.setText(newsList.get(position).title);
 
-            ((ItemViewHolder)holder).author.setText(newsList.get(position).getAuthor());
+            ((ItemViewHolder)holder).author.setText(newsList.get(position).author);
+            ((ItemViewHolder)holder).time.setText(newsList.get(position).date);
             ((ItemViewHolder)holder).likes.setText("6评论|8喜欢|");
-            Glide.with(m).load(newsList.get(position).getSrc()).into( ((ItemViewHolder)holder).imageView);
+            Glide.with(m).load(newsList.get(position).pic_src).into( ((ItemViewHolder)holder).imageView);
         }
 
     }

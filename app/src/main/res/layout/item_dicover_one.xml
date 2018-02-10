@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
@@ -12,76 +12,114 @@
     app:cardElevation="5dp"
 
     >
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:scaleType="fitXY"
-            android:layout_alignParentTop="true"/>
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           android:layout_gravity="center_horizontal"
+
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="类型"/>
+
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_below="@id/image"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
             android:textSize="16sp"
             android:text="标题"/>
 
         <LinearLayout
-            android:layout_below="@id/title"
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/author_logo"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_marginLeft="5dp"
-        android:layout_alignParentLeft="true"
-        />
-    <TextView
-        android:id="@+id/author_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-     android:layout_toRightOf="@id/author_logo"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dp"
-        android:text="作者"
+            <ImageView
+                android:id="@+id/author_logo"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+
+                />
+            <TextView
+                android:id="@+id/author_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="5dp"
+
+                android:layout_marginLeft="5dp"
+                android:text="作者"
 
 
-        />
-    <TextView
-        android:id="@+id/type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
 
-        android:layout_marginBottom="5dp"
-        android:text="类型"/>
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginBottom="5dp"
-     android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
-        android:text="时间"/>
-
-
-</RelativeLayout>
-
+                />
         </LinearLayout>
 
-    </RelativeLayout>
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:layout_marginTop="5dp"
+            android:scaleType="fitXY"
+
+            />
+
+        <TextView
+            android:id="@+id/dec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+           />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_alignParentLeft="true"
+                android:text="时间"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true"
+
+                android:layout_marginRight="10dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/like_logo"
+                    android:layout_width="18dp"
+                    android:layout_marginRight="2dp"
+                    android:scaleType="fitXY"
+                    android:layout_height="18dp" />
+
+                <TextView
+                    android:id="@+id/like_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+
+
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

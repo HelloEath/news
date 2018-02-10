@@ -46,7 +46,7 @@ public class NewsData {
                     System.out.print("title"+title);
                     System.out.print("src"+src);
                     System.out.print("author"+author);
-                    newsTests.add(new NewsTest(title,src,author,detail_url));
+                    //newsTests.add(new NewsTest(title,src,author,detail_url));
 
 
 

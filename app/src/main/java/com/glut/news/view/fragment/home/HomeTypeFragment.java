@@ -73,7 +73,7 @@ public class HomeTypeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home_type, container, false);
         initRefresh(v);
-        getDataFromServer();
+        //getDataFromServer();
         initRecycleVIew(v);
 
         return v;

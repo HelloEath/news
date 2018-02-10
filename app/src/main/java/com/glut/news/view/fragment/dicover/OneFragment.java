@@ -88,11 +88,11 @@ public class OneFragment extends android.support.v4.app.Fragment implements Pull
         //item点击事件
         oneAdater.setOnItemClickListener(new OneAdater.OnItemClickListener() {
             @Override
-            public void OnItemclick(View v, String url, String image, String image_from) {
+            public void OnItemclick(View v, String id, String author) {
                 Intent i=new Intent(getActivity(),OneDetailActivity.class);
-                i.putExtra("url",url);
-                i.putExtra("image_url",image);
-                i.putExtra("image_from",image_from);
+                i.putExtra("author",author);
+                i.putExtra("id",id);
+
                 startActivity(i);
             }
         });

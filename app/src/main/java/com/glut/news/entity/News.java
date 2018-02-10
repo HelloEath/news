@@ -1,6 +1,6 @@
 package com.glut.news.entity;
 
-import com.glut.news.entity.Data;
+import com.glut.news.model.NewsTest;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class News {
 
     public class Result {
         @SerializedName("data")
-        public List<Data> datalist;
+        public List<NewsTest> datalist;
         public String stat;
 
 

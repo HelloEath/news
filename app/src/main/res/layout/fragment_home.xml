@@ -22,7 +22,7 @@
 
 
 
-<com.glut.news.searchview.SearchView
+<com.glut.news.view.searchview.SearchView
     android:id="@+id/search"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -34,68 +34,21 @@
 
     >
 
-</com.glut.news.searchview.SearchView>
+</com.glut.news.view.searchview.SearchView>
 </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.design.widget.TabLayout
+        android:fitsSystemWindows="true"
+        android:id="@+id/tabLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RadioGroup
-            android:id="@+id/type_rg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <RadioButton
-                android:id="@+id/recommended"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="推荐"
-                />
-            <RadioButton
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="桂林"
-                />
-            <RadioButton
-                android:id="@+id/it"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="科技"
-                />
-            <RadioButton
-                android:id="@+id/hot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="热点"
-                />
-            <RadioButton
-                android:id="@+id/international"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="国际"
-                />
-            <RadioButton
-                android:id="@+id/fun"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/tab_menu_item"
-                android:background="@drawable/btn_home_bg_selecter"
-                android:text="搞笑"
-                />
-
-        </RadioGroup>
+        android:layout_gravity="center_horizontal"
+        app:tabIndicatorColor="#5c71ff"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="#5c71ff"
+        app:tabGravity="center"
+        app:tabTextColor="#686868"
+        app:tabMode="scrollable"
+        />
 
 <android.support.v4.view.ViewPager
     android:id="@+id/viewger_home"
@@ -105,7 +58,7 @@
 
 </android.support.v4.view.ViewPager>
 
-    </LinearLayout>
+
 
 
 

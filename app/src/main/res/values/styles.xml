@@ -14,8 +14,11 @@
         <item name="android:button">@null</item>
         <item name="android:gravity">center</item>
 
+<item name="android:textSize">15sp</item>
+    </style>
+    <style name="CollapsingToolbarTitleStyle.About" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#fff</item>
 
     </style>
-
 
 </resources>

@@ -8,6 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.glut.news.R;
+import com.glut.news.view.fragment.add.AddVideoFragment;
+import com.glut.news.view.fragment.dicover.DicoverFragment;
+import com.glut.news.view.fragment.home.HomeFragment;
+import com.glut.news.view.fragment.video.VideoFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
@@ -21,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private BottomBar bottomBar;
     private List<Fragment> fragmentList;
 
-private ViewPager v;
+    private ViewPager v;
     private BottomBarTab nearby;
 
     @Override
@@ -40,7 +44,8 @@ private ViewPager v;
         fragmentList.add(new HomeFragment());
         fragmentList.add(new VideoFragment());
         fragmentList.add(new AddVideoFragment());
-        fragmentList.add(new MyFragment());
+        v.setOffscreenPageLimit(3);
+        fragmentList.add(new DicoverFragment());
         v.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             /**
              * 获取给定位置的项Id，用于生成Fragment名称
