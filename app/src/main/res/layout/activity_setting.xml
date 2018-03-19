@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/l"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eaeaea">
+
+    <FrameLayout
+
+        android:layout_width="match_parent"
+        android:background="@drawable/foot1"
+        android:layout_height="200dp">
+
+        <ImageView
+            android:id="@+id/user_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:id="@+id/user_logo"
+            android:layout_width="50dp"
+            android:layout_gravity="bottom|left"
+            android:layout_height="50dp" />
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|left"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#fff"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/btn_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true">
+
+
+            <ImageView
+                android:id="@+id/star_logo"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/star"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="收藏"/>
+
+        </LinearLayout>
+      <!--  <view
+            android:layout_width="1dp"
+            android:layout_height="5dp"
+            android:layout_centerHorizontal="true"/>-->
+
+        <LinearLayout
+            android:id="@+id/btn_history"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/history_logo"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/history"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="历史记录"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginBottom="5dp"
+        android:id="@+id/user_alter"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/alter_logo"
+            android:layout_width="30dp"
+            android:background="@drawable/alter"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="资料修改"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/setting"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/setting_logo"
+            android:layout_width="30dp"
+            android:background="@drawable/setting"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="其他设置"/>
+    </LinearLayout>
+</LinearLayout>
