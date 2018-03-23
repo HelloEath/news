@@ -2,63 +2,117 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#F6F6F6"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
 <LinearLayout
-    android:background="#F6F6F6"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
 
-   <ImageView
-       android:id="@+id/circlrimage"
-       android:layout_width="30dp"
-       android:layout_height="30dp"
-
-       android:layout_margin="10dp"
-
-      />
-
-
-
-<com.glut.news.view.searchview.SearchView
-    android:id="@+id/search"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:textSizeSearch="5dp"
-    app:textColorSearch="#3F51B5"
-    app:textHintSearch="输入查询关键字"
-    app:searchBlockHeight="150"
-    app:searchBlockColor="#F6F6F6"
-
-    >
-
-</com.glut.news.view.searchview.SearchView>
-</LinearLayout>
-    <android.support.design.widget.TabLayout
-        android:fitsSystemWindows="true"
-        android:id="@+id/tabLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        app:tabIndicatorColor="#5c71ff"
-        app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextColor="#5c71ff"
-        app:tabGravity="center"
-        app:tabTextColor="#686868"
-        app:tabMode="scrollable"
-        />
-
-<android.support.v4.view.ViewPager
-    android:id="@+id/viewger_home"
-    android:layout_width="match_parent"
+    android:layout_height="50dp">
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_weight="1"
     android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/circlrimage"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_margin="8dp"/>
 
-</android.support.v4.view.ViewPager>
+</LinearLayout>
 
 
+    <!--<scut.carson_ho.searchview.SearchView
+        android:id="@+id/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:textSizeSearch="5dp"
+        app:textColorSearch="#3F51B5"
+        app:textHintSearch="输入查询关键字"
+        app:searchBlockHeight="150"
+        app:searchBlockColor="#ffffff" />
+-->
+    <com.glut.news.common.view.searchview.SearchView
+        android:id="@+id/search"
+        android:layout_weight="6"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        app:textSizeSearch="5dp"
+        app:textColorSearch="#3F51B5"
+        app:textHintSearch="输入查询关键字"
+        app:searchBlockHeight="130"
+        app:searchBlockColor="#ffffff"/>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/addVideo"
+            android:layout_gravity="center"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+                <android.support.design.widget.TabLayout
+                android:fitsSystemWindows="true"
+                android:id="@+id/tabLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:tabIndicatorColor="#2fa881"
+                app:tabIndicatorHeight="2dp"
+                app:tabSelectedTextColor="#2fa881"
+                app:tabGravity="center"
+                app:tabTextColor="#686868"
+                app:tabMode="scrollable"
+                />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewger_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            </android.support.v4.view.ViewPager>
+
+
+        </LinearLayout>
+
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:headerLayout="@layout/navigation_header"
+            app:menu="@menu/drawer"
+            android:layout_gravity="start">
+
+
+
+        </android.support.design.widget.NavigationView>
+
+    </android.support.v4.widget.DrawerLayout>
 
 
 

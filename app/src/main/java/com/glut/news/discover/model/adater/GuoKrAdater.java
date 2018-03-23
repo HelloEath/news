@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.glut.news.R;
 import com.glut.news.discover.model.entity.GuoKrListModel;
-import com.glut.news.utils.DateUtil;
+import com.glut.news.common.utils.DateUtil;
 
 import java.util.List;
 

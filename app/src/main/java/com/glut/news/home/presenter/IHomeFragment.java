@@ -5,4 +5,7 @@ package com.glut.news.home.presenter;
  */
 
 public interface IHomeFragment {
+    void loadStarCount();
+    void loadHistoryCount();
+
 }

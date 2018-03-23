@@ -11,7 +11,7 @@
 
         android:orientation="horizontal">
 
-        <com.glut.news.view.customview.VideoTitleHorizontalScrollView
+        <com.glut.news.common.view.customview.VideoTitleHorizontalScrollView
             android:id="@+id/myHorizeontal"
             android:layout_width="0dp"
             android:layout_height="30dp"
@@ -21,7 +21,7 @@
             android:layout_weight="6"
             android:scrollbars="none">
 
-        </com.glut.news.view.customview.VideoTitleHorizontalScrollView>
+        </com.glut.news.common.view.customview.VideoTitleHorizontalScrollView>
 
         <LinearLayout
             android:id="@+id/news_fragment_main_layout_addtitle"

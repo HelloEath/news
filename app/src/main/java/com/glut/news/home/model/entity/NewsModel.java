@@ -1,6 +1,5 @@
 package com.glut.news.home.model.entity;
 
-import com.glut.news.model.NewsTest;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

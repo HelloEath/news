@@ -5,4 +5,7 @@ package com.glut.news.login.view.fragment;
  */
 
 public interface ILoginActivityView {
+    void onLoginSuccess();
+    void onUserUnExist();
+    void onUserPwdError();
 }

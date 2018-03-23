@@ -15,27 +15,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.glut.news.R;
-import com.glut.news.adapter.KaiYanAdater;
-import com.glut.news.entity.KaiYanModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.view.customview.VideoPlayer;
+import com.glut.news.common.view.customview.VideoPlayer;
+import com.glut.news.discover.model.adater.KaiYanAdater;
+import com.glut.news.discover.model.entity.KaiYanModel;
+import com.glut.news.discover.presenter.impl.KaiYanPresenterImpl;
+import com.glut.news.discover.view.fragment.activity.IKaiYanView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by yy on 2018/2/7.
  */
 
-public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefreshListener {
+public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefreshListener,IKaiYanView {
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -48,6 +42,7 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
     ContentLoadingProgressBar mPbLoading;
     private Snackbar mLoadLatestSnackbar;
     private Snackbar mLoadBeforeSnackbar;
+    private KaiYanPresenterImpl kaiYanPresenter=new KaiYanPresenterImpl(this);
 
 
 
@@ -106,7 +101,7 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
 
                 if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
                     isloading=true;
-                    loadDataBefore();
+                    kaiYanPresenter.loadBeforeData();
 
 
                 }
@@ -134,6 +129,9 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
     }
 
     public void loadDta() {
+
+        kaiYanPresenter.loadData();
+/*
 
         RetrofitManager.builder(RetrofitService.KAIYAB_BASE_URL,"KaiYanService").getLatestNews3()
                 .subscribeOn(Schedulers.io())
@@ -179,12 +177,13 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
                     }
                 });
 
+*/
 
     }
     //加载更多
     private void loadDataBefore() {
-
-        RetrofitManager.builder(RetrofitService.KAIYAB_BASE_URL,"KaiYanService").getNextPageNews(nextPage)
+        kaiYanPresenter.loadBeforeData();
+       /* RetrofitManager.builder(RetrofitService.KAIYAB_BASE_URL,"KaiYanService").getNextPageNews(nextPage)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(new Action0() {
@@ -223,7 +222,7 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
                         mTvLoadError.setVisibility(View.VISIBLE);
                         mTvLoadEmpty.setVisibility(View.GONE);
                     }
-                });
+                });*/
     }
 
     @Override
@@ -238,5 +237,53 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
         super.onPause();
         VideoPlayer.releaseAllVideos();
     }
+
+    @Override
+    public void showLoading() {
+        mPbLoading.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideLoading() {
+        mPbLoading.setVisibility(View.GONE);
+
+
+    }
+
+    @Override
+    public void showEmpty() {
+        mTvLoadEmpty.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideEnpty() {
+        mTvLoadEmpty.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadError() {
+        mTvLoadError.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideLoadError() {
+        mTvLoadEmpty.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void addAdaterData(KaiYanModel guoKrListModel) {
+        kaiYanAdater.addData(guoKrListModel.getItemList());
+    }
+
+    @Override
+    public void changeAdaterData(KaiYanModel guoKrListModel) {
+        kaiYanAdater.changeData(guoKrListModel.getItemList());
+    }
+
+
 }
 

@@ -9,15 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.glut.news.R;
 import com.glut.news.home.view.activity.ArticleDetailActivity;
 import com.glut.news.my.model.adater.HistoryAdater;
 import com.glut.news.my.model.entity.CommonData;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
-import com.glut.news.my.model.entity.Star;
-import com.glut.news.my.presenter.impl.StarWithHistoryPresenterImpl;
-import com.glut.news.my.view.activity.StarWithHistoryView;
+import com.glut.news.my.presenter.impl.StarFragmentPresenterImpl;
 import com.glut.news.video.view.activity.VideoDetailActivity;
 
 import java.util.ArrayList;
@@ -26,11 +25,11 @@ import java.util.List;
 /**
  * Created by yy on 2018/2/12.
  */
-public class StarFragment extends android.support.v4.app.Fragment implements StarWithHistoryView{
+public class StarFragment extends android.support.v4.app.Fragment implements IStarFragmentView{
     private RecyclerView r;
     private List<CommonData> historyList=new ArrayList<>();
 
-    private List<Star> starList=new ArrayList<>();
+
     private HistoryAdater<CommonData> Ada;
 
     private int NextPage;
@@ -38,7 +37,7 @@ public class StarFragment extends android.support.v4.app.Fragment implements Sta
     private boolean isloading;
 
 
-    private StarWithHistoryPresenterImpl starWithHistoryPresenter=new StarWithHistoryPresenterImpl(this) ;
+    private StarFragmentPresenterImpl starPresenter=new StarFragmentPresenterImpl(this) ;
 
     private boolean IsLastPage;
     public StarFragment(String s) {
@@ -54,9 +53,7 @@ public class StarFragment extends android.support.v4.app.Fragment implements Sta
 
         initData();
 
-            starWithHistoryPresenter.loadStarData();
-
-            //starWithHistoryPresenter.loadHistory();
+        starPresenter.loadStarData();
 
 
         return v;
@@ -91,14 +88,10 @@ public class StarFragment extends android.support.v4.app.Fragment implements Sta
 
 
                 if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-                    isloading=true;
-                    if("我的收藏".equals(title)){
-                        starWithHistoryPresenter.loadMoreStarData();
 
-                    }else {
-                        starWithHistoryPresenter.loadMoreHistory();
 
-                    }
+                    starPresenter.loadMoreStarData();
+
 
 
 
@@ -141,23 +134,16 @@ public class StarFragment extends android.support.v4.app.Fragment implements Sta
         Ada.addData(h.getData());
     }
 
-    @Override
-    public void onLoadHistorySuccess(HistoryWithStarModel h) {
-        Ada.changeDta(h.getData());
-    }
-
-    @Override
-    public void onLoadMoreHistorySuccess(HistoryWithStarModel h) {
-        Ada.addData(h.getData());
-    }
 
     @Override
     public void onLoadStarFail() {
 
+        Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLoadSMoretarFail() {
+        Toast.makeText(getContext(),"加载更多失败",Toast.LENGTH_SHORT).show();
 
 
     }

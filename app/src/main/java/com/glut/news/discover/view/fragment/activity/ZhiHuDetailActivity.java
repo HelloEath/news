@@ -22,9 +22,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
 import com.glut.news.discover.model.entity.ZhiHuDetailModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.utils.HttpUtil;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.common.utils.HttpUtil;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;

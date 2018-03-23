@@ -15,12 +15,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.glut.news.R;
-import com.glut.news.adapter.ZhiHuAdater;
-import com.glut.news.entity.ZhiHuNewsModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.net.service.ZhiHuList;
-import com.glut.news.view.ZhiHuDetailActivity;
+import com.glut.news.discover.model.adater.ZhiHuAdater;
+import com.glut.news.discover.model.entity.ZhiHuNewsModel;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.discover.model.entity.ZhiHuList;
+import com.glut.news.discover.view.fragment.activity.ZhiHuDetailActivity;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;

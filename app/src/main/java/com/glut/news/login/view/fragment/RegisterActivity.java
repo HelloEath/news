@@ -2,6 +2,8 @@ package com.glut.news.login.view.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,25 +13,63 @@ import android.transition.Transition;
 import android.transition.TransitionInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.glut.news.MainActivity;
 import com.glut.news.R;
+import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.model.entity.UserModel;
+import com.glut.news.common.utils.SpUtil;
+import com.glut.news.login.presenter.impl.RegisterPresenterImpl;
+
+import net.steamcrafted.loadtoast.LoadToast;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Created by yy on 2018/3/17.
  */
 
-public class RegisterActivity extends AppCompatActivity {
-   
+public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView{
+
+    private RegisterPresenterImpl iRr=new RegisterPresenterImpl(this);
   private   FloatingActionButton fab;
     private   CardView cvAdd;
+    private EditText et_useremail;
+    private EditText et_userName;
+    private EditText et_userPwd;
+    private EditText et_rePwd;
+    private Button bt_go;
+    private static final String PHONE_PATTERN = "[1][34578]\\d{9}";
+
+    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9#_~!$&'()*+,;=:.\"(),:;<>@\\[\\]\\\\]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)*$";
+    private Pattern pattern;
+    private Matcher matcher;
+    private String    UserName;
+    private String    UserPwd;
+    private RelativeLayout logister_bg;
+    LoadToast lt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         setContentView(R.layout.activity_register);
         initView();
 
+
+//转场动画
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ShowEnterAnimation();
         }
@@ -42,6 +82,115 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        logister_bg= (RelativeLayout) findViewById(R.id.register_bg);
+        fab= (FloatingActionButton) findViewById(R.id.fab);
+        cvAdd= (CardView) findViewById(R.id.cv_add);
+        et_useremail= (EditText) findViewById(R.id.et_useremail);
+        et_userName= (EditText) findViewById(R.id.et_username);
+        et_userPwd= (EditText) findViewById(R.id.et_password);
+        et_rePwd= (EditText) findViewById(R.id.et_repeatpassword);
+        bt_go= (Button) findViewById(R.id.bt_go);
+        lt= new LoadToast(this);
+        SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+            @Override
+            public void onResourceReady(Drawable resource, com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
+                logister_bg.setBackground(resource);
+            }
+        };
+        Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);
+        bt_go.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    UserName =et_userName.getText().toString();
+                     UserPwd=et_rePwd.getText().toString();
+                String UserRePwd=et_rePwd.getText().toString();
+
+                String Test=et_useremail.getText().toString();
+                UserInfo userInfo =new UserInfo();
+                lt.setText("正在注册");
+                lt.setTranslationY(100);
+                lt.show();
+              if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
+                  iRr.toRegister(userInfo);//发送请求
+
+              }else{
+                  lt.success();
+
+
+              }
+
+            }
+        });
+    }
+
+    private Boolean vailUserInfo(UserInfo userInfo, String UserName, String UserPwd, String UserRePwd, String Test) {
+      boolean f=false;
+        if (!"".equals(UserName)){
+            userInfo.setUserName(UserName);
+            f=true;
+        }else{
+            et_useremail.setError("用户名必须非空");
+            f=false;
+        }
+
+        if (!"".equals(UserPwd)){
+
+            if (!"".equals(UserRePwd)){
+
+                if (UserRePwd.equals(UserPwd)){
+
+                    userInfo.setUserPwd(UserPwd);
+                    f=true;
+                }
+
+            }else{
+
+                et_rePwd.setError("请输入确认密码");
+                f=false;
+            }
+        }else{
+
+            et_userPwd.setError("密码必须非空");
+            f=false;
+        }
+
+
+
+        if (!"".equals(Test)){
+
+            if (Test.contains("@")){
+                pattern = Pattern.compile(EMAIL_PATTERN);
+                matcher = pattern.matcher(Test);
+
+                if ( matcher.matches()){
+                    userInfo.setUserEmail(Test);
+                    f=true;
+                }else {
+                    et_useremail.setError("邮箱格式有误");
+                    f=false;
+
+                }
+            }else {
+                pattern = Pattern.compile(PHONE_PATTERN);
+                matcher = pattern.matcher(Test);
+                if (matcher.matches()){
+                    userInfo.setUserPhone(Test);
+                    f=true;
+                }else {
+
+                    et_useremail.setError("手机号码格式有误");
+                    f=false;
+                }
+
+            }
+
+        }else{
+            et_useremail.setError("邮箱/手机号不能为空");
+            f=false;
+
+        }
+        return f;
+
     }
 
     private void ShowEnterAnimation() {
@@ -121,5 +270,25 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         animateRevealClose();
+    }
+
+    @Override
+    public void onRegisterSuccess(UserModel userModel) {
+
+        Toast.makeText(this,"注册成功",Toast.LENGTH_SHORT).show();
+        Intent i=new Intent(RegisterActivity.this, MainActivity.class);
+        SpUtil.saveUserToSp("UserName",UserName);
+        SpUtil.saveUserToSp("UserPwd",UserPwd);
+       SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
+        SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
+
+        startActivity(i);
+        finish();
+    }
+
+    @Override
+    public void onRegisterFail() {
+        Toast.makeText(this,"注册失败",Toast.LENGTH_SHORT).show();
+
     }
 }

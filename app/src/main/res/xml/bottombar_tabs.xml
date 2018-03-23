@@ -4,21 +4,27 @@
         id="@+id/tab_home"
         icon="@drawable/ic_home"
         title="主页"
-        barColorWhenSelected="#7B1FA2"
+        barColorWhenSelected="#2fa881"
         />
     <tab
         id="@+id/tab_video"
         icon="@drawable/ic_ondemand_video"
-        barColorWhenSelected="#FF5252"
+        barColorWhenSelected="#4284F3"
         title="视频" />
     <tab
         id="@+id/tab_add_video"
         icon="@drawable/ic_add_a_photo"
+        barColorWhenSelected="#F9BB05"
+        title="发现" />
+   <!-- <tab
+        id="@+id/tab_my"
+        icon="@drawable/ic_settings_applications"
         barColorWhenSelected="#5D3C35"
-        title="发布" />
+        title="发布" />-->
     <tab
         id="@+id/tab_my"
         icon="@drawable/ic_settings_applications"
-        barColorWhenSelected="#FF9800"
-        title="发现" />
+        barColorWhenSelected="#E94335"
+        title="发布" />
+
 </tabs>

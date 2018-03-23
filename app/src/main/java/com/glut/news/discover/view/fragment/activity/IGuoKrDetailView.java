@@ -5,4 +5,5 @@ package com.glut.news.discover.view.fragment.activity;
  */
 
 public interface IGuoKrDetailView {
+
 }

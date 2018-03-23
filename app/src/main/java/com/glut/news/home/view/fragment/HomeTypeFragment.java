@@ -17,12 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.glut.news.R;
-import com.glut.news.adapter.HomeRecyclerAdater;
-import com.glut.news.entity.ArticleModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.home.ArticleDetailActivity;
-import com.glut.news.view.customview.VideoTitleHorizontalScrollView;
+import com.glut.news.home.model.adater.HomeRecyclerAdater;
+import com.glut.news.home.model.entity.ArticleModel;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.home.view.activity.ArticleDetailActivity;
+import com.glut.news.common.view.customview.VideoTitleHorizontalScrollView;
+import com.mingle.widget.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,7 @@ public class HomeTypeFragment extends Fragment {
     public HomeTypeFragment(String s) {
         Article_Type=s;
     }
+    private LoadingView loadingView;
 
     @Nullable
     @Override
@@ -68,7 +70,6 @@ public class HomeTypeFragment extends Fragment {
 
     //加载更多数据
     private void loadMoreData() {
-
 
         if (Article_Type.equals("推荐")) {
 
@@ -104,7 +105,6 @@ public class HomeTypeFragment extends Fragment {
                                     nextPage= articleModel.getNextpage();
                                     adapter.addData(articleModel.getData());
                                 }
-
                                 //mTvLoadEmpty.setVisibility(View.GONE);
                             }
 
@@ -132,7 +132,6 @@ public class HomeTypeFragment extends Fragment {
 
     //加载视频列表数据
     private void loadData() {
-
         if (Article_Type.equals("推荐")) {
 
         } else {
@@ -158,7 +157,6 @@ public class HomeTypeFragment extends Fragment {
                             if (articleModel == null) {
                                 //mTvLoadEmpty.setVisibility(View.VISIBLE);
                             } else {
-
                                 nextPage = articleModel.getNextpage();
                                 adapter.changeData(articleModel.getData());
                                 //mTvLoadEmpty.setVisibility(View.GONE);
@@ -183,6 +181,7 @@ public class HomeTypeFragment extends Fragment {
 
 
     private void initRefresh(View v) {
+        loadingView=v.findViewById(R.id.loadView);
         refresh = v.findViewById(R.id.refresh);
         //下拉刷新
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

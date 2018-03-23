@@ -40,7 +40,7 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-    enum ITEM_TYPE{
+   public enum ITEM_TYPE{
         NORAML,
         FOOTER,
         HEDER

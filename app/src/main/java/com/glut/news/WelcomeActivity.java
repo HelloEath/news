@@ -1,15 +1,15 @@
 package com.glut.news;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -17,27 +17,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.glut.news.login.view.activity.LoginActivity;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.glut.news.common.utils.ApiConstants;
 import com.glut.news.common.utils.DateUtil;
-import com.glut.news.view.WelcomeActivityPermissionsDispatcher;
+import com.glut.news.common.view.IntroActivity;
+import com.glut.news.login.view.fragment.LoginActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+
 
 /**
  * Created by yy on 2018/1/27.
  */
 
-@RuntimePermissions
-public class WelcomeActivity extends Activity implements View.OnClickListener {
+/*@RuntimePermissions*/
+public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int recLen = 5;//跳过倒计时提示5秒
     private TextView tv;
@@ -47,6 +46,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
     Context c;
     private boolean isGrantPerssion;
     View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -55,13 +55,17 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         //去掉标题栏
         //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //设置全屏
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_welcome);
-        ImageView imageView=findViewById(R.id.welcomeimage);
+        String updateTime = String.valueOf(System.currentTimeMillis()); // 在需要重新获取更新的图片时调用
+        ImageView imageView = (ImageView) findViewById(R.id.welcomeimage);
         Glide.with(this).load(ApiConstants.welcomeImageAPi)
-                .into(imageView);
-        WelcomeActivityPermissionsDispatcher.initLocationPermissionWithCheck(WelcomeActivity.this);
 
+                .apply(new RequestOptions().signature(new ObjectKey(updateTime)))
+
+                .into(imageView);
+        initPermission();
+        //WelcomeActivityPermissionsDispatcher.initLocationPermissionWithCheck(WelcomeActivity.this);
 
 
     }
@@ -70,10 +74,10 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         timer.schedule(task, 1000, 1000);//等待时间一秒，停顿时间一秒
 
 
-        tv=findViewById(R.id.btn_tiaoguo);
+        tv = (TextView) findViewById(R.id.btn_tiaoguo);
         tv.setOnClickListener(this);
-        TextView t=findViewById(R.id.welTime);
-        t.setText("今天是"+ DateUtil.formatDate_getCurrentDateByF("MM月dd日"));
+        TextView t = (TextView) findViewById(R.id.welTime);
+        t.setText("今天是" + DateUtil.formatDate_getCurrentDateByF("MM月dd日"));
 
 
 
@@ -86,7 +90,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
             public void run() {
 
                 //从闪屏界面跳转到首界面
-                Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
                 startActivity(intent);
                 finish();
 
@@ -96,43 +100,41 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        WelcomeActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
 
-    /*
+
+/*
+
+     *//*
     注解在需要调用运行时权限的方法上，当用户给予权限时会执行该方法
-*/
+*//*
 //,Manifest.permission.WRITE_EXTERNAL_STORAGE
     @NeedsPermission( {Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA})
     public void initLocationPermission() {
 
-     /*   //从闪屏界面跳转到首界面
+     *//*   //从闪屏界面跳转到首界面
         Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
         startActivity(intent);
-        finish();*/
+        finish();*//*
     }
 
 
 
 
 
-/*    注解在用于向用户解释为什么需要调用该权限的方法上，
-只有当第一次请求权限被用户拒绝，下次请求权限之前会调用*/
+*//*    注解在用于向用户解释为什么需要调用该权限的方法上，
+只有当第一次请求权限被用户拒绝，下次请求权限之前会调用*//*
 
-    /*注解在当用户拒绝了权限请求时调用*/
+    *//*注解在当用户拒绝了权限请求时调用*//*
     @OnPermissionDenied({Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA})
     void onLocationDenied() {
         initView();
 
 
     }
-/*
+*//*
     解在当用户选中了授权窗口中的不再询问复选框后并拒绝了权限请求时需要调用的方法，
     一般可以向用户解释为何申请此权限，并根据实际需求决定是否再次弹出权限请求对话框
-*/
+*//*
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void onCameraNeverAskAgain() {
         Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
@@ -143,25 +145,7 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         // NOTE: Show a rationale to explain why the permission is needed, e.g. with a dialog.
         // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
         showRationaleDialog(R.string.permission_camera_rationale, request);
-    }
-    private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setPositiveButton("允许", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton("拒绝", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .setMessage(messageResId)
-                .show();
-    }
+    }*/
 
     TimerTask task = new TimerTask() {
         @Override
@@ -198,4 +182,61 @@ public class WelcomeActivity extends Activity implements View.OnClickListener {
         }
 
     }
+
+
+    public void initPermission() {
+        List<String> permissionList = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+       /* if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_PHONE_STATE);
+        }*/
+
+        if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.CAMERA);
+        }
+
+        if (ContextCompat.checkSelfPermission(WelcomeActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (!permissionList.isEmpty()) {
+            String[] permission = permissionList.toArray(new String[permissionList.size()]);
+            ActivityCompat.requestPermissions(WelcomeActivity.this, permission, 1);
+        } else {
+            initView();
+        }
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0) {
+                    for (int result : grantResults) {
+                        if (result != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(WelcomeActivity.this, "必须同意所有权限才能使用APP", Toast.LENGTH_SHORT).show();
+                            finish();
+                            return;
+                        }
+
+                    }
+                   initView();
+                } else {
+                    Toast.makeText(WelcomeActivity.this, "发生未知错误！", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+                break;
+        }
+    }
+
+
+
+
+
 }

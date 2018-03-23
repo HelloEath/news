@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
-import com.glut.news.entity.ZhiHuNewsModel;
-import com.glut.news.utils.DateUtil;
+import com.glut.news.discover.model.entity.ZhiHuNewsModel;
+import com.glut.news.common.utils.DateUtil;
 
 import java.util.List;
 

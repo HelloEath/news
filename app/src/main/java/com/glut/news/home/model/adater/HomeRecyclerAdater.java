@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
-import com.glut.news.entity.ArticleModel;
+import com.glut.news.home.model.entity.ArticleModel;
 
 import java.util.List;
 

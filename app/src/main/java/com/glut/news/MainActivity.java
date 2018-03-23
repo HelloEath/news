@@ -1,16 +1,17 @@
 package com.glut.news;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
 
-import com.glut.news.R;
-import com.glut.news.video.view.fragment.AddVideoFragment;
 import com.glut.news.discover.view.fragment.DicoverFragment;
 import com.glut.news.home.view.fragment.HomeFragment;
+import com.glut.news.video.view.fragment.AddVideoFragment;
 import com.glut.news.video.view.fragment.VideoFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 public class MainActivity extends AppCompatActivity {
     private BottomBar bottomBar;
     private List<Fragment> fragmentList;
@@ -30,11 +33,16 @@ public class MainActivity extends AppCompatActivity {
     private BottomBarTab nearby;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Explode explode = new Explode();
+        explode.setDuration(500);
+        getWindow().setExitTransition(explode);
+        getWindow().setEnterTransition(explode);
+        initView();
         initViewPager();
         initBottomBar();
 
@@ -42,12 +50,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+    private void initView() {
+        v = (ViewPager) findViewById(R.id.viewger);
+
+    }
+
+
     private void initViewPager() {
         fragmentList = new ArrayList<>();
-        v = (ViewPager) findViewById(R.id.viewger);
         fragmentList.add(new HomeFragment());
         fragmentList.add(new VideoFragment());
         fragmentList.add(new DicoverFragment());
+
         v.setOffscreenPageLimit(3);
         fragmentList.add(new AddVideoFragment());
         v.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -75,7 +90,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void initBottomBar() {
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
+// 为tab设置颜色；（当tabs超过三个时，忽略）
+        bottomBar.setActiveTabColor(Color.WHITE);
 
+        bottomBar.setInActiveTabColor(getResources().getColor(R.color.tab_color3));
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -83,13 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     // 选择指定 id 的标签
                     nearby = bottomBar.getTabWithId(R.id.tab_home);
                     v.setCurrentItem(0);
-                    nearby.setBadgeCount(5);
+
+                    //nearby.setBadgeCount(5);
                 }
                 if (tabId == R.id.tab_video) {
                     // 选择指定 id 的标签
                     nearby = bottomBar.getTabWithId(R.id.tab_video);
                     v.setCurrentItem(1);
-                    nearby.setBadgeCount(5);
+                    //nearby.setBadgeCount(5);
                 }
                 if (tabId == R.id.tab_add_video) {
                     // 选择指定 id 的标签

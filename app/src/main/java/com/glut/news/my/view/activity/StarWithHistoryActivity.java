@@ -14,6 +14,7 @@ import android.view.MenuItem;
 
 import com.glut.news.R;
 import com.glut.news.my.view.fragment.HistoryFragment;
+import com.glut.news.my.view.fragment.StarFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +45,13 @@ public class StarWithHistoryActivity extends AppCompatActivity {
         ActionBar a=getSupportActionBar();
         if (a!=null){
             a.setDisplayHomeAsUpEnabled(true);
-            a.setHomeAsUpIndicator(R.drawable.back);
+
+            a.setDisplayShowTitleEnabled(false);
         }
 
         titles.add("我的收藏");
         titles.add("历史记录");
-        fs.add(new HistoryFragment(titles.get(0)));
+        fs.add(new StarFragment(titles.get(0)));
         fs.add(new HistoryFragment(titles.get(1)));
         tab.addTab(tab.newTab().setText(titles.get(0)));
         tab.addTab(tab.newTab().setText(titles.get(1)));

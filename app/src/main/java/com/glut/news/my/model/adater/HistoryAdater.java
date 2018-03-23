@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glut.news.R;
-import com.glut.news.my.model.entity.HistoryModel;
+import com.glut.news.my.model.entity.CommonData;
 
 import java.util.List;
 
@@ -20,9 +20,9 @@ import java.util.List;
 public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener{
     private LayoutInflater l;
     private Context c;
-    private List<HistoryModel.HistoryData> historyList;
+    private List<CommonData> historyList;
     private onItemclick onItemclick;
-    public HistoryAdater(Context context, List<HistoryModel.HistoryData> history) {
+    public HistoryAdater(Context context, List<CommonData> history) {
         l=LayoutInflater.from(context);
         c=context;
         historyList=history;
@@ -78,7 +78,7 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
         ((HistoryViewHolder)holder).itemView.setOnClickListener(this);
     }
 
-    public void addData(List<HistoryModel.HistoryData> historyList){
+    public void addData(List<CommonData> historyList){
         if (this.historyList==null){
             changeDta(historyList);
         }else{
@@ -88,7 +88,7 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     }
 
-    private void changeDta(List<HistoryModel.HistoryData> historyList) {
+    public void changeDta(List<CommonData> historyList) {
         this.historyList=historyList;
         notifyDataSetChanged();
     }

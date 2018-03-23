@@ -5,4 +5,6 @@ package com.glut.news.discover.presenter;
  */
 
 public interface IKaiYanPresenter {
+    void loadData();;
+    void loadBeforeData();
 }

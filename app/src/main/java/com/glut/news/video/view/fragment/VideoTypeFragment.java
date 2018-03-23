@@ -15,10 +15,10 @@ import android.view.ViewGroup;
 import com.glut.news.R;
 import com.glut.news.video.model.adater.VideoRecyclerAdapter;
 import com.glut.news.video.model.entity.VideoModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.video.view.VideoDetailActivity;
-import com.glut.news.view.customview.VideoPlayer;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.video.view.activity.VideoDetailActivity;
+import com.glut.news.common.view.customview.VideoPlayer;
 
 import java.util.ArrayList;
 import java.util.List;

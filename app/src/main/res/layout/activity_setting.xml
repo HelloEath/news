@@ -1,117 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/fragment_setting_star" />
+<LinearLayout
     android:id="@+id/l"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#eaeaea">
 
+
+
+
+
+
+
+
     <FrameLayout
 
         android:layout_width="match_parent"
         android:background="@drawable/foot1"
         android:layout_height="200dp">
-
         <ImageView
             android:id="@+id/user_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <ImageView
-            android:id="@+id/user_logo"
-            android:layout_width="50dp"
-            android:layout_gravity="bottom|left"
-            android:layout_height="50dp" />
-
-        <TextView
-            android:id="@+id/user_name"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|left"/>
+            android:layout_gravity="bottom|left"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/user_logo"
+                android:layout_width="50dp"
+
+                android:layout_height="50dp" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+               />
+        </LinearLayout>
+
+
 
     </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:background="#fff"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
 
         <LinearLayout
             android:id="@+id/btn_star"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginLeft="10dp"
+
             android:layout_alignParentLeft="true">
 
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/star_logo"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/star"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="收藏"/>
+    <ImageView
+        android:id="@+id/star_logo"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/star_icon"/>
+    <TextView
+        android:id="@+id/star_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+
+        android:text="收藏"/>
+
+</LinearLayout>
+
 
         </LinearLayout>
-      <!--  <view
+      <View
             android:layout_width="1dp"
             android:layout_height="5dp"
-            android:layout_centerHorizontal="true"/>-->
+            android:layout_centerHorizontal="true"/>
 
         <LinearLayout
             android:id="@+id/btn_history"
             android:layout_alignParentRight="true"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
-            <ImageView
-                android:id="@+id/history_logo"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:background="@drawable/history"/>
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="历史记录"/>
+                android:orientation="horizontal"
+                android:layout_gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/history_logo"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/history_icon"/>
+                <TextView
+                    android:id="@+id/history_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="历史记录"/>
+
+            </LinearLayout>
+
         </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_marginBottom="5dp"
+        android:background="#fff"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/user_alter"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
         <ImageView
             android:id="@+id/alter_logo"
-            android:layout_width="30dp"
-            android:background="@drawable/alter"
-            android:layout_height="30dp" />
+            android:layout_width="20dp"
+            android:background="@drawable/alter_icon"
+            android:layout_margin="10dp"
+            android:layout_height="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="资料修改"/>
     </LinearLayout>
     <LinearLayout
         android:id="@+id/setting"
+        android:background="#fff"
         android:layout_width="match_parent"
         android:orientation="horizontal"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
         <ImageView
             android:id="@+id/setting_logo"
-            android:layout_width="30dp"
-            android:background="@drawable/setting"
-            android:layout_height="30dp" />
+            android:layout_width="20dp"
+            android:background="@drawable/set_icon"
+            android:layout_margin="10dp"
+            android:layout_height="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="其他设置"/>
     </LinearLayout>
-</LinearLayout>
+</LinearLayout>    </LinearLayout>

@@ -4,24 +4,27 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.glut.news.base.AppApplication;
-import com.glut.news.home.model.entity.ArticleModel;
-import com.glut.news.entity.Comment;
+import com.glut.news.AppApplication;
+import com.glut.news.common.model.entity.Comment;
+import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.model.entity.UserModel;
+import com.glut.news.common.utils.NetUtil;
+import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.discover.model.entity.GuoKrDetail;
 import com.glut.news.discover.model.entity.GuoKrListModel;
-import com.glut.news.my.model.entity.History;
-import com.glut.news.my.model.entity.HistoryModel;
 import com.glut.news.discover.model.entity.KaiYanModel;
 import com.glut.news.discover.model.entity.OneCommentsModel;
 import com.glut.news.discover.model.entity.OneDateListModel;
 import com.glut.news.discover.model.entity.OneDetailModel;
 import com.glut.news.discover.model.entity.OneModel;
+import com.glut.news.discover.model.entity.ZhiHuDetailModel;
+import com.glut.news.discover.model.entity.ZhiHuList;
+import com.glut.news.home.model.entity.ArticleModel;
+import com.glut.news.my.model.entity.History;
+import com.glut.news.my.model.entity.HistoryWithStarModel;
+import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
-import com.glut.news.discover.model.entity.ZhiHuDetailModel;
-import com.glut.news.common.utils.service.RetrofitService;
-import com.glut.news.common.utils.service.ZhiHuList;
-import com.glut.news.common.utils.NetUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +74,8 @@ public class RetrofitManager {
     private RetrofitService.CommentService mCommentService=null;
     private RetrofitService.HistoryService mHistoryService=null;
     private RetrofitService.UserService mUserService=null;
-
+    private RetrofitService.StarService mStarService=null;
+    private RetrofitService.SearchService mSearchService=null;
     public static RetrofitManager builder(String url, String type) {
         return new RetrofitManager(url, type);
     }
@@ -106,6 +110,10 @@ public class RetrofitManager {
             mHistoryService=retrofit.create(RetrofitService.HistoryService.class);
         }else if ("UserService".equals(type)){
             mUserService=retrofit.create(RetrofitService.UserService.class);
+        }else if ("StarService".equals(type)){
+            mStarService=retrofit.create(RetrofitService.StarService.class);
+        }else if ("mSearchService".equals(type)){
+            mSearchService=retrofit.create(RetrofitService.SearchService.class);
         }
     }
 
@@ -329,9 +337,14 @@ public class RetrofitManager {
                 return mVideoService.getVideo(pageno);
             }
 
+    //获得分类视频列表
             public Observable<VideoModel> getTypeVideo (String type, int pageno){
                 return mVideoService.getTypeVideo(type, pageno);
             }
+    //更新视频播放量
+    public Observable<Integer> updateVideoPlays (int ContentId){
+        return mVideoService.updateVideoPlays(ContentId);
+    }
 
     /*News文章*/
 
@@ -356,9 +369,13 @@ public class RetrofitManager {
         return  mCommentService.deleteComment(ArticleId,AuthorId);
     }
 
+    //更新文章/视频评论数
+    public Observable<Integer> updateComment(String ContentId,int Type){
+        return  mCommentService.updateComment(ContentId,Type);
+    }
     /* 厉害记录*/
     //获得记录列表
-    public Observable<HistoryModel> getHistoryList(String UserId,int PageNo){
+    public Observable<HistoryWithStarModel> getHistoryList(String UserId, int PageNo){
         return mHistoryService.getHistoryList(UserId,PageNo);
     }
 
@@ -372,9 +389,41 @@ public class RetrofitManager {
         return mHistoryService.insertHistory(history.getHistory_Persion(),history.getHistory_Article(),history.getHistory_Time(),history.getHistory_Type());
     }
 
-    /*用户管理*/
-    public Observable<Integer> login(int userId){
-        return mUserService.login(userId);
+    /*用户*/
+    //登录请求
+    public Observable<UserModel> login(UserInfo userInfo){
+        return mUserService.login(userInfo);
+    }
+
+    //注册请求
+    public Observable<UserModel> register(UserInfo userInfo){
+        return mUserService.register(userInfo);
+    }
+
+    /*收藏*/
+
+   //查询收藏列表
+    public Observable<HistoryWithStarModel> getStarList(int UserId,int NextPage ){
+        return mStarService.getStarList(UserId,NextPage);
+
+    }
+   //插入收藏
+    public Observable<Integer> putStar(Star s){
+
+        return mStarService.inserStar(s.getStar_UserId(),s.getStar_ContentId(),s.getStar_Time(),s.getStar_Type());
+
+    }
+
+    //获得收藏数
+    public Observable<Integer> getStarCOunt(int UserId){
+
+        return mStarService.getStarCount(UserId);
+
+    }
+    /*搜索*/
+
+    public Observable<HistoryWithStarModel> doSearch(String v,int NextPage){
+        return mSearchService.doSearch(v,NextPage);
     }
 }
 

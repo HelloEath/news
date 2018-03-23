@@ -97,7 +97,7 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
         if (a!=null){
 
           a.setDisplayHomeAsUpEnabled(true);
-            a.setHomeAsUpIndicator(R.drawable.back);
+            //a.setHomeAsUpIndicator(R.drawable.back);
 
         }
         FragmentManager fm=getSupportFragmentManager();

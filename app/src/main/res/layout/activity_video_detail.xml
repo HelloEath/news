@@ -1,11 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
 
+    >
+<LinearLayout
+    android:id="@+id/ahead"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_alignParentTop="true"
+    android:layout_height="wrap_content">
+
+                <cn.jzvd.JZVideoPlayerStandard
+                    android:id="@+id/custom_videoplayer_standard"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"/>
+
+                <TextView
+                    android:id="@+id/author"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|bottom"
+                    android:padding="13dp"
+                    android:textColor="#fff"
+                    android:textSize="8sp"
+                    />
+</LinearLayout>
+
+
+<LinearLayout
+android:layout_width="match_parent"
+android:orientation="vertical"
+    android:layout_below="@id/ahead"
+android:layout_height="wrap_content">
+ <!--   <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/recycler_comment"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+<!--    </android.support.v4.widget.NestedScrollView>-->
+
+
+   <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="我是视频详情页"/>
+        android:layout_marginTop="128dp">
 
+        <include layout="@layout/include_empty" />
+
+        <include layout="@layout/include_error" />
+
+        <include layout="@layout/include_loading" />
+
+    </FrameLayout>
 </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+      android:layout_alignParentBottom="true"
+android:background="#fff"
+        android:layout_height="wrap_content">
+
+
+
+
+
+        <EditText
+            android:id="@+id/comment_value"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:hint="在此输入你的评论"
+            android:layout_height="wrap_content" />
+
+      <RelativeLayout
+          android:layout_width="0dp"
+
+          android:layout_weight="1"
+          android:layout_height="match_parent">
+
+          <com.ldoublem.thumbUplib.ThumbUpView
+              android:id="@+id/btn_star"
+              android:layout_width="30dp"
+              android:layout_height="30dp"
+              app:cracksColor="#33475f"
+              app:edgeColor="#E94335"
+              app:fillColor="#E94335"
+              app:unlikeType="1"
+              android:layout_centerInParent="true"
+               />
+
+
+      </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/btn_sendcomment"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="right"
+
+
+            android:layout_height="match_parent">
+
+
+
+            <TextView
+
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+
+
+
+                android:layout_centerInParent="true"
+                android:text="发表"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</RelativeLayout>
+
+

@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true"
     android:clipToPadding="true"
     android:id="@+id/test2"
-    android:background="?android:attr/windowBackground">
+    android:background="#EDEDED">
 
     <com.yalantis.phoenix.PullToRefreshView
         android:id="@+id/dicover_refresh"

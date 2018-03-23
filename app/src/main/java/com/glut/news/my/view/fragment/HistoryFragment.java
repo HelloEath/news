@@ -21,6 +21,8 @@ import com.glut.news.video.view.activity.VideoDetailActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
 /**
  * Created by yy on 2018/2/12.
  */
@@ -38,6 +40,9 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
     private HistoryFragmentPresenterImpl starWithHistoryPresenter=new HistoryFragmentPresenterImpl(this) ;
 
     private boolean IsLastPage;
+   public HistoryFragment(){
+
+    }
     public HistoryFragment(String s) {
         title=s;
     }
@@ -82,10 +87,10 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
                 int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
 
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
+                if (!isloading && totalItemCount < (lastVisibleItem + 2) ) {
                     isloading=true;
 
-                        starWithHistoryPresenter.loadMoreHistory();
+                    starWithHistoryPresenter.loadMoreHistory();
 
 
 
@@ -95,7 +100,6 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
 
             }
         });
-
         Ada.OnItemClickListener(new HistoryAdater.onItemclick() {
             @Override
             public void onItemClick(String id, String type,String player) {
@@ -122,6 +126,8 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
     @Override
     public void onLoadHistorySuccess(HistoryWithStarModel h) {
         Ada.changeDta(h.getData());
+
+
     }
 
     @Override

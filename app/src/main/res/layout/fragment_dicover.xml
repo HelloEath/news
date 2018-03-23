@@ -19,7 +19,7 @@
         android:layout_marginTop="30dp"
         android:gravity="center_horizontal">
 
-        <com.glut.news.view.customview.VideoTitleHorizontalScrollView
+        <com.glut.news.common.view.customview.VideoTitleHorizontalScrollView
             android:id="@+id/myHorizeontal"
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -31,7 +31,7 @@
 
             android:scrollbars="none">
 
-        </com.glut.news.view.customview.VideoTitleHorizontalScrollView>
+        </com.glut.news.common.view.customview.VideoTitleHorizontalScrollView>
 
       &lt;!&ndash;  <LinearLayout
             android:id="@+id/news_fragment_main_layout_addtitle"
@@ -70,9 +70,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-    app:tabIndicatorColor="#5c71ff"
+    app:tabIndicatorColor="#FF9800"
     app:tabIndicatorHeight="2dp"
-    app:tabSelectedTextColor="#5c71ff"
+    app:tabSelectedTextColor="#FF9800"
 app:tabPadding="2dp"
 
     app:tabTextColor="#686868"

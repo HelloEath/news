@@ -9,7 +9,7 @@
     android:layout_marginTop="@dimen/spacing_medium"
     app:cardCornerRadius="3dp"
 
-    app:cardElevation="5dp"
+    app:cardElevation="0dp"
 
     >
     <LinearLayout

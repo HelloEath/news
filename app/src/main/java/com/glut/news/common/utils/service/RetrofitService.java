@@ -1,21 +1,25 @@
 package com.glut.news.common.utils.service;
 
 
-import com.glut.news.home.model.entity.ArticleModel;
-import com.glut.news.entity.Comment;
+import com.glut.news.common.model.entity.Comment;
+import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.model.entity.UserModel;
+import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.discover.model.entity.GuoKrDetail;
 import com.glut.news.discover.model.entity.GuoKrListModel;
-import com.glut.news.my.model.entity.HistoryModel;
 import com.glut.news.discover.model.entity.KaiYanModel;
 import com.glut.news.discover.model.entity.OneCommentsModel;
 import com.glut.news.discover.model.entity.OneDateListModel;
 import com.glut.news.discover.model.entity.OneDetailModel;
 import com.glut.news.discover.model.entity.OneModel;
+import com.glut.news.discover.model.entity.ZhiHuDetailModel;
+import com.glut.news.discover.model.entity.ZhiHuList;
+import com.glut.news.home.model.entity.ArticleModel;
+import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
-import com.glut.news.discover.model.entity.ZhiHuDetailModel;
-import com.glut.news.common.utils.manager.RetrofitManager;
 
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -130,6 +134,9 @@ public interface RetrofitService {
         @GET("video/getTypeVideo")
         Observable<VideoModel> getTypeVideo(@Query("Video_Type") String type, @Query("pageNo")int pageno);
 
+        @FormUrlEncoded
+        @POST("video/updateVideoPlays")
+        Observable<Integer> updateVideoPlays(@Field("Video_Id") int ContentId);
 
     }
    /* 新闻*/
@@ -156,6 +163,10 @@ public interface RetrofitService {
       @FormUrlEncoded
        @POST("comment/deleteComment")
        Observable<Comment> deleteComment(@Field("Comment_Article") String articleId,@Field("Comment_Author") String authorId);
+       /*更新评论数*/
+       @FormUrlEncoded
+       @POST("comment/updateComment")
+       Observable<Integer> updateComment(@Field("ContentId") String ContentId,@Field("Type") int Type);
 
 
    }
@@ -168,7 +179,7 @@ public interface RetrofitService {
 
         /*获取历史记录列表*/
         @GET("history/historyList")
-        Observable<HistoryModel> getHistoryList(@Query("History_Persion") String UserId, @Query("pageNo") int pageNo);
+        Observable<HistoryWithStarModel> getHistoryList(@Query("History_Persion") String UserId, @Query("pageNo") int pageNo);
 
 
         /*获取历史记录数*/
@@ -178,10 +189,38 @@ public interface RetrofitService {
     }
 
     public interface UserService{
-        @FormUrlEncoded
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @POST("user/login")
-        Observable<Integer> login(@Field("User_Id") int userId);
+        Observable<UserModel> login(@Body UserInfo userInfo);
+
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @POST("user/register")
+        Observable<UserModel> register(@Body UserInfo userInfo);
 
     }
 
+    /*收藏*/
+    public interface StarService{
+        /* 插入收藏*/
+        @FormUrlEncoded
+        @POST("star/putStar")
+        Observable<Integer> inserStar(@Field("Star_UserId") int userId,@Field("Star_ContentId") int ArticleId,@Field("Star_Time") String time,@Field("Star_Type") int type);
+
+        /*获取收藏列表*/
+        @GET("star/starList")
+        Observable<HistoryWithStarModel> getStarList(@Query("Star_UserId") int UserId, @Query("pageNo") int pageNo);
+
+
+        /*获取收藏记录数*/
+        @GET("star/starCount")
+        Observable<Integer> getStarCount(@Query("Star_UserId") int UserId);
+
+    }
+
+    /*搜索*/
+    public interface SearchService{
+
+        @GET("common/search")
+        Observable<HistoryWithStarModel> doSearch(@Query("searchValue") String value,@Query("NextPage") int NextPage);
+    }
 }

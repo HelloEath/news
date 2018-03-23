@@ -1,6 +1,6 @@
 package com.glut.news.home.model.entity;
 
-import com.glut.news.model.NewsTest;
+
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

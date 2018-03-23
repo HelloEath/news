@@ -16,13 +16,13 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.glut.news.R;
-import com.glut.news.adapter.OneAdater;
-import com.glut.news.entity.OneModel;
-import com.glut.news.entity.OneDataModel;
-import com.glut.news.entity.OneDateListModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.view.OneDetailActivity;
+import com.glut.news.discover.model.adater.OneAdater;
+import com.glut.news.discover.model.entity.OneModel;
+import com.glut.news.discover.model.entity.OneDataModel;
+import com.glut.news.discover.model.entity.OneDateListModel;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.discover.view.fragment.activity.OneDetailActivity;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;

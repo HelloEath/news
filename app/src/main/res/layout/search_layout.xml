@@ -19,7 +19,7 @@
         >
 
 
-        <com.glut.news.view.searchview.EditText_Clear
+        <com.glut.news.common.view.searchview.EditText_Clear
             android:id="@+id/et_search"
             android:layout_width="0dp"
             android:layout_height="30dp"
@@ -46,12 +46,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.glut.news.view.searchview.SearchListView
+            <com.glut.news.common.view.searchview.SearchListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-            </com.glut.news.view.searchview.SearchListView>
+            </com.glut.news.common.view.searchview.SearchListView>
 
             <TextView
                 android:id="@+id/tv_clear"

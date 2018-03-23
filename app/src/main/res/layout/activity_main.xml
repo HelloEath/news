@@ -6,19 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.glut.news.view.MainActivity">
 
-    <com.glut.news.view.CustomViewPager
-        android:id="@+id/viewger"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    tools:context="com.glut.news.MainActivity">
 
-    </com.glut.news.view.CustomViewPager>
+            <com.glut.news.common.view.CustomViewPager
+                android:id="@+id/viewger"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    <com.roughike.bottombar.BottomBar
-        android:id="@+id/bottomBar"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        app:bb_tabXmlResource="@xml/bottombar_tabs" />
+            </com.glut.news.common.view.CustomViewPager>
+
+
+            <com.roughike.bottombar.BottomBar
+                android:id="@+id/bottomBar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                app:bb_tabXmlResource="@xml/bottombar_tabs" />
+
+
+
+
+
 </RelativeLayout>

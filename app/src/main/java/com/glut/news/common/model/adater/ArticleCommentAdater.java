@@ -64,10 +64,25 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
         return 0;
     }
 
+    public  void addSingGonComments(VideoCommentListModel v){
+
+            commentListList.add(v);
 
 
-    public  void addComments(VideoCommentListModel v){
-        commentListList.add(v);
+        notifyItemInserted(commentListList.size());
+        notifyDataSetChanged();
+
+    }
+
+    public  void addComments(List<VideoCommentListModel> v){
+        if (commentListList.size()==0){
+
+            changeData(v);
+        }else {
+
+            commentListList.addAll(v);
+        }
+
         notifyItemInserted(commentListList.size());
         notifyDataSetChanged();
 

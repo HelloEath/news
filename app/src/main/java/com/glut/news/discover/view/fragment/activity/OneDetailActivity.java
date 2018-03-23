@@ -15,9 +15,9 @@ import com.glut.news.R;
 import com.glut.news.discover.model.adater.OneDetailAdater;
 import com.glut.news.discover.model.entity.OneCommentsModel;
 import com.glut.news.discover.model.entity.OneDetailModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.utils.HttpUtil;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.common.utils.HttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.glut.news.R;
 import com.glut.news.discover.model.entity.KaiYanModel;
-import com.glut.news.view.customview.VideoPlayer;
+import com.glut.news.common.view.customview.VideoPlayer;
 
 import java.util.List;
 

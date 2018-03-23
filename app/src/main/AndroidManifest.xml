@@ -2,79 +2,95 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.glut.news">
-
     <uses-sdk tools:overrideLibrary="com.android.support:appcompat-v7:26.0.0-alpha1" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    //获取设备网络状态，禁用后无法获取网络状态
-    <uses-permission android:name="android.permission.INTERNET" />
-    //网络权限，当禁用后，无法进行检索等相关业务
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    //读取设备硬件信息，统计数据
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    //读取系统信息，包含系统版本等信息，用作统计
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    //获取设备的网络状态，鉴权所需网络代理
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    //允许sd卡写权限，需写入地图数据，禁用后无法显示地图
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-    //获取统计数据
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    //鉴权所需该权限获取进程列表
+    <!--危险权限-->
+    //读取音频
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    //拍照权限
     <uses-permission android:name="android.permission.CAMERA" />
+   <!-- //拨打电话权限
+    <uses-permission android:name="android.permission.CALL_PHONE" />-->
+    //允许sd卡写权限，需写入地图数据，禁用后无法显示地图
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    //获取精确位置
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    //获取错略位置
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   <!-- 普通权限-->
+    //获取设备网络状态，禁用后无法获取网络状态
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    //网络权限，当禁用后，无法进行检索等相关业务
+    <uses-permission android:name="android.permission.INTERNET" />
+    //读取设备硬件信息，统计数据
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    //读取系统信息，包含系统版本等信息，用作统计
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    //获取设备的网络状态，鉴权所需网络代理
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    //获取统计数据
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    //鉴权所需该权限获取进程列表
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+
+    //开机自动允许
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    //获取账户信息
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-
+    //震动权限
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
     <application
-        android:name=".base.AppApplication"
+        android:name=".AppApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:theme,android:label">
-        <activity android:name=".view.MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
-            ></activity>
-        <activity android:name=".view.ArticleDetailActivity" />
-        <activity android:name=".view.WelcomeActivity">
+            android:screenOrientation="portrait" />
+        <activity android:name=".home.view.activity.ArticleDetailActivity"
+       />
+        <activity android:name=".WelcomeActivity"
+            android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.VideoDetailActivity" />
+        <activity android:name=".video.view.activity.VideoDetailActivity" />
         >
-        <service
+       <!-- <service
             android:name="com.baidu.location.f"
             android:enabled="true"
             android:process=":remote">
             <intent-filter>
                 <action android:name="com.baidu.location.service_v2.2" />
             </intent-filter>
-        </service>
+        </service>-->
 
-        <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login"></activity>
-        <activity android:name=".view.LoginActivity" />
-        <activity android:name=".view.ZhiHuDetailActivity" />
-        <activity android:name=".view.GuoKrDetailActivity" />
-        <activity android:name=".view.OneDetailActivity" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".discover.view.fragment.activity.ZhiHuDetailActivity" />
+        <activity android:name=".discover.view.fragment.activity.GuoKrDetailActivity" />
+        <activity android:name=".discover.view.fragment.activity.OneDetailActivity" />
+        <activity android:name=".my.view.activity.StarWithHistoryActivity" />
+        <activity android:name=".my.view.activity.OtherSettingActivity" />
+        <activity android:name=".my.view.activity.UserAlterActivity" />
+        <activity android:name=".login.view.fragment.LoginActivity"
+            android:theme="@style/Translucent"
+            />
+        <activity android:name=".login.view.fragment.RegisterActivity" />
+        <activity android:name=".login.view.fragment.ForgetPwdActivity" />
+        <activity android:name=".common.view.IntroActivity"
+            android:theme="@style/Translucent"/>
+
+
     </application>
 
 </manifest>

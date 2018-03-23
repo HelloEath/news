@@ -6,5 +6,7 @@ package com.glut.news.discover.presenter;
 
 public interface IGuoKrPresenter {
 
+    void loadData();
+    void loadBeforeData();
 
 }

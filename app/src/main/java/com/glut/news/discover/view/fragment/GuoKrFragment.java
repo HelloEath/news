@@ -15,28 +15,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.glut.news.R;
-import com.glut.news.adapter.GuoKrAdater;
-import com.glut.news.entity.GuoKrListModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.view.GuoKrDetailActivity;
+import com.glut.news.discover.model.adater.GuoKrAdater;
+import com.glut.news.discover.model.entity.GuoKrListModel;
+import com.glut.news.discover.presenter.impl.GuoKrPresenterImpl;
+import com.glut.news.discover.view.fragment.activity.GuoKrDetailActivity;
+import com.glut.news.discover.view.fragment.activity.IGuoKrView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 
 
 /**
  * Created by yy on 2018/2/4.
  */
-public class GuoKrFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener {
+public class GuoKrFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IGuoKrView {
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -50,7 +44,7 @@ public class GuoKrFragment extends android.support.v4.app.Fragment implements Pu
     private Snackbar mLoadLatestSnackbar;
     private Snackbar mLoadBeforeSnackbar;
 
-
+private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
 
     @Nullable
     @Override
@@ -62,6 +56,7 @@ public class GuoKrFragment extends android.support.v4.app.Fragment implements Pu
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);*/
         initView(v);
         loadDta();
+
         return v;
     }
 
@@ -94,28 +89,7 @@ public class GuoKrFragment extends android.support.v4.app.Fragment implements Pu
            }
        });
 
-        //上拉加载更多
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-                    isloading=true;
-                    //loadDataBefore();
-
-
-                }
-
-            }
-        });
 
 
         mLoadLatestSnackbar = Snackbar.make(recyclerView, R.string.load_fail, Snackbar.LENGTH_INDEFINITE)
@@ -137,102 +111,60 @@ public class GuoKrFragment extends android.support.v4.app.Fragment implements Pu
     }
 
     public void loadDta() {
-
-        RetrofitManager.builder(RetrofitService.GUOKR_HANDPICK_BASE,"GuoKrService").getLatestNews1()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<GuoKrListModel, GuoKrListModel>() {
-                    @Override
-                    public GuoKrListModel call(GuoKrListModel guoKrListModel) {
-                        return guoKrListModel;
-                    }
-                })
-                .subscribe(new Action1<GuoKrListModel>() {
-                    @Override
-                    public void call(GuoKrListModel guoKrListModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (guoKrListModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-
-                            guoKrAdater.changeData(guoKrListModel.getResult());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-
-                    }
-                });
+        guoKrPresenter.loadData();
 
 
     }
-    /*//加载以前的数据
-    private void loadDataBefore() {
-        RetrofitManager.builder(RetrofitService.BASE_ZHIHU_URL,"ZhuHuService").getBeforeData(currentDate)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<ZhiHuList, ZhiHuList>() {
-                    @Override
-                    public ZhiHuList call(ZhiHuList zhiHuList2) {
-                        return zhiHuList2;
-                    }
-                })
-                .subscribe(new Action1<ZhiHuList>() {
-                    @Override
-                    public void call(ZhiHuList zhiHuList) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (zhiHuList==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-                            currentDate = zhiHuList.getDate();
-                            for (ZhiHuNewsModel z:zhiHuList.getStories()){
-
-                                z.setDate(currentDate);
-                            }
-                            guoKrAdater.addData(zhiHuList.getStories());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadBeforeSnackbar.dismiss();
-                        mTvLoadError.setVisibility(View.GONE);
-                        isloading=false;
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadBeforeSnackbar.show();
-                        mPbLoading.setVisibility(View.GONE);
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-                    }
-                });
-    }*/
 
     @Override
     public void onRefresh() {
         loadDta();
     }
+
+    @Override
+    public void showLoading() {
+        mPbLoading.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideLoading() {
+        mPbLoading.setVisibility(View.GONE);
+
+
+    }
+
+    @Override
+    public void showEmpty() {
+        mTvLoadEmpty.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideEnpty() {
+        mTvLoadEmpty.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadError() {
+        mTvLoadError.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void hideLoadError() {
+        mTvLoadEmpty.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public void setAdaterData(GuoKrListModel guoKrListModel) {
+        guoKrAdater.changeData(guoKrListModel.getResult());
+    }
+
+
+
+
 }
 
 

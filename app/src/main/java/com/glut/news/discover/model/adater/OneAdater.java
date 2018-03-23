@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.glut.news.R;
-import com.glut.news.entity.OneDataModel;
+import com.glut.news.discover.model.entity.OneDataModel;
 
 import java.util.List;
 

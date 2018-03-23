@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.glut.news.R;
-import com.glut.news.my.view.SettingsFragment;
+import com.glut.news.my.view.fragment.SettingsFragment;
 
 /**
  * Created by yy on 2018/2/11.
@@ -21,6 +21,10 @@ public class OtherSettingActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*//状态栏半透明
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }*/
         setContentView(R.layout.activity_othersetting);
         initView();
 
@@ -35,7 +39,7 @@ public class OtherSettingActivity  extends AppCompatActivity {
         ActionBar a=getSupportActionBar();
         if (a!=null){
             a.setDisplayHomeAsUpEnabled(true);
-            a.setHomeAsUpIndicator(R.drawable.back);
+           // a.setHomeAsUpIndicator(R.drawable.back);
         }
         SettingsFragment sf=new SettingsFragment();
         FragmentManager fm= getSupportFragmentManager();

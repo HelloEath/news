@@ -22,30 +22,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.glut.news.R;
-import com.glut.news.adapter.ArticleCommentAdater;
+import com.glut.news.common.model.adater.ArticleCommentAdater;
+import com.glut.news.common.utils.DateUtil;
+import com.glut.news.common.utils.SpUtil;
+import com.glut.news.home.presenter.impl.ArticleDetailPresenterImpl;
 import com.glut.news.my.model.entity.History;
+import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentListModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
-import com.glut.news.net.manager.RetrofitManager;
-import com.glut.news.net.service.RetrofitService;
-import com.glut.news.utils.DateUtil;
-import com.glut.news.utils.SpUtil;
+import com.mingle.widget.LoadingView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
+import static android.R.attr.id;
 
 
 /**
  * Created by yy on 2018/1/24.
  */
-public class ArticleDetailActivity extends AppCompatActivity implements View.OnClickListener{
+public class ArticleDetailActivity extends AppCompatActivity implements View.OnClickListener,ArticleDetailView{
     private TextView title;
     private TextView author;
     private TextView time;
@@ -56,10 +52,12 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     private RelativeLayout btn_sendComment;
     private EditText mCommentValue;
+    private ArticleDetailPresenterImpl articleDetailPresenter=new ArticleDetailPresenterImpl(this);
 
     String  ids;
     private int nextPage;
     private final static String TAG="ArticleDetailActivity";
+    private LoadingView loadView;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,44 +65,38 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         //String id=getIntent().getStringExtra("id");
         int id=getIntent().getIntExtra("id",0);
         ids=id+"";
+
         recoreHistory();
         String url="http://192.168.191.1:8085/News/article/detailArticle?article_Id="+id;
         initView();
         initWebView(url);
-        loadCommentData();
+        loadData();
+
+    }
+
+    private void loadData() {
+       loadCommentData();//加载评论数据
+        recoreHistory();//记录历史数据
 
     }
 
 
+    private void star(){
+        Star star=new Star();
+        star.setStar_ContentId(id);
+        star.setStar_UserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        star.setStar_Type(1);
+        star.setStar_Time(DateUtil.formatDate_getCurrentDate());
+        articleDetailPresenter.star(star);//
+
+    }
     private void recoreHistory() {
         History h=new History();
         h.setHistory_Article(Integer.parseInt(ids));
         h.setHistory_Persion(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
         h.setHistory_Type(1);
-
         h.setHistory_Time(DateUtil.formatDate_getCurrentDate());
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "HistoryService").insertHistory(h)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer comment) {
-                        //mPbLoading.setVisibility(View.GONE);
-
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-
-                    }
-                });
+      articleDetailPresenter.onHistory(h);
     }
 
 
@@ -130,11 +122,13 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                loadView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                loadView.setVisibility(View.GONE);
 
             }
 
@@ -163,6 +157,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
+        loadView= (LoadingView) findViewById(R.id.loadView);
         title= (TextView) findViewById(R.id.title);
         author= (TextView) findViewById(R.id.author);
         time= (TextView) findViewById(R.id.time);
@@ -213,104 +208,42 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
                 videoCommentListModel.setComment_Time(DateUtil.formatDate_getCurrentDate());
                 videoCommentListModel.setLikes(0);
-                commentAdater.addComments(videoCommentListModel);
+                commentAdater.addSingGonComments(videoCommentListModel);
                 mCommentValue.setText("");
                 break;
         }
     }
 
     private void loadMoreCommentData(){
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"CommentService").getCOmment(ids,nextPage)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<VideoCommentsModel, VideoCommentsModel>() {
-                    @Override
-                    public VideoCommentsModel call(VideoCommentsModel guoKrList) {
-                        return guoKrList;
-                    }
-                })
-                .subscribe(new Action1<VideoCommentsModel>() {
-                    @Override
-                    public void call(VideoCommentsModel comment) {
-                        //mPbLoading.setVisibility(View.GONE);
-                        if (comment==null){
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-
-                            if (comment.getData()!=null)
-                                commentAdater.changeData(comment.getData());
-                            nextPage=comment.getNextpage();
-                            //mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
-
-                    }
-                });
+        articleDetailPresenter.loadMoreComment();//加载评论数据
 
     }
     private void loadCommentData() {
-
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"CommentService").getCOmment("304120449",1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<VideoCommentsModel, VideoCommentsModel>() {
-                    @Override
-                    public VideoCommentsModel call(VideoCommentsModel guoKrList) {
-                        return guoKrList;
-                    }
-                })
-                .subscribe(new Action1<VideoCommentsModel>() {
-                    @Override
-                    public void call(VideoCommentsModel comment) {
-                        //mPbLoading.setVisibility(View.GONE);
-                        if (comment==null){
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-
-                            if (comment.getData()!=null)
-                                commentAdater.changeData(comment.getData());
-                            nextPage=comment.getNextpage();
-                            //mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
-
-                    }
-                });
+        articleDetailPresenter.loadComment(Integer.parseInt(ids));//加载评论数据
 
     }
 
+
+
+
+    @Override
+    public void addAdater(VideoCommentsModel commonData) {
+        commentAdater.addComments(commonData.getData());
+    }
+
+    @Override
+    public void changeAdater(VideoCommentsModel commonData) {
+        commentAdater.changeData(commonData.getData());
+    }
+
+    @Override
+    public void onStarSuccess() {
+
+        Toast.makeText(this,"收藏成功",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onStarFail() {
+        Toast.makeText(this,"收藏失败",Toast.LENGTH_SHORT).show();
+    }
 }

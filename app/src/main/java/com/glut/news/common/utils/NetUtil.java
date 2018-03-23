@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.glut.news.base.AppApplication;
+import com.glut.news.AppApplication;
 
 /**
  * Created by yy on 2018/2/1.

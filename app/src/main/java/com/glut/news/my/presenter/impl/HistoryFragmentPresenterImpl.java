@@ -5,7 +5,7 @@ import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.my.presenter.IHistoryFragmentPresenter;
-import com.glut.news.my.view.activity.StarWithHistoryView;
+import com.glut.news.my.view.fragment.HistoryFragmentView;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -18,13 +18,13 @@ import rx.schedulers.Schedulers;
  */
 
 public class HistoryFragmentPresenterImpl implements IHistoryFragmentPresenter {
-private StarWithHistoryView starWithHistoryView;
+private HistoryFragmentView historyFragmentView;
 private boolean IsLastPage;
     private boolean IsLastPage2;
     private int UserId;
     private int NextPage;
-    public HistoryFragmentPresenterImpl(StarWithHistoryView starWithHistoryView) {
-        this.starWithHistoryView = starWithHistoryView;
+    public HistoryFragmentPresenterImpl(HistoryFragmentView historyFragmentView) {
+        this.historyFragmentView = historyFragmentView;
         UserId=Integer.parseInt(SpUtil.getUserFromSp("UserId"));
     }
 
@@ -63,7 +63,7 @@ private boolean IsLastPage;
                                 }
 
 
-                            starWithHistoryView.onLoadHistorySuccess(historyModel);
+                            historyFragmentView.onLoadHistorySuccess(historyModel);
                             NextPage = historyModel.getNextpage();
 
 
@@ -120,7 +120,7 @@ private boolean IsLastPage;
                                     }
 
 
-                                starWithHistoryView.onLoadMoreHistorySuccess(historyModel);
+                                historyFragmentView.onLoadMoreHistorySuccess(historyModel);
                                 NextPage = historyModel.getNextpage();
 
 

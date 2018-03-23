@@ -11,9 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.glut.news.R;
-import com.glut.news.discover.OneFragment;
-import com.glut.news.discover.ZhiHuFragment;
-import com.glut.news.view.customview.VideoTitleHorizontalScrollView;
+import com.glut.news.common.view.customview.VideoTitleHorizontalScrollView;
 
 import java.util.ArrayList;
 import java.util.List;
