@@ -135,7 +135,9 @@
     <string name="closedrawer">关闭drawerview</string>
     <string name="opendrawer">打开drawer</string>
     <string name="login">登录</string>
-    <string name="Username">账号(手机号码/邮箱)</string>
+
+  <!--登录和注册-->
+    <string name="Username">昵称</string>
     <string name="Password">密码</string>
     <string name="go">登录</string>
     <string name="forgot_your_password">忘记密码</string>
@@ -143,4 +145,38 @@
     <string name="repeat_password">确认密码</string>
     <string name="next">注册</string>
     <string name="UseEmail">邮箱/电话号码(作为登录账号)</string>
+
+    <!--用户管理-->
+    <string name="input">修改用户昵称</string>
+    <string name="input_content">请输入新的昵称</string>
+    <string name="input_hint" />
+    <string name="input_prefill" />
+    <string name="progress_dialog">修改中...</string>
+    <string name="please_wait" />
+    <string name="input_desc">修改自我简介</string>
+    <string name="input_newName">修改昵称</string>
+    <string name="input_content_name">请输入新的昵称</string>
+    <string name="input_content_desc">请输入新的自我简介</string>
+    <string name="UserAccount">账号(手机号码/邮箱)</string>
+    <string name="logout">登出</string>
+    <string name="share_from_one">来自One的分享</string>
+    <string name="videoPlayerUrl">视频播放地址</string>
+    <string name="videoAbstract">视频摘要</string>
+    <string name="videoTitle">视频标题</string>
+    <string name="share_from_jikezhiyue">即刻知阅</string>
+    <string name="double_click_exit">再按一次 say goodbye</string>
+    <string name="clear_cache_successfully">清除缓存成功</string>
+    <string name="video_setting">视频设置</string>
+    <string name="video_auto_play_summary"><![CDATA[开启后在Wifi环境下自动播放视频<]]></string>
+    <string name="video_auto_play">自动播放视频</string>
+    <string name="about_settings">关于</string>
+    <string name="version">版本</string>
+    <string name="changelog_url">更新记录</string>
+    <string name="changelog">更新记录</string>
+    <string name="about_libraries_summary">查看开源许可信息</string>
+    <string name="about_libraries_label">开源许可</string>
+    <string name="source_code_url">https://github.com/HelloEath/news</string>
+    <string name="source_code">源代码</string>
+    <string name="copyright_summary">仅作个人及非商业用途</string>
+    <string name="copyright">本程序仅供学习交流, 不可用于任何商业用途.</string>
 </resources>

@@ -70,9 +70,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-    app:tabIndicatorColor="#FF9800"
+    app:tabIndicatorColor="#2fa881"
     app:tabIndicatorHeight="2dp"
-    app:tabSelectedTextColor="#FF9800"
+    app:tabSelectedTextColor="#2fa881"
 app:tabPadding="2dp"
 
     app:tabTextColor="#686868"

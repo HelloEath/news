@@ -91,7 +91,7 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
                 RequestOptions.circleCropTransform()).into(((OneViewHolder)holder).mAuthor_logo);
         ((OneViewHolder)holder).mDesc.setText(oneList.get(position).getForward().substring(0,oneList.get(position).getForward().length()-1)+"...");
         ((OneViewHolder)holder).mTime.setText(oneList.get(position).getPost_date().substring(5,10));
-        Glide.with(c).load(R.drawable.like).into(((OneViewHolder)holder).mLike_logo);
+        Glide.with(c).load(R.drawable.btn_dianzan).into(((OneViewHolder)holder).mLike_logo);
         ((OneViewHolder)holder).mLike_num.setText(oneList.get(position).getLike_count());
 
         holder.itemView.setOnClickListener(this);

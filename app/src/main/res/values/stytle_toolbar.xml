@@ -2,11 +2,11 @@
 <resources>
     <style name="MyToolbar" parent="Base.Widget.AppCompat.Toolbar">
         <!--Toolbar标题颜色-->
-        <item name="titleTextColor">#fff</item>
-        <item name="android:background">#2fa881</item>
+        <item name="titleTextColor">#4e4e4e</item>
+        <item name="android:background">#fff</item>
 
         <!--ActionBar默认按钮的颜色-->
-        <item name="colorControlNormal">?attr/toolbar_Text_Color</item>
+        <item name="colorControlNormal">#4e4e4e</item>
         <!--弹出菜单的样式-->
         <item name="popupTheme">@style/MyToolbarPopupTheme</item>
         <!--子控件相对父控件位置-->

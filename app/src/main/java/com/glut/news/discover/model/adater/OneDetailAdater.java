@@ -76,7 +76,7 @@ public class OneDetailAdater extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((OneDetailViewHolder) holder).mAuthor_name.setText(commentsList.get(position).getUser().getUser_name());
 
 
-            Glide.with(c).load(R.drawable.dianzan).into(((OneDetailViewHolder) holder).mLike_logo);
+            Glide.with(c).load(R.drawable.btn_dianzan).into(((OneDetailViewHolder) holder).mLike_logo);
             ((OneDetailViewHolder) holder).mLike_num.setText(commentsList.get(position).getPraisenum());
             ((OneDetailViewHolder) holder).mContent.setText(commentsList.get(position ).getContent());
             ((OneDetailViewHolder) holder).mTime.setText(commentsList.get(position).getInput_date());

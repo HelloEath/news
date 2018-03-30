@@ -18,16 +18,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.glut.news.AppApplication;
 import com.glut.news.MainActivity;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.ToastUtil;
 import com.glut.news.login.presenter.impl.LoginActivityPresenterImpl;
-
-import net.steamcrafted.loadtoast.LoadToast;
+import com.glut.news.my.view.activity.InterestTagActivity;
 
 
 /**
@@ -49,8 +50,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView btn_forGetPwd;
     private FloatingActionButton fab2;
     private RelativeLayout login_bg;
-
-    LoadToast lt;
     private FloatingActionButton fab;
 private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
@@ -64,10 +63,10 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
         setContentView(R.layout.activity_login);
         initView();
         initData();
+        AppApplication.getInstance().addActivity(this);
     }
 
     private void initData() {
-        lt= new LoadToast(this);
         SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
             @Override
             public void onResourceReady(Drawable resource, com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
@@ -122,10 +121,9 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
                 UserInfo u=new UserInfo();
                String t=etUsername.getText().toString();
                String UserPwd=etPassword.getText().toString();
-               lt.setText("登陆中");
-               lt.setTranslationY(100);
-               lt.show();
+               startActivity(new Intent(LoginActivity.this, InterestTagActivity.class));
              if (valiLogin(u,t,UserPwd)){
+                 ToastUtil.showOnLoading("登陆是需要时间的...",LoginActivity.this);
 
                  l.toLogin(u);
 
@@ -136,7 +134,6 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
                 break;
             case R.id.btn_forgetPwd:
-                lt.setTextDirection(true);
                 /*//要做的动画
                 Transition explode = TransitionInflater.from(this).inflateTransition(R.transition.fabtransition);
 //退出时使用
@@ -157,12 +154,12 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
                 break;
             case R.id.btn_QQ:
-                lt.error();
+                //lt.error();
 
                 break;
             case R.id.btn_WeChat:
-                lt.success();
-                lt.hide();
+              //  lt.success();
+               // lt.hide();
 
                 break;
             case R.id.fab2:
@@ -212,7 +209,8 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
         getWindow().setExitTransition(explode);
         getWindow().setEnterTransition(explode);
         ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
-        Intent i2 = new Intent(this, MainActivity.class);
+        Intent i2 = new Intent(this, InterestTagActivity.class);
+        i2.putExtra("UserId", SpUtil.getUserFromSp("UserId"));
         startActivity(i2, oc2.toBundle());
 
         finish();
@@ -220,12 +218,12 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
     @Override
     public void onUserUnExist() {
-        Toast.makeText(this,"用户不存在",Toast.LENGTH_SHORT).show();
+        ToastUtil.showError("我的数据库没有你的信息...",3000,LoginActivity.this);
     }
 
     @Override
     public void onUserPwdError() {
-        Toast.makeText(this,"密码有误",Toast.LENGTH_SHORT).show();
+        ToastUtil.showError("你的密码有点问题...",3000,LoginActivity.this);
 
     }
 }

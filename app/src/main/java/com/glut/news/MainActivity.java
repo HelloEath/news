@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
+import android.widget.Toast;
 
 import com.glut.news.discover.view.fragment.DicoverFragment;
 import com.glut.news.home.view.fragment.HomeFragment;
@@ -28,9 +29,10 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private BottomBar bottomBar;
     private List<Fragment> fragmentList;
-
+    private long exitTime = 0;
     private ViewPager v;
     private BottomBarTab nearby;
+
 
 
 
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        AppApplication.getInstance().addActivity(this);
         Explode explode = new Explode();
         explode.setDuration(500);
         getWindow().setExitTransition(explode);
@@ -47,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
         initBottomBar();
 
 
-    }
 
+    }
 
 
     private void initView() {
@@ -165,7 +168,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if ((currentTime - exitTime) < 2000) {
+            AppApplication.getInstance().destory();
+            super.onBackPressed();
+        } else {
+            Toast.makeText(this, R.string.double_click_exit, Toast.LENGTH_SHORT).show();
+            exitTime = currentTime;
+        }
+    }
 
 
 }

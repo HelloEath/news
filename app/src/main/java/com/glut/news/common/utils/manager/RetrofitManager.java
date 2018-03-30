@@ -22,6 +22,7 @@ import com.glut.news.discover.model.entity.ZhiHuList;
 import com.glut.news.home.model.entity.ArticleModel;
 import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
+import com.glut.news.my.model.entity.InterestTag;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
@@ -76,6 +77,8 @@ public class RetrofitManager {
     private RetrofitService.UserService mUserService=null;
     private RetrofitService.StarService mStarService=null;
     private RetrofitService.SearchService mSearchService=null;
+    private RetrofitService.InterestTag mInterestTagService=null;
+
     public static RetrofitManager builder(String url, String type) {
         return new RetrofitManager(url, type);
     }
@@ -112,8 +115,10 @@ public class RetrofitManager {
             mUserService=retrofit.create(RetrofitService.UserService.class);
         }else if ("StarService".equals(type)){
             mStarService=retrofit.create(RetrofitService.StarService.class);
-        }else if ("mSearchService".equals(type)){
+        }else if ("SearchService".equals(type)){
             mSearchService=retrofit.create(RetrofitService.SearchService.class);
+        }else if ("InterestTagService".equals(type)){
+            mInterestTagService=retrofit.create(RetrofitService.InterestTag.class);
         }
     }
 
@@ -127,6 +132,7 @@ public class RetrofitManager {
                     Cache cache = new Cache(new File(AppApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
                     mOkHttpClient = new OkHttpClient.Builder()
                             .cache(cache)
+
 
 
                             .addInterceptor(interceptor)
@@ -400,6 +406,42 @@ public class RetrofitManager {
         return mUserService.register(userInfo);
     }
 
+    //修改用户名请求
+    public Observable<UserModel> alterUserName(UserInfo userInfo){
+        return mUserService.alterUserName(userInfo);
+    }
+
+    //修改用户性别
+    public Observable<UserModel> alterUserSex(UserInfo userInfo){
+        return mUserService.alterUserSex(userInfo);
+    }
+
+    //修改用户desc
+    public Observable<UserModel> alterUserDesc(UserInfo userInfo){
+        return mUserService.alterUserDesc(userInfo);
+    }
+
+    //修改用户地区
+    public Observable<UserModel> alterUserDistrc(UserInfo userInfo){
+        return mUserService.alterUserDistrc(userInfo);
+    }
+
+    //修改用户生日
+    public Observable<UserModel> alterUserBitrth(UserInfo userInfo){
+        return mUserService.alterUserBirth(userInfo);
+    }
+
+    //修改用户头像
+    public Observable<UserModel> alterUserLogo(UserInfo userInfo){
+        return mUserService.alterUserLogo(userInfo);
+    }
+
+    //登出
+    public Observable<UserModel> logOut(UserInfo userInfo){
+        return mUserService.logOut(userInfo);
+    }
+
+
     /*收藏*/
 
    //查询收藏列表
@@ -424,6 +466,11 @@ public class RetrofitManager {
 
     public Observable<HistoryWithStarModel> doSearch(String v,int NextPage){
         return mSearchService.doSearch(v,NextPage);
+    }
+
+    /*兴趣标签*/
+    public Observable<Integer> doInterestTag(InterestTag interestTag){
+        return mInterestTagService.setUserInterestTag(interestTag);
     }
 }
 

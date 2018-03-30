@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:zhy="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:layout_gravity="center_horizontal"
+        android:text="现在，先选择一些你喜欢的类别吧"/>
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:layout_marginTop="30dp"
+        android:id="@+id/id_flowlayout"
+        zhy:max_select="-1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+    </com.zhy.view.flowlayout.TagFlowLayout>
+
+    <Button
+        android:id="@+id/btn_IntersetGo"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/bt_shape"
+
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:textColor="#fff"
+        android:text="开启个性化体验"/>
+</LinearLayout>

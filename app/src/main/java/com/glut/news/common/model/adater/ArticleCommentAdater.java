@@ -124,7 +124,7 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
             Glide.with(context).load(commentListList.get(position).getAuthor_logo()).apply(RequestOptions.circleCropTransform()).into(  ((VideoDetailViewHolder) holder).mAntuorLogo);
 
             ((VideoDetailViewHolder) holder).mAuthorName.setText(commentListList.get(position).getAuthor_name());
-            Glide.with(context).load(R.drawable.dianzan).into( ((VideoDetailViewHolder) holder).mDianZanLogo);
+            Glide.with(context).load(R.drawable.btn_dianzan).into( ((VideoDetailViewHolder) holder).mDianZanLogo);
             ((VideoDetailViewHolder) holder).mDianZanSum.setText(commentListList.get(position).getLikes()+"");
             ((VideoDetailViewHolder) holder).mContent.setText(commentListList.get(position).getComment_Content());
             ((VideoDetailViewHolder) holder).mTime.setText(commentListList.get(position).getComment_Time());

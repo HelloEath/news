@@ -12,4 +12,13 @@
     <color name="side_2" >#F9BB05</color>
     <color name="side_3" >#4284F3</color>
     <color name="side_4" >#E94335</color>
+    <color name="input_dialog">#2fa881</color>
+    <color name="white">#fff</color>
+
+    <array name="progress_colors_dark">
+        <item>#2fa881</item>
+        <item>#F9BB05</item>
+        <item>#4284F3</item>
+        <item>#E94335</item>
+    </array>
 </resources>

@@ -18,18 +18,17 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.glut.news.AppApplication;
 import com.glut.news.MainActivity;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
 import com.glut.news.common.model.entity.UserModel;
 import com.glut.news.common.utils.SpUtil;
-import com.glut.news.login.presenter.impl.RegisterPresenterImpl;
-
-import net.steamcrafted.loadtoast.LoadToast;
+import com.glut.news.common.utils.ToastUtil;
+import com.glut.news.login.presenter.impl.RegisterActivityPresenterImpl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +40,7 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity implements IRegisterActivityView{
 
-    private RegisterPresenterImpl iRr=new RegisterPresenterImpl(this);
+    private RegisterActivityPresenterImpl iRr=new RegisterActivityPresenterImpl(this);
   private   FloatingActionButton fab;
     private   CardView cvAdd;
     private EditText et_useremail;
@@ -57,7 +56,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     private String    UserName;
     private String    UserPwd;
     private RelativeLayout logister_bg;
-    LoadToast lt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         }
         setContentView(R.layout.activity_register);
         initView();
-
+        AppApplication.getInstance().addActivity(this);
 
 //转场动画
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -90,7 +88,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         et_userPwd= (EditText) findViewById(R.id.et_password);
         et_rePwd= (EditText) findViewById(R.id.et_repeatpassword);
         bt_go= (Button) findViewById(R.id.bt_go);
-        lt= new LoadToast(this);
         SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
             @Override
             public void onResourceReady(Drawable resource, com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
@@ -107,14 +104,13 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
                 String Test=et_useremail.getText().toString();
                 UserInfo userInfo =new UserInfo();
-                lt.setText("正在注册");
-                lt.setTranslationY(100);
-                lt.show();
               if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
+                  ToastUtil.showOnLoading("正在注册",RegisterActivity.this);
+
                   iRr.toRegister(userInfo);//发送请求
 
               }else{
-                  lt.success();
+                  ToastUtil.showError("注册失败",3000,RegisterActivity.this);
 
 
               }
@@ -275,20 +271,22 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     @Override
     public void onRegisterSuccess(UserModel userModel) {
 
-        Toast.makeText(this,"注册成功",Toast.LENGTH_SHORT).show();
+        ToastUtil.showSuccess("注册成功,让我们乘风飞翔,和太阳肩并肩",3000,RegisterActivity.this);
         Intent i=new Intent(RegisterActivity.this, MainActivity.class);
         SpUtil.saveUserToSp("UserName",UserName);
         SpUtil.saveUserToSp("UserPwd",UserPwd);
-       SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
+
+        SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
         SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
 
+        i.putExtra("UserId",userModel.getUserInfo().getUserId());
         startActivity(i);
         finish();
     }
 
     @Override
     public void onRegisterFail() {
-        Toast.makeText(this,"注册失败",Toast.LENGTH_SHORT).show();
+        ToastUtil.showError("注册失败，你早就存在于我的脑海里了",3000,RegisterActivity.this);
 
     }
 }

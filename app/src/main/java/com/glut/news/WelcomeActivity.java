@@ -49,7 +49,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        AppApplication.getInstance().addActivity(this);
         super.onCreate(savedInstanceState);
         //view = View.inflate(this, R.layout.activity_welcome, null);
         //去掉标题栏

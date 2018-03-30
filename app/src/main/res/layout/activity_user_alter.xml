@@ -8,8 +8,9 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:minHeight="?attr/actionBarSize"
+
             app:layout_collapseMode="pin"
-            app:theme="@style/MyToolbar"
+          android:background="@color/side_1"
 
 
             android:layout_width="match_parent"
@@ -27,7 +28,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content">
-
 
         <RelativeLayout
             android:id="@+id/btn_logo"
@@ -75,6 +75,57 @@
                 android:layout_margin="10dp"
                 android:text=""/>
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:background="#d1d1d1"
+            android:layout_height="1dp"></View>
+        <RelativeLayout
+            android:id="@+id/btn_sex"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+                android:text="性别"/>
+
+            <TextView
+                android:id="@+id/user_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:text=""/>
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:background="#d1d1d1"
+            android:layout_height="1dp"></View>
+        <RelativeLayout
+            android:id="@+id/btn_birth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+                android:text="生日"/>
+
+            <TextView
+                android:id="@+id/user_birth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:text=""/>
+        </RelativeLayout>
+
+
         <View
             android:layout_width="match_parent"
             android:background="#d1d1d1"
@@ -98,15 +149,50 @@
                 android:layout_margin="10dp"
                 android:text=""/>
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:background="#d1d1d1"
+            android:layout_height="1dp"></View>
+        <RelativeLayout
+            android:id="@+id/btn_distic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_alignParentLeft="true"
+                android:text="地区"/>
+
+            <TextView
+                android:id="@+id/user_destric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="10dp"
+                android:text=""/>
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/other_info"
         android:layout_width="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="bottom"
         android:layout_height="wrap_content">
 
+        <Button
+            android:id="@+id/btn_logOut"
+            android:background="@drawable/bt_shape"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
 
+            android:textSize="20sp"
+            android:text="@string/logout"
+            android:textColor="#f9f9f9"
+            />
 
     </LinearLayout>
 </LinearLayout>

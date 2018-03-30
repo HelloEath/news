@@ -188,14 +188,56 @@ public interface RetrofitService {
 
     }
 
+    /*用户管理*/
     public interface UserService{
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+
+        //登录
+        @FormUrlEncoded
         @POST("user/login")
         Observable<UserModel> login(@Body UserInfo userInfo);
 
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        //注册
+        @FormUrlEncoded
         @POST("user/register")
         Observable<UserModel> register(@Body UserInfo userInfo);
+        //登出
+
+        @POST("user/logOut")
+        Observable<UserModel> logOut(@Body UserInfo userInfo);
+
+        //修改用户名
+        @FormUrlEncoded
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserName(@Body UserInfo userInfo);
+
+        //修改用户性别
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserSex(@Body UserInfo userInfo);
+
+        //修改用户desc
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserDesc(@Body UserInfo userInfo);
+
+        //修改用户地区
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserDistrc(@Body UserInfo userInfo);
+
+        //修改用户生日
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserBirth(@Body UserInfo userInfo);
+
+        //修改用户头像
+        @POST("user/alterUserlogo")
+        Observable<UserModel> alterUserLogo(@Body UserInfo userInfo);
+    }
+
+    //兴趣标签
+    public interface InterestTag{
+
+
+        @POST("tag/setUserInterestTag")
+        Observable<Integer> setUserInterestTag(@Body com.glut.news.my.model.entity.InterestTag interestTag);
+
 
     }
 

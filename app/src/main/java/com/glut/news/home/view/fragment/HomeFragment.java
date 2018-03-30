@@ -26,8 +26,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.glut.news.R;
 import com.glut.news.common.utils.ApiConstants;
+import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.view.SearchActivity;
 import com.glut.news.common.view.searchview.ICallBack;
@@ -71,15 +74,61 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-/*        Window window = getActivity().getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getActivity().getResources().getColor(R.color.colorAccent));*/
+
         View v=inflater.inflate(R.layout.fragment_home,container,false);
         initView(v);
-
         initData(v);
+        if (SetUtil.getInstance().getIsFirstTime()){
+            showTapTarget();
+        }
+        showTapTarget();
+
+
         return v;
 
+    }
+    private void showTapTarget() {
+
+        // 引导用户使用
+        TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                .targets(
+
+
+                      TapTarget.forView(mLogo, "点击头像管理个人信息")
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.colorPrimary)
+                                .drawShadow(true)
+                              .targetRadius(60)
+                .id(1)
+                        /*TapTarget.forToolbarNavigationIcon(toolbar, "点击这里展开侧栏")
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.colorPrimary)
+                                .drawShadow(true)
+                                .id(2),
+                        TapTarget.forBounds(target, "点击这里切换新闻", "双击返回顶部\n再次双击刷新当前页面")
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.colorPrimary)
+                                .targetRadius(60)
+                                .transparentTarget(true)
+                                .drawShadow(true)
+                                .id(3)*/
+                ).listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        SetUtil.getInstance().setIsFirstTime(false);
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        SetUtil.getInstance().setIsFirstTime(false);
+                    }
+                });
+        sequence.start();
     }
 
     private void initView(View v) {

@@ -1,18 +1,27 @@
 package com.glut.news.home.view.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,6 +30,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.adater.ArticleCommentAdater;
 import com.glut.news.common.utils.DateUtil;
@@ -36,6 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.R.attr.id;
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 
 /**
@@ -52,6 +63,8 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     private RelativeLayout btn_sendComment;
     private EditText mCommentValue;
+    private Toolbar toolbar;
+    private String titleString;
     private ArticleDetailPresenterImpl articleDetailPresenter=new ArticleDetailPresenterImpl(this);
 
     String  ids;
@@ -71,10 +84,12 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         initView();
         initWebView(url);
         loadData();
+        AppApplication.getInstance().addActivity(this);
 
     }
 
     private void loadData() {
+
        loadCommentData();//加载评论数据
         recoreHistory();//记录历史数据
 
@@ -122,7 +137,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                loadView.setVisibility(View.VISIBLE);
+                //loadView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -139,6 +154,23 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             }
 
         });
+
+        mWebView.setWebChromeClient(new WebChromeClient(){
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                titleString=title;
+            }
+        });
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode==KEYCODE_BACK){
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void addJs(WebView content) {
@@ -157,6 +189,8 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
+
+        toolbar=findViewById(R.id.toolbar);
         loadView= (LoadingView) findViewById(R.id.loadView);
         title= (TextView) findViewById(R.id.title);
         author= (TextView) findViewById(R.id.author);
@@ -169,8 +203,24 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         videoCommentListModels =new ArrayList<>();
         commentAdater=new ArticleCommentAdater(this, videoCommentListModels);
 
+        setSupportActionBar(toolbar);
         //mNestRefresh.setOnRefreshListener(this);
+//动态改变Toolbar返回按钮颜色：改为灰色
+        Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
 
+        upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+
+        toolbar.setTitle("");
+        ActionBar a=getSupportActionBar();
+        if (a!=null){
+            a.setDisplayHomeAsUpEnabled(true);
+
+            a.setTitle("");
+        }
 
         btn_sendComment.setOnClickListener(this);
 
@@ -189,6 +239,31 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.menu_action_share:
+                share();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void share() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share));
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_from_jikezhiyue) +"["+ titleString +"]:"+ mWebView.getUrl());
+        startActivity(Intent.createChooser(intent, titleString));
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_detail_share, menu);
+        return true;
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){

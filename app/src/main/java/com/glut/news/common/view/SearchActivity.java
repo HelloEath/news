@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.presenter.impl.SearchActivityPresenterImpl;
 import com.glut.news.common.view.searchview.ICallBack;
@@ -42,6 +43,7 @@ private  HistoryAdater historyAdater;
         setContentView(R.layout.acivity_search);
         initView();
         initData();
+        AppApplication.getInstance().addActivity(this);
     }
 
     private void initData() {

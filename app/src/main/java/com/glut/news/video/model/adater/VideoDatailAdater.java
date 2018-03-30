@@ -123,7 +123,7 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
                     RequestOptions.circleCropTransform()).into(  ((VideoDetailViewHolder) holder).mAntuorLogo);
 
             ((VideoDetailViewHolder) holder).mAuthorName.setText(commentListList.get(position-1).getAuthor_name());
-            Glide.with(context).load(R.drawable.dianzan).into( ((VideoDetailViewHolder) holder).mDianZanLogo);
+            Glide.with(context).load(R.drawable.btn_dianzan).into( ((VideoDetailViewHolder) holder).mDianZanLogo);
             ((VideoDetailViewHolder) holder).mDianZanSum.setText(commentListList.get(position-1).getLikes()+"");
             ((VideoDetailViewHolder) holder).mContent.setText(commentListList.get(position-1).getComment_Content());
             ((VideoDetailViewHolder) holder).mTime.setText(commentListList.get(position-1).getComment_Time());

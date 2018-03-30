@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.glut.news.AppApplication;
 import com.glut.news.R;
 
 
@@ -39,6 +40,7 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
         setContentView(R.layout.activity_forgetpwd);
         initView();
         initData();
+        AppApplication.getInstance().addActivity(this);
     }
 
     private void initData() {

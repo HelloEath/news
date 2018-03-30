@@ -18,14 +18,24 @@ import rx.schedulers.Schedulers;
 
 public class HomeFragmentImpl implements IHomeFragment {
     private IHomeFragmentView iHomeFragmentView;
+    private int userId;
 
     public HomeFragmentImpl(IHomeFragmentView iHomeFragmentView) {
         this.iHomeFragmentView = iHomeFragmentView;
+        String d=SpUtil.getUserFromSp("UserId");
+        if (d==null){
+            userId=Integer.parseInt(SpUtil.getUserFromSp("UserId")) ;
+        }
+
     }
 
     @Override
     public void loadStarCount() {
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarCOunt(Integer.parseInt(SpUtil.getUserFromSp("UserId")))
+        if (userId!=0){
+
+
+
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarCOunt(userId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -52,40 +62,43 @@ public class HomeFragmentImpl implements IHomeFragment {
 
                     }
                 });
+        }
     }
 
     @Override
     public void loadHistoryCount() {
-        String d=SpUtil.getUserFromSp("UserId");
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "HistoryService").getHistoryCount(SpUtil.getUserFromSp("UserId"))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<Integer, Integer>() {
-                    @Override
-                    public Integer call(Integer h) {
-                        return h;
-                    }
-                })
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer num) {
+        if (userId != 0){
+            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "HistoryService").getHistoryCount(userId + "")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(new Action0() {
+                        @Override
+                        public void call() {
+                            //mPbLoading.setVisibility(View.VISIBLE);
+                        }
+                    })
+                    .map(new Func1<Integer, Integer>() {
+                        @Override
+                        public Integer call(Integer h) {
+                            return h;
+                        }
+                    })
+                    .subscribe(new Action1<Integer>() {
+                        @Override
+                        public void call(Integer num) {
 
-                        iHomeFragmentView.onLoadHistoryCountSuccess(num);
+                            iHomeFragmentView.onLoadHistoryCountSuccess(num);
 
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
+                        }
+                    }, new Action1<Throwable>() {
+                        @Override
+                        public void call(Throwable throwable) {
 
 
-                    }
-                });
+                        }
+
+                    });
+        }
     }
 
 

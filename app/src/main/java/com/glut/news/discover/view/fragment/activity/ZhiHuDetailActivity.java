@@ -2,6 +2,8 @@ package com.glut.news.discover.view.fragment.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -20,11 +22,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.glut.news.AppApplication;
 import com.glut.news.R;
-import com.glut.news.discover.model.entity.ZhiHuDetailModel;
+import com.glut.news.common.utils.HttpUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
-import com.glut.news.common.utils.HttpUtil;
+import com.glut.news.discover.model.entity.ZhiHuDetailModel;
+import com.mingle.widget.LoadingView;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -51,6 +55,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
     TextView mTvLoadEmpty;
     TextView mTvLoadError;
     ContentLoadingProgressBar mPbLoading;
+    private LoadingView loadingView;
 
 
     @Override
@@ -60,12 +65,12 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         //透明状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //透明导航栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         id= getIntent().getStringExtra("id");
         initView();
         initWebView();
         loadDetailData(id);
-
+        AppApplication.getInstance().addActivity(this);
     }
 
     @Override
@@ -81,6 +86,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case android.R.id.home:
                 onBackPressed();
+                finish();
                 return true;
             case R.id.menu_action_share:
                 share();
@@ -102,6 +108,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
 
 
     private void initView() {
+        loadingView=findViewById(R.id.loadView);
         c = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
         image = (ImageView) findViewById(R.id.image);
         title = (TextView) findViewById(R.id.title);
@@ -111,9 +118,17 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         mWebView= (WebView) findViewById(R.id.dicover_webview);
         mTvLoadEmpty= (TextView) findViewById(R.id.tv_load_empty);
         mTvLoadError= (TextView) findViewById(R.id.tv_load_error);
-        mPbLoading= (ContentLoadingProgressBar) findViewById(R.id.pb_loading);
         setSupportActionBar(toolbar);
         actionBar =getSupportActionBar();
+        //动态改变Toolbar返回按钮颜色：改为白色
+        Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
+
+        upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -164,6 +179,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
 
                             mTvLoadEmpty.setVisibility(View.VISIBLE);
                         }else{
+                            loadingView.setVisibility(View.GONE);
                         Glide.with(ZhiHuDetailActivity.this).load(zhiHuDetailModel.getImage()).into(image);
                         title.setText(zhiHuDetailModel.getTitle());
                         author.setText("图片来源："+ zhiHuDetailModel.getImage_source());
@@ -182,7 +198,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
                     @Override
                     public void call(Throwable throwable) {
 
-                        mPbLoading.setVisibility(View.GONE);
+                        loadingView.setVisibility(View.GONE);
                         mTvLoadError.setVisibility(View.VISIBLE);
                         mTvLoadEmpty.setVisibility(View.GONE);
                     }

@@ -3,6 +3,8 @@ package com.glut.news.discover.view.fragment.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -16,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -25,7 +26,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.glut.news.AppApplication;
 import com.glut.news.R;
+import com.mingle.widget.LoadingView;
 
 /**
  * Created by yy on 2018/2/5.
@@ -44,16 +47,14 @@ public class GuoKrDetailActivity extends AppCompatActivity {
     TextView mTvLoadEmpty;
     TextView mTvLoadError;
     ContentLoadingProgressBar mPbLoading;
+    private LoadingView loadView;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guokrdetail);
-        //透明状态栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //透明导航栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        AppApplication.getInstance().addActivity(this);
         initView();
     }
 
@@ -118,6 +119,7 @@ public class GuoKrDetailActivity extends AppCompatActivity {
 
 
     private void initView() {
+        loadView=findViewById(R.id.loadView);
         c = (CollapsingToolbarLayout) findViewById(R.id.collapsingToolbarLayout);
         image = (ImageView) findViewById(R.id.image);
         mTitle = (TextView) findViewById(R.id.title);
@@ -127,8 +129,16 @@ public class GuoKrDetailActivity extends AppCompatActivity {
         mWebView= (WebView) findViewById(R.id.dicover_webview);
         mTvLoadEmpty= (TextView) findViewById(R.id.tv_load_empty);
         mTvLoadError= (TextView) findViewById(R.id.tv_load_error);
-        mPbLoading= (ContentLoadingProgressBar) findViewById(R.id.pb_loading);
         setSupportActionBar(toolbar);
+        //动态改变Toolbar返回按钮颜色：改为白色
+        Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
+
+        upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+
         actionBar =getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -161,12 +171,11 @@ public class GuoKrDetailActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 //设定加载开始的操作
-                mPbLoading.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-               mPbLoading.setVisibility(View.GONE);
+                loadView.setVisibility(View.GONE);
                 mTvLoadEmpty.setVisibility(View.GONE);
                 mTvLoadError.setVisibility(View.GONE);
             }

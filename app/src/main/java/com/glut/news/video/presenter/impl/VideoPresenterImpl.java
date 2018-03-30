@@ -1,4 +1,4 @@
-package com.glut.news.video.presenter;
+package com.glut.news.video.presenter.impl;
 
 import com.glut.news.common.model.entity.Comment;
 import com.glut.news.common.utils.manager.RetrofitManager;
@@ -6,6 +6,7 @@ import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentsModel;
+import com.glut.news.video.presenter.IVideoPresenter;
 import com.glut.news.video.view.activity.IVideoDetailView;
 
 import rx.android.schedulers.AndroidSchedulers;
@@ -20,7 +21,7 @@ import static android.R.attr.id;
  * Created by yy on 2018/3/13.
  */
 
-public class VideoPresenterImpl implements IVideoPresenter{
+public class VideoPresenterImpl implements IVideoPresenter {
     private IVideoDetailView iVideoDetailView;
     private boolean isLastPage;
     private int NextPage;

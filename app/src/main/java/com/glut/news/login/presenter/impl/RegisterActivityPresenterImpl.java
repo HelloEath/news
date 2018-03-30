@@ -17,11 +17,11 @@ import rx.schedulers.Schedulers;
  * Created by yy on 2018/3/17.
  */
 
-public class RegisterPresenterImpl implements IRegisterActivityPresenter {
+public class RegisterActivityPresenterImpl implements IRegisterActivityPresenter {
 
 private IRegisterActivityView iRegisterActivityView;
 
-    public RegisterPresenterImpl(IRegisterActivityView iRegisterActivityView) {
+    public RegisterActivityPresenterImpl(IRegisterActivityView iRegisterActivityView) {
         this.iRegisterActivityView = iRegisterActivityView;
     }
 

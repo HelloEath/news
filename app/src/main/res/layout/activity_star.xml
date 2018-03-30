@@ -9,12 +9,16 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        app:theme="@style/MyToolbar"
+
+        android:background="#2fa881"
 
 
         android:layout_height="wrap_content"/>
     <android.support.design.widget.TabLayout
         android:id="@+id/tab"
+        app:tabIndicatorColor="#2fa881"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="#2fa881"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

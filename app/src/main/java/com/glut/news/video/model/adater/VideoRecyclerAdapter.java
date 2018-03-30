@@ -32,13 +32,13 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onClick(View v) {
-        this.onItemListener.onItemClick(v,(String)v.getTag(),(String) v.getTag(R.string.douban_url),(String) v.getTag(R.string.load_fail));
+        this.onItemListener.onItemClick(v,(String)v.getTag(),(String) v.getTag(R.string.videoPlayerUrl),(String) v.getTag(R.string.videoAbstract),(String)v.getTag(R.string.videoTitle));
     }
 
 
 
     public interface OnItemListener{
-        void onItemClick(View v,String id,String abstracts,String player);
+        void onItemClick(View v,String id,String abstracts,String player,String title);
     }
 
     public void setOnItemListener(OnItemListener o){
@@ -66,8 +66,10 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if (holder instanceof VideoItemViewHolder){
             VideoItemViewHolder videoHolder=(VideoItemViewHolder)holder;
-            videoHolder.itemView.setTag(R.string.douban_url, videoList.get(position).getVideo_Player());
-            videoHolder.itemView.setTag(R.string.load_fail, videoList.get(position).getVideo_Abstract());
+            videoHolder.itemView.setTag(R.string.videoPlayerUrl, videoList.get(position).getVideo_Player());
+            videoHolder.itemView.setTag(R.string.videoAbstract, videoList.get(position).getVideo_Abstract());
+            videoHolder.itemView.setTag(R.string.videoTitle, videoList.get(position).getVideo_Title());
+
             videoHolder.itemView.setTag(videoList.get(position).getVideo_Id());
             videoHolder.video_author.setText(videoList.get(position).getVideo_Author_Name());
 

@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="50dp"
                     android:text="@string/login"
-                    android:textColor="#FFCC00"
+                    android:textColor="#2fa881"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     />
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content">
                     <EditText
                         android:textSize="16sp"
-                        android:hint="@string/Username"
+                        android:hint="@string/UserAccount"
                         android:textColor="#2fa881"
                         android:id="@+id/et_username"
                         android:layout_width="match_parent"
@@ -99,7 +99,6 @@
                 <Button
                     android:id="@+id/bt_go"
                     android:background="@drawable/bt_shape"
-                    android:stateListAnimator="@drawable/state_list_animator_z"
                     android:layout_width="150dp"
                     android:layout_height="50dp"
 

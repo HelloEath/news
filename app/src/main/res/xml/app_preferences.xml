@@ -16,17 +16,53 @@
         <Preference
             android:summary="删除已缓存的文章内容及图片"
             android:dependency=""
+            android:key="clearCache"
             android:title="清空缓存" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/video_setting">
+
+      <!--  <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="video_force_landscape"
+            android:summary="@string/video_force_landscape_summary"
+            android:title="@string/video_force_landscape"/>-->
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="video_auto_play"
+            android:summary="@string/video_auto_play_summary"
+            android:title="@string/video_auto_play"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/about_settings">
 
-        android:title="其他说明">
         <Preference
-            android:summary="V 1.0"
-            android:title="当前版本" />
+            android:key="version"
+            android:title="@string/version"/>
+
         <Preference
-            android:summary="博客：http://blog.csdn.net/never_cxb"
-            android:title="TomChen" />
+            android:key="changelog"
+            android:summary="@string/changelog_url"
+            android:title="@string/changelog"/>
+
+        <Preference
+            android:key="licenses"
+            android:summary="@string/about_libraries_summary"
+            android:title="@string/about_libraries_label"/>
+
+        <Preference
+            android:key="sourceCode"
+            android:summary="@string/source_code_url"
+            android:title="@string/source_code"/>
+
+        <Preference
+            android:key="copyRight"
+            android:summary="@string/copyright_summary"
+            android:title="@string/copyright"/>
+
     </PreferenceCategory>
+
 </PreferenceScreen>
