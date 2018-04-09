@@ -26,7 +26,7 @@ public class StarFragmentPresenterImpl implements IStarFragmentPresenter {
     private int NextPage;
     public StarFragmentPresenterImpl(IStarFragmentView starFragmentView) {
         this.starFragmentView = starFragmentView;
-        if (SpUtil.getUserFromSp("UserId")!=null){
+        if (SpUtil.getUserFromSp("UserId")==null){
 
             UserId=Integer.parseInt(SpUtil.getUserFromSp("UserId"));
 

@@ -5,11 +5,11 @@
     <item
         android:id="@+id/navigation_item_star"
         android:icon="@drawable/star_icon"
-        android:title=""/>
+        android:title="我的收藏|0"/>
     <item
         android:id="@+id/navigation_item_history"
         android:icon="@drawable/history_icon"
-        android:title=""/>
+        android:title="历史记录|0"/>
     <item
         android:id="@+id/navigation_item_info"
         android:icon="@drawable/alter_icon"

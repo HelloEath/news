@@ -70,4 +70,6 @@ lt.setTextColor(c.getResources().getColor(R.color.side_4));
             }
         }, delayTime);
     }
+
+
 }

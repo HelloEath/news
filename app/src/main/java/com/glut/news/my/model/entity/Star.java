@@ -9,6 +9,15 @@ public class Star {
     private int Star_UserId;
     private String  Star_Time;
     private int Star_Type;
+    private String Content_type;
+
+    public String getContent_type() {
+        return Content_type;
+    }
+
+    public void setContent_type(String content_type) {
+        Content_type = content_type;
+    }
 
     public int getStar_Id() {
         return Star_Id;

@@ -2,15 +2,12 @@ package com.glut.news.video.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,10 +29,13 @@ import com.glut.news.BaseActivity;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.Comment;
 import com.glut.news.common.utils.DateUtil;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.UserUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.common.view.customview.VideoPlayer;
+import com.glut.news.login.view.fragment.LoginActivity;
 import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.adater.VideoDatailAdater;
@@ -71,31 +71,81 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     private Boolean isLastPage=false;
     private Boolean isComentSuccess=false;
     private ImageView btn_star;
-    private Toolbar toolbar;
+    private RelativeLayout relativeLayout;
 
     private  String  id;
     private String title;
     private int nextPage;
     private ThumbUpView thumbUpView;
+    private TextView mLoadError;
+    private TextView mLoadEmpty;
+
     private VideoPresenterImpl videoPresenter=new VideoPresenterImpl(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_detail);
+        //隐藏状态栏
+        Window window=getWindow();
+        int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        window.setFlags(flag,flag);
+        AppApplication.getInstance().addActivity(this);
         initView();
         initData();
         loadData();
-        //隐藏状态栏
-        Window window=getWindow();
- int flag= WindowManager.LayoutParams.FLAG_FULLSCREEN;
- window.setFlags(flag,flag);
-        AppApplication.getInstance().addActivity(this);
+
+
     }
 
     private void loadData() {
-        loadCommentData();//加载评论数据
+        if (NetUtil.isNetworkConnected()){//有网状态
+            loadCommentData();//加载评论数据
+            thumbUpView.setOnThumbUp(new ThumbUpView.OnThumbUp() {
+                @Override
+                public void like(boolean like) {
+                    if (like){
+                        if (UserUtil.isUserLogin()){
+                            recordStar();
+
+                        }else {
+                            Snackbar s= Snackbar.make(relativeLayout,"登录才有的特权",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivity(new Intent(VideoDetailActivity.this, LoginActivity.class));
+
+                                }
+                            });
+                            View sv=s.getView();
+//文字的颜色
+                            ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                            sv.setBackgroundColor(0xffffffff);
+                            s.show();
+
+                        }
+
+                    }
+
+                }
+
+
+            });
+            //Glide.with(this).load(R.drawable.btn_star).into(btn_star);
+            if (UserUtil.isUserLogin()){
+                recoreHistory();//记录到历史
+
+            }
+
+            videoPresenter.updatePlays();//更新播放量
+
+
+        }else {
+            mLoadError.setVisibility(View.VISIBLE);//无网时显示错误界面
+
+        }
+
 
     }
+
 
     private void recoreHistory() {
         History h=new History();
@@ -109,57 +159,33 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initData() {
-        thumbUpView.setLikeType(ThumbUpView.LikeType.broken);
-
-        thumbUpView.setOnThumbUp(new ThumbUpView.OnThumbUp() {
-            @Override
-            public void like(boolean like) {
-                if (like){
-
-                    recordStar();
-                    //Toast.makeText(VideoDetailActivity.this,"ddd",Toast.LENGTH_SHORT).show();
-                }
-
-            }
-
-
-        });
 
          id=getIntent().getStringExtra("id");
         title=getIntent().getStringExtra("title");
         String player=getIntent().getStringExtra("player");
         String abstracts=getIntent().getStringExtra("abstract");
         j.setUp(player,JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,title);
-
-        //Glide.with(this).load(R.drawable.btn_star).into(btn_star);
-        recoreHistory();//记录到历史
-        videoPresenter.updatePlays();//更新播放量
+        j.backButton.setVisibility(View.VISIBLE);
 
 
-        setSupportActionBar(toolbar);
-        //动态改变Toolbar返回按钮颜色：改为白色
-        Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-        Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
+        if (NetUtil.isWifiConnected()){//wifi网络自动播放视频
+            j.startVideo();
 
-        upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }else {//非wifi弹出对话框
+            j.showWifiDialog();
 
-        upArrow2.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
-
-        ActionBar actionBar=getSupportActionBar();
-        if (actionBar!=null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
-            actionBar.setDisplayShowTitleEnabled(false);
         }
-        toolbar.setTitle("");
+
+
+
+
 
     }
     private void share() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share));
-        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_from) + title + "，http://daily.zhihu.com/story/" +id);
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_from_app) + title + "，http://daily.zhihu.com/story/" +id);
         startActivity(Intent.createChooser(intent, title));
     }
     @Override
@@ -192,7 +218,8 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initView() {
-        toolbar=findViewById(R.id.toolbar);
+        mLoadError=findViewById(R.id.tv_load_error);
+        relativeLayout=findViewById(R.id.relativeLayout);
         thumbUpView=findViewById(R.id.btn_star);
         mComments=findViewById(R.id.recycler_comment);
         mNestRefresh=findViewById(R.id.nested_view);
@@ -239,7 +266,24 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         switch (v.getId()){
             case R.id.btn_sendcomment:
 
-                SendComment();
+                if (UserUtil.isUserLogin()){
+                    SendComment();
+                }else {
+                    Snackbar s= Snackbar.make(relativeLayout,"登录才有的特权",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivity(new Intent(VideoDetailActivity.this, LoginActivity.class));
+
+                        }
+                    });
+                    View sv=s.getView();
+//文字的颜色
+                    ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                    sv.setBackgroundColor(0xffffffff);
+                    s.show();
+
+                }
+
 
                 break;
 
@@ -262,7 +306,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
 
         isComentSuccess=false;
-        videoCommentListModel.setAuthor_logo(R.drawable.logo+"");
+        videoCommentListModel.setAuthor_logo(SpUtil.getUserFromSp("UserLogo"));
         videoCommentListModel.setAuthor_name(c.getAuthor_name());
         videoCommentListModel.setComment_Content(c.getComment_Content());
 

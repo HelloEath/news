@@ -13,31 +13,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.glut.news.R;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.discover.model.adater.ZhiHuAdater;
-import com.glut.news.discover.model.entity.ZhiHuNewsModel;
-import com.glut.news.common.utils.manager.RetrofitManager;
-import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.discover.model.entity.ZhiHuList;
+import com.glut.news.discover.model.entity.ZhiHuNewsModel;
+import com.glut.news.discover.presenter.impl.ZhiHufragmentPresenterImpl;
 import com.glut.news.discover.view.fragment.activity.ZhiHuDetailActivity;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 
 
 /**
  * Created by yy on 2018/2/4.
  */
-public class ZhiHuFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener{
+public class ZhiHuFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IZhiHuFragmentView
+{
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -51,16 +47,13 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
     private Snackbar mLoadLatestSnackbar;
     private Snackbar mLoadBeforeSnackbar;
 
-
+private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my, container, false);
-       /* //透明状态栏
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //透明导航栏
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);*/
+
         initView(v);
         loadDta();
         return v;
@@ -87,9 +80,14 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
         zhiHuAdater.setOnItemClickListener(new ZhiHuAdater.OnItemClickListener() {
             @Override
             public void itemClick(View v, String id) {
-                Intent i = new Intent(getActivity(), ZhiHuDetailActivity.class);
-                i.putExtra("id", id);
-                startActivity(i);
+                if (NetUtil.isNetworkConnected()){
+                    Intent i = new Intent(getActivity(), ZhiHuDetailActivity.class);
+                    i.putExtra("id", id);
+                    startActivity(i);
+                }else {
+                    Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -136,136 +134,69 @@ public class ZhiHuFragment extends android.support.v4.app.Fragment implements Pu
     }
 
     public void loadDta() {
-        /*OkHttpClient client = new OkHttpClient().newBuilder().build();
-        Request request = new Request.Builder()
-                .get()
-                .url(RetrofitManager.BASE_ZHIHU_URL+"stories/latest")
-                .build();
-        //通过Client
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (NetUtil.isNetworkConnected()){
+            z.loadData();
 
-            }
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-
-                    String responseString = response.body().string();
-
-                    Gson g=new Gson();
-                    Log.d("ddd",responseString);
-                    ZhiHuList z=  g.fromJson(responseString,ZhiHuList.class);
-                    zhiHuList=z.getStories();
-
-                    Message m=new Message();
-                    m.what=1;
-                    m.obj=zhiHuList;
-                    hand.sendMessage(m);
-
-
-                }
-            }
-        });*/
-
-        RetrofitManager.builder(RetrofitService.BASE_ZHIHU_URL,"ZhuHuService").getLatestNews()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<ZhiHuList, ZhiHuList>() {
-                    @Override
-                    public ZhiHuList call(ZhiHuList zhiHuList2) {
-                        return zhiHuList2;
-                    }
-                })
-                .subscribe(new Action1<ZhiHuList>() {
-                    @Override
-                    public void call(ZhiHuList zhiHuList2) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (zhiHuList2==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-                            currentDate=zhiHuList2.getDate();
-                            for (ZhiHuNewsModel z:zhiHuList2.getStories()){
-
-                                z.setDate(currentDate);
-                            }
-                            zhiHuAdater.changeData(zhiHuList2.getStories());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-
-                    }
-                });
 
 
     }
     //加载以前的数据
     private void loadDataBefore() {
-        RetrofitManager.builder(RetrofitService.BASE_ZHIHU_URL,"ZhuHuService").getBeforeData(currentDate)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<ZhiHuList, ZhiHuList>() {
-                    @Override
-                    public ZhiHuList call(ZhiHuList zhiHuList2) {
-                        return zhiHuList2;
-                    }
-                })
-                .subscribe(new Action1<ZhiHuList>() {
-                    @Override
-                    public void call(ZhiHuList zhiHuList) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (zhiHuList==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-                            currentDate = zhiHuList.getDate();
-                            for (ZhiHuNewsModel z:zhiHuList.getStories()){
+        if (NetUtil.isNetworkConnected()){
+            z.loadMoreData();
 
-                                z.setDate(currentDate);
-                            }
-                            zhiHuAdater.addData(zhiHuList.getStories());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadBeforeSnackbar.dismiss();
-                        mTvLoadError.setVisibility(View.GONE);
-                        isloading=false;
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadBeforeSnackbar.show();
-                        mPbLoading.setVisibility(View.GONE);
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-                    }
-                });
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onRefresh() {
-        loadDta();
+        if (NetUtil.isNetworkConnected()){
+            loadDta();
+
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    @Override
+    public void onLoadDataSuccess(ZhiHuList zhiHuList) {
+        zhiHuAdater.changeData(zhiHuList.getStories());
+        mPbLoading.setVisibility(View.GONE);
+        mTvLoadEmpty.setVisibility(View.GONE);
+   mLoadLatestSnackbar.dismiss();
+                        refreshLayout.setRefreshing(false);
+                        mTvLoadError.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoadMoreDataSuccess(ZhiHuList zhiHuList) {
+        zhiHuAdater.addData(zhiHuList.getStories());
+        mTvLoadEmpty.setVisibility(View.GONE);
+        mLoadBeforeSnackbar.dismiss();
+        mTvLoadError.setVisibility(View.GONE);
+        isloading=false;
+    }
+
+    @Override
+    public void onLoadDataFail() {
+        mLoadBeforeSnackbar.show();
+        mPbLoading.setVisibility(View.GONE);
+        mTvLoadError.setVisibility(View.VISIBLE);
+        mTvLoadEmpty.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoadMoreDataFail() {
+        mLoadBeforeSnackbar.show();
+        mPbLoading.setVisibility(View.GONE);
+        mTvLoadError.setVisibility(View.VISIBLE);
+        mTvLoadEmpty.setVisibility(View.GONE);
     }
 }

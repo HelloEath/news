@@ -86,7 +86,12 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-       return videoList.size();
+        if (videoList==null){
+            return 0;
+        }else {
+            return videoList.size();
+        }
+
     }
 
     public void addData(List<VideoModel.VideoList> mvideoList){
@@ -95,13 +100,13 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             changeData(mvideoList);
         }else {
             videoList.addAll(mvideoList);
-            notifyDataSetChanged();
+           notifyItemInserted(videoList.size());
         }
     }
 
     public void changeData(List<VideoModel.VideoList> mvideoList) {
         videoList=mvideoList;
-        notifyDataSetChanged();
+       notifyItemChanged(videoList.size());
     }
 
 

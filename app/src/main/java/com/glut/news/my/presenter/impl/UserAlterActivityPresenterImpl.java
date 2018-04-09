@@ -8,6 +8,7 @@ import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.my.presenter.IUserAlterActivityPresenter;
 import com.glut.news.my.view.activity.IUserAlterActivityView;
 
+import okhttp3.RequestBody;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -55,7 +56,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                         } else {
 
                             if (userModel.getStus().equals("1")){
-                                iUserAlterActivityView.alterSuccess();
+                                iUserAlterActivityView.alterSuccess(userModel);
 
                             }else {
 
@@ -112,7 +113,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                         } else {
 
                             if (userModel.getStus().equals("1")){
-                                iUserAlterActivityView.alterSuccess();
+                                iUserAlterActivityView.alterSuccess(userModel);
 
                             }else {
 
@@ -169,7 +170,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                         } else {
 
                             if (userModel.getStus().equals("1")){
-                                iUserAlterActivityView.alterSuccess();
+                                iUserAlterActivityView.alterSuccess(userModel);
 
                             }else {
 
@@ -207,7 +208,6 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<UserModel , UserModel>() {
@@ -219,35 +219,26 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .subscribe(new Action1<UserModel>() {
                     @Override
                     public void call(UserModel userModel) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (userModel == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
                             iUserAlterActivityView.alterFail();
                         } else {
 
                             if (userModel.getStus().equals("1")){
-                                iUserAlterActivityView.alterSuccess();
+                                iUserAlterActivityView.alterSuccess(userModel);
 
                             }else {
 
                                 iUserAlterActivityView.alterFail();
                             }
 
-                            //isloading = false;
-                            //mTvLoadEmpty.setVisibility(View.GONE);
+
                         }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
@@ -264,7 +255,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
+
                     }
                 })
                 .map(new Func1<UserModel , UserModel>() {
@@ -276,35 +267,25 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .subscribe(new Action1<UserModel>() {
                     @Override
                     public void call(UserModel userModel) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (userModel == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
                             iUserAlterActivityView.alterFail();
                         } else {
 
                             if (userModel.getStus().equals("1")){
-                                iUserAlterActivityView.alterSuccess();
+                                iUserAlterActivityView.alterSuccess(userModel);
 
                             }else {
 
                                 iUserAlterActivityView.alterFail();
                             }
 
-                            //isloading = false;
-                            //mTvLoadEmpty.setVisibility(View.GONE);
                         }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
@@ -333,9 +314,9 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .subscribe(new Action1<UserModel>() {
                     @Override
                     public void call(UserModel userModel) {
-                        //mPbLoading.setVisibility(View.GONE);
+
                         if (userModel == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
+
                             iUserAlterActivityView.logOutFail();
                         } else {
 
@@ -347,21 +328,111 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                                 iUserAlterActivityView.logOutFail();
                             }
 
-                            //isloading = false;
-                            //mTvLoadEmpty.setVisibility(View.GONE);
+
                         }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
+
+                    }
+                });
+    }
+
+    @Override
+    public void alterUserLogo(String userId, RequestBody requestBody) {
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserLogo(userId,requestBody)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        //mPbLoading.setVisibility(View.VISIBLE);
+                    }
+                })
+                .map(new Func1<UserModel , UserModel>() {
+                    @Override
+                    public UserModel call(UserModel h) {
+                        return h;
+                    }
+                })
+                .subscribe(new Action1<UserModel>() {
+                    @Override
+                    public void call(UserModel userModel) {
+                        //mPbLoading.setVisibility(View.GONE);
+                        if (userModel == null) {
+                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
+                            iUserAlterActivityView.logOutFail();
+                        } else {
+
+                            if (userModel.getStus().equals("1")){
+                                iUserAlterActivityView.alterSuccess(userModel);
+
+                            }else {
+
+                                iUserAlterActivityView.alterFail();
+                            }
+
+
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+
+                    }
+                });
+    }
+
+    @Override
+    public void alterUserLogoByBase64(String newLogo) {
+        UserInfo userInfo=new UserInfo();
+        userInfo.setUserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        userInfo.setUserLogo(newLogo);
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserLogoByBase64(userInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        //mPbLoading.setVisibility(View.VISIBLE);
+                    }
+                })
+                .map(new Func1<UserModel , UserModel>() {
+                    @Override
+                    public UserModel call(UserModel h) {
+                        return h;
+                    }
+                })
+                .subscribe(new Action1<UserModel>() {
+                    @Override
+                    public void call(UserModel userModel) {
+                        //mPbLoading.setVisibility(View.GONE);
+                        if (userModel == null) {
+                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
+                            iUserAlterActivityView.alterFail();
+                        } else {
+
+                            if (userModel.getStus().equals("1")){
+                                iUserAlterActivityView.alterSuccess(userModel);
+
+                            }else {
+
+                                iUserAlterActivityView.alterFail();
+                            }
+
+
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
 
                     }
                 });

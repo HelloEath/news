@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/relativeLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,6 +8,7 @@
     android:layout_height="match_parent"
 
     >
+
 <LinearLayout
     android:id="@+id/ahead"
     android:layout_width="match_parent"
@@ -26,13 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_collapseMode="pin"
 
-        android:layout_width="match_parent"
-        android:layout_height="40dp"/>
 
 
 </FrameLayout>
@@ -57,6 +53,7 @@ android:layout_width="match_parent"
 android:orientation="vertical"
     android:layout_below="@id/ahead"
 android:layout_height="wrap_content">
+
  <!--   <android.support.v4.widget.NestedScrollView
         android:id="@+id/nested_view"
         android:layout_width="match_parent"
@@ -71,10 +68,7 @@ android:layout_height="wrap_content">
 <!--    </android.support.v4.widget.NestedScrollView>-->
 
 
-   <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="128dp">
+
 
         <include layout="@layout/include_empty" />
 
@@ -82,7 +76,7 @@ android:layout_height="wrap_content">
 
         <include layout="@layout/include_loading" />
 
-    </FrameLayout>
+
 </LinearLayout>
 
     <LinearLayout
@@ -116,7 +110,6 @@ android:background="#fff"
               app:cracksColor="#33475f"
               app:edgeColor="#2fa881"
               app:fillColor="#2fa881"
-              app:unlikeType="1"
               android:layout_centerInParent="true"
                />
 

@@ -1,14 +1,34 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.mob.sdk'
+
+// 在MobSDK的扩展中注册SMSSDK的相关信息
+MobSDK {
+    appKey "2513e416852e0"
+    appSecret "383b42e1b4aedcfd82852d8483e1f035"
+
+    SMSSDK {}
+}
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:23.1.0'
 }
+
+
 android {
 
     compileSdkVersion 27
     buildToolsVersion '27.0.2'
-
+    //开启gradle的增量编译，加快编译。
+    //  使用递增的dex分包
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4096M"
+        jumboMode true
+        maxProcessCount 8 //默认进程是4
+        preDexLibraries false
+        threadCount 8 //默认线程是4
+    }
     defaultConfig {
-        multiDexEnabled true
+        multiDexEnabled  true
         applicationId "com.glut.news"
         minSdkVersion 21
         targetSdkVersion 27
@@ -82,6 +102,8 @@ dependencies {
 
     //引导页
     implementation 'com.github.apl-devs:appintro:v4.2.3'
+
+    //点赞
     implementation 'com.ldoublem.thumbUplib:ThumbUplib:0.1'
 
     //material控件
@@ -109,5 +131,17 @@ dependencies {
     // 协议Dialog
     implementation 'de.psdev.licensesdialog:licensesdialog:1.8.3'
 
+    //城市选择
+    //implementation 'com.zaaach:citypicker:2.0.1'
+    api("com.zaaach:citypicker:2.0.1") {
+        exclude group: 'com.android.support'
+    }
+    //位置定位
+    compile files('libs/BaiduLBS_Android.jar')
+
+    //头像裁剪
+   // implementation  'com.linchaolong.android:imagepicker:1.5'
+    // recyclerView动画
+    //implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
 
 }

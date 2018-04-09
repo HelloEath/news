@@ -18,17 +18,19 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.glut.news.AppApplication;
-import com.glut.news.MainActivity;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
 import com.glut.news.common.model.entity.UserModel;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.ToastUtil;
 import com.glut.news.login.presenter.impl.RegisterActivityPresenterImpl;
+import com.glut.news.my.view.activity.InterestTagActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,22 +100,29 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         bt_go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (NetUtil.isNetworkConnected()){
                     UserName =et_userName.getText().toString();
-                     UserPwd=et_rePwd.getText().toString();
-                String UserRePwd=et_rePwd.getText().toString();
+                    UserPwd=et_userPwd.getText().toString();
+                    String UserRePwd=et_rePwd.getText().toString();
 
-                String Test=et_useremail.getText().toString();
-                UserInfo userInfo =new UserInfo();
-              if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
-                  ToastUtil.showOnLoading("正在注册",RegisterActivity.this);
+                    String Test=et_useremail.getText().toString();
+                    UserInfo userInfo =new UserInfo();
+                    if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
+                        ToastUtil.showOnLoading("正在注册",RegisterActivity.this);
 
-                  iRr.toRegister(userInfo);//发送请求
+                        iRr.toRegister(userInfo);//发送请求
 
-              }else{
-                  ToastUtil.showError("注册失败",3000,RegisterActivity.this);
+                    }else{
+                        ToastUtil.showError("注册失败",3000,RegisterActivity.this);
 
 
-              }
+                    }
+
+                }else {
+
+                    Toast.makeText(RegisterActivity.this,"网络走失了",Toast.LENGTH_SHORT).show();
+                }
+
 
             }
         });
@@ -125,7 +134,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
             userInfo.setUserName(UserName);
             f=true;
         }else{
-            et_useremail.setError("用户名必须非空");
+            et_userName.setError("用户名必须非空");
             f=false;
         }
 
@@ -272,14 +281,21 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     public void onRegisterSuccess(UserModel userModel) {
 
         ToastUtil.showSuccess("注册成功,让我们乘风飞翔,和太阳肩并肩",3000,RegisterActivity.this);
-        Intent i=new Intent(RegisterActivity.this, MainActivity.class);
+        Intent i=new Intent(RegisterActivity.this, InterestTagActivity.class);
         SpUtil.saveUserToSp("UserName",UserName);
         SpUtil.saveUserToSp("UserPwd",UserPwd);
 
+        if (userModel.getUserInfo().getUserEmail()!=null){
+            SpUtil.saveUserToSp("UserEmail",userModel.getUserInfo().getUserEmail());
+        }
+        if (userModel.getUserInfo().getUserPhone()!=null){
+            SpUtil.saveUserToSp("UserPhone",userModel.getUserInfo().getUserPhone());
+        }
         SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
         SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
 
-        i.putExtra("UserId",userModel.getUserInfo().getUserId());
+
+        //i.putExtra("UserId",userModel.getUserInfo().getUserId());
         startActivity(i);
         finish();
     }

@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.glut.news.discover.view.fragment.DicoverFragment;
 import com.glut.news.home.view.fragment.HomeFragment;
-import com.glut.news.video.view.fragment.AddVideoFragment;
 import com.glut.news.video.view.fragment.VideoFragment;
+import com.glut.news.weather.view.WeatherFragment;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.BottomBarTab;
 import com.roughike.bottombar.OnTabReselectListener;
@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         initBottomBar();
 
 
-
     }
 
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentList.add(new DicoverFragment());
 
         v.setOffscreenPageLimit(3);
-        fragmentList.add(new AddVideoFragment());
+        fragmentList.add(new WeatherFragment());
         v.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             /**
              * 获取给定位置的项Id，用于生成Fragment名称
@@ -94,9 +93,9 @@ public class MainActivity extends AppCompatActivity {
     private void initBottomBar() {
         bottomBar = (BottomBar) findViewById(R.id.bottomBar);
 // 为tab设置颜色；（当tabs超过三个时，忽略）
-        bottomBar.setActiveTabColor(Color.WHITE);
-
-        bottomBar.setInActiveTabColor(getResources().getColor(R.color.tab_color3));
+        bottomBar.setActiveTabColor(getResources().getColor(R.color.side_1));
+        bottomBar.setBackgroundColor(Color.WHITE);
+        //bottomBar.setInActiveTabColor(getResources().getColor(R.color.tab_color3));
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {

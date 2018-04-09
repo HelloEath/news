@@ -179,4 +179,18 @@
     <string name="source_code">源代码</string>
     <string name="copyright_summary">仅作个人及非商业用途</string>
     <string name="copyright">本程序仅供学习交流, 不可用于任何商业用途.</string>
+    <string name="content_type">兴趣类型</string>
+    <string name="share_from_app">来自即刻知阅</string>
+    <string name="fist2_1">即刻体验</string>
+ <string name="fist2_2">登录/注册</string>
+    <string name="btn_nowGo">立即登录</string>
+ <string name="rePassword">确认密码</string>
+ <string name="newPwd">请输入新密码</string>
+ <string name="repwd">重置密码</string>
+    <string name="reNewPwd">确认新密码</string>
+ <string name="phone">请输入手机号</string>
+ <string name="vefiCode">请输入验证码</string>
+ <string name="btn_confirm">确认修改</string>
+ <string name="text_goBack">返回登录</string>
+ <string name="text_gotoLogin">跳转到登录界面</string>
 </resources>

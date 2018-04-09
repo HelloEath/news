@@ -8,12 +8,18 @@ public class History {
     private int History_Article;
     private int History_Persion;
     private String History_Time;
-
+    private String Content_type;
    private int History_Type;
 
+    public String getContent_type() {
+        return Content_type;
+    }
 
+    public void setContent_type(String content_type) {
+        Content_type = content_type;
+    }
 
-    /* private ArticleModel.ArticleList article;
+/* private ArticleModel.ArticleList article;
     private VideoModel.VideoList video;*/
 
    /* public ArticleModel.ArticleList getArticle() {

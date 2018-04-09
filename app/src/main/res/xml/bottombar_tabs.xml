@@ -4,18 +4,18 @@
         id="@+id/tab_home"
         icon="@drawable/ic_home"
         title="主页"
-        barColorWhenSelected="#2fa881"
+
         />
     <tab
         id="@+id/tab_video"
         icon="@drawable/ic_ondemand_video"
-        barColorWhenSelected="#2fa881"
+
         title="视频" />
     <tab
         id="@+id/tab_add_video"
         icon="@drawable/ic_add_a_photo"
-        barColorWhenSelected="#2fa881"
         title="发现" />
+    <!--   barColorWhenSelected="#2fa881"-->
    <!-- <tab
         id="@+id/tab_my"
         icon="@drawable/ic_settings_applications"
@@ -24,7 +24,6 @@
     <tab
         id="@+id/tab_my"
         icon="@drawable/ic_settings_applications"
-        barColorWhenSelected="#2fa881"
-        title="发布" />
+        title="天气" />
 
 </tabs>

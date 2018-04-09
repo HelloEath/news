@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:layout_gravity="center_horizontal"
-        android:text="现在，先选择一些你喜欢的类别吧"/>
+        android:text="海内存知己，天涯若比邻，现在，先选择一些你喜欢的类别我才能更懂你"/>
     <com.zhy.view.flowlayout.TagFlowLayout
         android:layout_marginTop="30dp"
         android:id="@+id/id_flowlayout"

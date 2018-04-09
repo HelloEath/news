@@ -4,7 +4,7 @@ import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.discover.model.entity.GuoKrListModel;
 import com.glut.news.discover.presenter.IGuoKrPresenter;
-import com.glut.news.discover.view.fragment.activity.IGuoKrView;
+import com.glut.news.discover.view.fragment.IGuoKrFragmentView;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -20,11 +20,11 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
 
 
 
-    private IGuoKrView iGuoKrView;
+    private IGuoKrFragmentView iGuoKrFragmentView;
 
 
-    public GuoKrPresenterImpl(IGuoKrView  c){
-        iGuoKrView=c;
+    public GuoKrPresenterImpl(IGuoKrFragmentView c){
+        iGuoKrFragmentView =c;
 
     }
     @Override
@@ -36,7 +36,7 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        iGuoKrView.showLoading();
+                        iGuoKrFragmentView.showLoading();
                     }
                 })
                 .map(new Func1<GuoKrListModel, GuoKrListModel>() {
@@ -48,17 +48,17 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
                 .subscribe(new Action1<GuoKrListModel>() {
                     @Override
                     public void call(GuoKrListModel guoKrListModel) {
-                        iGuoKrView.hideLoading();
+                        iGuoKrFragmentView.hideLoading();
                         if (guoKrListModel ==null){
-                            iGuoKrView.showEmpty();
+                            iGuoKrFragmentView.showEmpty();
                         }else{
 
-                            iGuoKrView.setAdaterData(guoKrListModel);
-                            iGuoKrView.hideEnpty();
+                            iGuoKrFragmentView.setAdaterData(guoKrListModel);
+                            iGuoKrFragmentView.hideEnpty();
                         }
                        // mLoadLatestSnackbar.dismiss();
                         //refreshLayout.setRefreshing(false);
-                        iGuoKrView.hideLoadError();
+                        iGuoKrFragmentView.hideLoadError();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -66,8 +66,8 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
                        /* mLoadLatestSnackbar.show();
                         refreshLayout.setRefreshing(false);
                         mLoadLatestSnackbar.show();*/
-                        iGuoKrView.hideEnpty();
-                        iGuoKrView.showLoadError();
+                        iGuoKrFragmentView.hideEnpty();
+                        iGuoKrFragmentView.showLoadError();
 
 
                     }

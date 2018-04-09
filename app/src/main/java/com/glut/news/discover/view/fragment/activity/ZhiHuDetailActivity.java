@@ -65,7 +65,7 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         //透明状态栏
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         //透明导航栏
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         id= getIntent().getStringExtra("id");
         initView();
         initWebView();
@@ -120,14 +120,15 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         mTvLoadError= (TextView) findViewById(R.id.tv_load_error);
         setSupportActionBar(toolbar);
         actionBar =getSupportActionBar();
-        //动态改变Toolbar返回按钮颜色：改为白色
+        //动态改变Toolbar返回按钮颜色：改为黑色
         Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
         Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
 
         upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
-        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
 
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

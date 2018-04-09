@@ -1,11 +1,11 @@
 package com.glut.news.my.presenter;
 
-import com.glut.news.my.model.entity.InterestTag;
+import com.glut.news.common.model.entity.UserInfo;
 
 /**
  * Created by yy on 2018/3/27.
  */
 
 public interface IInterestTagActivityPresenter {
-    void getUserTagData(InterestTag interestTag);
+    void getUserTagData(UserInfo userInfo);
 }

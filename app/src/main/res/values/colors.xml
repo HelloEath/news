@@ -7,14 +7,16 @@
     <color name="color_tab_2">#303F9F</color>
     <color name="color_tab_3">#303F9F</color>
     <color name="background_tab_pressed">#6633B5E5</color>
-    <color name="tab_color3">#515151</color>
+    <color name="tab_color3">#616161</color>
     <color name="side_1">#2fa881</color>
     <color name="side_2" >#F9BB05</color>
     <color name="side_3" >#4284F3</color>
     <color name="side_4" >#E94335</color>
     <color name="input_dialog">#2fa881</color>
     <color name="white">#fff</color>
-
+    <color name="app_bg">#ededed</color>
+    <color name="app_main_tab">#fff</color>
+    <color name="transparent">#00000000</color>
     <array name="progress_colors_dark">
         <item>#2fa881</item>
         <item>#F9BB05</item>

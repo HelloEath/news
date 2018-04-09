@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -54,6 +55,9 @@ public class GuoKrDetailActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guokrdetail);
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
         AppApplication.getInstance().addActivity(this);
         initView();
     }
@@ -135,9 +139,10 @@ public class GuoKrDetailActivity extends AppCompatActivity {
         Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
 
         upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
-        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
 
         actionBar =getSupportActionBar();
         if (actionBar != null) {

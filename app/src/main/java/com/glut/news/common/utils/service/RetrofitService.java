@@ -19,12 +19,15 @@ import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
 
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -146,6 +149,9 @@ public interface RetrofitService {
         @GET("article/typeArticle")
         Observable<ArticleModel> getTypeArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
+       /* 获取新闻推荐列表*/
+       @GET("article/tuijian")
+       Observable<ArticleModel> getTuiJianArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
 
     }
@@ -175,7 +181,7 @@ public interface RetrofitService {
        /* 插入记录*/
         @FormUrlEncoded
         @POST("history/putHistory")
-        Observable<Integer> insertHistory(@Field("History_Persion") int userId,@Field("History_Article") int ArticleId,@Field("History_Time") String time,@Field("History_Type") int type);
+        Observable<Integer> insertHistory(@Field("History_Persion") int userId,@Field("History_Article") int ArticleId,@Field("History_Time") String time,@Field("History_Type") int type,@Field("Content_type") String contentType);
 
         /*获取历史记录列表*/
         @GET("history/historyList")
@@ -184,7 +190,7 @@ public interface RetrofitService {
 
         /*获取历史记录数*/
         @GET("history/tatolHistory")
-        Observable<Integer> getHistoryCount(@Query("UserId") String UserId);
+        Observable<Integer> getHistoryCount();
 
     }
 
@@ -192,12 +198,11 @@ public interface RetrofitService {
     public interface UserService{
 
         //登录
-        @FormUrlEncoded
+
         @POST("user/login")
         Observable<UserModel> login(@Body UserInfo userInfo);
 
         //注册
-        @FormUrlEncoded
         @POST("user/register")
         Observable<UserModel> register(@Body UserInfo userInfo);
         //登出
@@ -206,7 +211,6 @@ public interface RetrofitService {
         Observable<UserModel> logOut(@Body UserInfo userInfo);
 
         //修改用户名
-        @FormUrlEncoded
         @POST("user/updateUser")
         Observable<UserModel> alterUserName(@Body UserInfo userInfo);
 
@@ -222,21 +226,38 @@ public interface RetrofitService {
         @POST("user/updateUser")
         Observable<UserModel> alterUserDistrc(@Body UserInfo userInfo);
 
+        //修改用户密码
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserPwd(@Body UserInfo userInfo);
         //修改用户生日
         @POST("user/updateUser")
         Observable<UserModel> alterUserBirth(@Body UserInfo userInfo);
 
         //修改用户头像
-        @POST("user/alterUserlogo")
-        Observable<UserModel> alterUserLogo(@Body UserInfo userInfo);
+        @Multipart
+        @POST("user/alterUserLogo")
+        Observable<UserModel> alterUserLogo(@Query("UserId") String UserId, @Part("uploadFile\"; filename=\"UserLogo.jpg\"")RequestBody requestBody);
+
+        //更新用户兴趣点
+        @POST("user/updateUser")
+        Observable<Integer> alterUserInterest(@Body UserInfo userInfo);
+        //修改用户头像2
+
+        @POST("user/updateUser")
+        Observable<UserModel> alterUserLogoByBase64(@Body UserInfo userInfo);
     }
 
     //兴趣标签
     public interface InterestTag{
 
 
-        @POST("tag/setUserInterestTag")
+        //设置用户兴趣点
+        @POST("interest/insertInterest")
         Observable<Integer> setUserInterestTag(@Body com.glut.news.my.model.entity.InterestTag interestTag);
+
+        //更新用户兴趣点
+       @POST("interest/updateInterest")
+        Observable<Integer> updateInterest(@Body com.glut.news.my.model.entity.InterestTag interestTag);
 
 
     }
@@ -255,7 +276,7 @@ public interface RetrofitService {
 
         /*获取收藏记录数*/
         @GET("star/starCount")
-        Observable<Integer> getStarCount(@Query("Star_UserId") int UserId);
+        Observable<Integer> getStarCount();
 
     }
 

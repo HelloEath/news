@@ -5,6 +5,7 @@
         android:id="@+id/toolbar"
         android:minHeight="?attr/actionBarSize"
         app:layout_collapseMode="pin"
+        android:theme="@style/MyToolbar"
         android:layout_width="match_parent"
         android:layout_height="40dp"/>
 </merge>

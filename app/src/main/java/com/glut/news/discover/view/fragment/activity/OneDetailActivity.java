@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -65,6 +66,8 @@ public class OneDetailActivity  extends AppCompatActivity {
         author_name=getIntent().getStringExtra("author");
         initView();
         loadData();
+        //透明状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         loadArticleData();
         loadCommentData();
         AppApplication.getInstance().addActivity(this);
@@ -191,14 +194,14 @@ public class OneDetailActivity  extends AppCompatActivity {
 
     private void initView() {
         loadingView=findViewById(R.id.loadView);
-        mAuthor_name= (TextView) findViewById(R.id.author_name);
+        //mAuthor_name= (TextView) findViewById(R.id.author_name);
         mTitle= (TextView) findViewById(R.id.title);
         mComment= (RecyclerView) findViewById(R.id.oneCommentsModel);
         mContent= (WebView) findViewById(R.id.content);
         LinearLayoutManager lm=new LinearLayoutManager(this);
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         //解决滑动卡顿问题
-        mAuthor_name.setText(author_name);
+        //mAuthor_name.setText(author_name);
         mComment.setNestedScrollingEnabled(false);
 
         mComment.setLayoutManager(lm);

@@ -28,15 +28,15 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onClick(View v) {
-        onitemclick.onItemClick(v,(int)v.getTag());
+        onitemclick.onItemClick(v,(int)v.getTag(),(String)v.getTag(R.string.content_type));
     }
 
 
     public    interface OnItemClickListener{
-        void onItemClick(View v, int positoin);
+        void onItemClick(View v, int positoin,String contentType);
     }
     public  interface OnItemLongClickListener{
-        void onItenLongClickListener(View v,int position);
+        void onItenLongClickListener(View v,int position,String contentType);
     }
     private OnItemClickListener onitemclick=null;
     private OnItemLongClickListener onitemLongclick;
@@ -136,6 +136,8 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         }*/
         if (holder instanceof ItemViewHolder){
             holder.itemView.setTag(newsList.get(position).getArticle_Id());
+            holder.itemView.setTag(R.string.content_type,newsList.get(position).getArticle_Type());
+
             ((ItemViewHolder)holder).title.setText(newsList.get(position).getArticle_Title());
 
             ((ItemViewHolder)holder).author.setText(newsList.get(position).getArticle_Author_name());
@@ -153,7 +155,13 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return newsList.size();
+        if (newsList==null){
+            return 0;
+
+        }else {
+            return newsList.size();
+
+        }
     }
 
     public  class ItemViewHolder extends RecyclerView.ViewHolder {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+
     package="com.glut.news">
     <uses-sdk tools:overrideLibrary="com.android.support:appcompat-v7:26.0.0-alpha1" />
-
     <!--危险权限-->
     //读取音频
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />-->
     //允许sd卡写权限，需写入地图数据，禁用后无法显示地图
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     //获取精确位置
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     //获取错略位置
@@ -42,6 +43,9 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     //震动权限
     <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+
+
+
     <application
         android:name=".AppApplication"
         android:allowBackup="true"
@@ -49,9 +53,31 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon,android:theme,android:label">
+        tools:replace="android:icon,android:theme,android:label,android:name">
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="2KGyja7nt2dRkK7L0QYqwMQWgA84b3lN" />
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.baidu.location.service_v2.2"></action>
+            </intent-filter>
+        </service>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.glut.news"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
         <activity
             android:name=".MainActivity"
+            android:theme="@style/DefaultCityPickerTheme"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait" />
         <activity android:name=".home.view.activity.ArticleDetailActivity"
@@ -66,14 +92,6 @@
         </activity>
         <activity android:name=".video.view.activity.VideoDetailActivity" />
         >
-       <!-- <service
-            android:name="com.baidu.location.f"
-            android:enabled="true"
-            android:process=":remote">
-            <intent-filter>
-                <action android:name="com.baidu.location.service_v2.2" />
-            </intent-filter>
-        </service>-->
 
 
         <activity android:name=".discover.view.fragment.activity.ZhiHuDetailActivity" />
@@ -81,7 +99,7 @@
         <activity android:name=".discover.view.fragment.activity.OneDetailActivity" />
         <activity android:name=".my.view.activity.StarWithHistoryActivity" />
         <activity android:name=".my.view.activity.OtherSettingActivity" />
-        <activity android:name=".my.view.activity.UserAlterActivity" />
+        <activity android:name=".my.view.activity.UserAlterActivity"    android:theme="@style/DefaultCityPickerTheme"/>
         <activity android:name=".login.view.fragment.LoginActivity"
             android:theme="@style/Translucent"
             />

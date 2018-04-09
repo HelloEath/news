@@ -1,8 +1,8 @@
 package com.glut.news.my.presenter.impl;
 
+import com.glut.news.common.model.entity.UserInfo;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
-import com.glut.news.my.model.entity.InterestTag;
 import com.glut.news.my.presenter.IInterestTagActivityPresenter;
 import com.glut.news.my.view.activity.IInterestTagActivityView;
 
@@ -25,14 +25,13 @@ public class InterestTagActivityPresenterImpl implements IInterestTagActivityPre
     }
 
     @Override
-    public void getUserTagData(InterestTag interestTag) {
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "InterestTagService").doInterestTag(interestTag)
+    public void getUserTagData(UserInfo userInfo) {
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserInterest(userInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<Integer, Integer>() {

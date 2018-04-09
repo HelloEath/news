@@ -13,13 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.glut.news.R;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.discover.model.adater.GuoKrAdater;
 import com.glut.news.discover.model.entity.GuoKrListModel;
 import com.glut.news.discover.presenter.impl.GuoKrPresenterImpl;
 import com.glut.news.discover.view.fragment.activity.GuoKrDetailActivity;
-import com.glut.news.discover.view.fragment.activity.IGuoKrView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Created by yy on 2018/2/4.
  */
-public class GuoKrFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IGuoKrView {
+public class GuoKrFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IGuoKrFragmentView {
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -55,7 +56,7 @@ private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
         //透明导航栏
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);*/
         initView(v);
-        loadDta();
+        loadData();
 
         return v;
     }
@@ -81,11 +82,17 @@ private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
        guoKrAdater.setOnItemClickListener(new GuoKrAdater.OnItemClickListener() {
            @Override
            public void itemClick(View v, String id, String image, String image_from) {
-               Intent i=new Intent(getActivity(),GuoKrDetailActivity.class);
-               i.putExtra("url",id);
-               i.putExtra("image_url",image);
-               i.putExtra("image_from",image_from);
-               startActivity(i);
+              if (NetUtil.isNetworkConnected()){
+                  Intent i=new Intent(getActivity(),GuoKrDetailActivity.class);
+                  i.putExtra("url",id);
+                  i.putExtra("image_url",image);
+                  i.putExtra("image_from",image_from);
+                  startActivity(i);
+              }else {
+                  Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+              }
+
+
            }
        });
 
@@ -96,7 +103,7 @@ private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
                 .setAction(R.string.refresh, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        loadDta();
+                        loadData();
                     }
                 });
 
@@ -110,15 +117,26 @@ private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
                 });
     }
 
-    public void loadDta() {
-        guoKrPresenter.loadData();
+    public void loadData() {
+        if (NetUtil.isNetworkConnected()){
+            guoKrPresenter.loadData();
+
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
 
 
     }
 
     @Override
     public void onRefresh() {
-        loadDta();
+        if (NetUtil.isNetworkConnected()){
+            loadData();
+
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override

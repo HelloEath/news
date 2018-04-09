@@ -40,6 +40,7 @@ import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -358,7 +359,10 @@ public class RetrofitManager {
     public Observable<ArticleModel> getTypeArticle(String type, int pageno){
         return  mArticleService.getTypeArticle(type,pageno);
     }
-
+    //获得推荐列表
+    public Observable<ArticleModel> getTuiJianArticle(String type, int pageno){
+        return  mArticleService.getTuiJianArticle(type,pageno);
+    }
 /*评论*/
 
     //获得对应文章/视频的评论数据
@@ -386,13 +390,13 @@ public class RetrofitManager {
     }
 
     //获得记录总数
-    public Observable<Integer> getHistoryCount(String UserId){
-        return mHistoryService.getHistoryCount(UserId);
+    public Observable<Integer> getHistoryCount(){
+        return mHistoryService.getHistoryCount();
     }
 
     //插入记录
     public Observable<Integer> insertHistory(History history){
-        return mHistoryService.insertHistory(history.getHistory_Persion(),history.getHistory_Article(),history.getHistory_Time(),history.getHistory_Type());
+        return mHistoryService.insertHistory(history.getHistory_Persion(),history.getHistory_Article(),history.getHistory_Time(),history.getHistory_Type(),history.getContent_type());
     }
 
     /*用户*/
@@ -425,17 +429,27 @@ public class RetrofitManager {
     public Observable<UserModel> alterUserDistrc(UserInfo userInfo){
         return mUserService.alterUserDistrc(userInfo);
     }
-
+    //修改用户密码
+    public Observable<UserModel> alterUserPwd(UserInfo userInfo){
+        return mUserService.alterUserPwd(userInfo);
+    }
     //修改用户生日
     public Observable<UserModel> alterUserBitrth(UserInfo userInfo){
         return mUserService.alterUserBirth(userInfo);
     }
 
     //修改用户头像
-    public Observable<UserModel> alterUserLogo(UserInfo userInfo){
-        return mUserService.alterUserLogo(userInfo);
+    public Observable<UserModel> alterUserLogo(String UserId, RequestBody requestBody){
+        return mUserService.alterUserLogo(UserId,requestBody);
     }
-
+    //修改用户头像
+    public Observable<UserModel> alterUserLogoByBase64(UserInfo userInfo){
+        return mUserService.alterUserLogoByBase64(userInfo);
+    }
+    //修改用户兴趣点
+    public Observable<Integer> alterUserInterest(UserInfo userInfo){
+        return mUserService.alterUserInterest(userInfo);
+    }
     //登出
     public Observable<UserModel> logOut(UserInfo userInfo){
         return mUserService.logOut(userInfo);
@@ -457,9 +471,9 @@ public class RetrofitManager {
     }
 
     //获得收藏数
-    public Observable<Integer> getStarCOunt(int UserId){
+    public Observable<Integer> getStarCount(){
 
-        return mStarService.getStarCount(UserId);
+        return mStarService.getStarCount();
 
     }
     /*搜索*/

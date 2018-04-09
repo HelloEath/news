@@ -72,11 +72,11 @@ public class StarWithHistoryActivity extends AppCompatActivity {
         mViewPager.setAdapter(sft);
         String type=getIntent().getStringExtra("type");
         if ("1".equals(type)){
-            mViewPager.setCurrentItem(0);
+            mViewPager.setCurrentItem(1);
 
         }else {
 
-            mViewPager.setCurrentItem(1);
+            mViewPager.setCurrentItem(0);
 
         }
 

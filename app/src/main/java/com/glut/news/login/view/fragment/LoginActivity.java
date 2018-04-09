@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -25,10 +26,10 @@ import com.glut.news.AppApplication;
 import com.glut.news.MainActivity;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.ToastUtil;
 import com.glut.news.login.presenter.impl.LoginActivityPresenterImpl;
-import com.glut.news.my.view.activity.InterestTagActivity;
 
 
 /**
@@ -117,21 +118,25 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
                 }
                 break;
            case R.id.bt_go:
+if (NetUtil.isNetworkConnected()){
 
-                UserInfo u=new UserInfo();
-               String t=etUsername.getText().toString();
-               String UserPwd=etPassword.getText().toString();
-               startActivity(new Intent(LoginActivity.this, InterestTagActivity.class));
-             if (valiLogin(u,t,UserPwd)){
-                 ToastUtil.showOnLoading("登陆是需要时间的...",LoginActivity.this);
+    UserInfo u=new UserInfo();
+    String t=etUsername.getText().toString();
+    String UserPwd=etPassword.getText().toString();
+    if (valiLogin(u,t,UserPwd)){
+        ToastUtil.showOnLoading("登陆是需要时间的...",LoginActivity.this);
 
-                 l.toLogin(u);
+        l.toLogin(u);
 
-             }else {
-                 //lt.error();
-             }
+    }else {
+        //lt.error();
+    }
 
 
+}else {
+    Toast.makeText(LoginActivity.this,"网络走失了",Toast.LENGTH_SHORT).show();
+
+}
                 break;
             case R.id.btn_forgetPwd:
                 /*//要做的动画
@@ -152,6 +157,7 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
                     startActivity(new Intent(this, RegisterActivity.class));
                 }*/
 
+                startActivity(new Intent(LoginActivity.this,ForgetPwdActivity.class));
                 break;
             case R.id.btn_QQ:
                 //lt.error();
@@ -163,6 +169,18 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
                 break;
             case R.id.fab2:
+                UserInfo userInfo=new UserInfo();
+                if (!SpUtil.getUserFromSp("UserEmail").equals("null")){
+                    userInfo.setUserEmail(SpUtil.getUserFromSp("UserEmail"));
+                }else {
+                    userInfo.setUserPhone(SpUtil.getUserFromSp("UserPhone"));
+
+                }
+                if (!SpUtil.getUserFromSp("UserPwd").equals("null")){
+                    userInfo.setUserPwd(SpUtil.getUserFromSp("UserPwd"));
+                }
+                l.toLogin(userInfo);
+
                 Intent i=new Intent(LoginActivity.this,MainActivity.class);
                 startActivity(i);
                 break;
@@ -193,7 +211,7 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
             f=true;
             u.setUserPwd(UserPwd);
         }else{
-            etUsername.setError("密码不能为空");
+            etPassword.setError("密码不能为空");
             f=false;
         }
 
@@ -209,8 +227,10 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
         getWindow().setExitTransition(explode);
         getWindow().setEnterTransition(explode);
         ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
-        Intent i2 = new Intent(this, InterestTagActivity.class);
+        Intent i2 = new Intent(this, MainActivity.class);
+
         i2.putExtra("UserId", SpUtil.getUserFromSp("UserId"));
+
         startActivity(i2, oc2.toBundle());
 
         finish();

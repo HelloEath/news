@@ -1,6 +1,5 @@
 package com.glut.news.home.presenter.impl;
 
-import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.home.presenter.IHomeFragment;
@@ -18,24 +17,17 @@ import rx.schedulers.Schedulers;
 
 public class HomeFragmentImpl implements IHomeFragment {
     private IHomeFragmentView iHomeFragmentView;
-    private int userId;
 
     public HomeFragmentImpl(IHomeFragmentView iHomeFragmentView) {
         this.iHomeFragmentView = iHomeFragmentView;
-        String d=SpUtil.getUserFromSp("UserId");
-        if (d==null){
-            userId=Integer.parseInt(SpUtil.getUserFromSp("UserId")) ;
-        }
+
 
     }
 
     @Override
     public void loadStarCount() {
-        if (userId!=0){
 
-
-
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarCOunt(userId)
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarCount()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -62,13 +54,13 @@ public class HomeFragmentImpl implements IHomeFragment {
 
                     }
                 });
-        }
+
     }
 
     @Override
     public void loadHistoryCount() {
-        if (userId != 0){
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "HistoryService").getHistoryCount(userId + "")
+
+            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "HistoryService").getHistoryCount()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(new Action0() {
@@ -99,7 +91,7 @@ public class HomeFragmentImpl implements IHomeFragment {
 
                     });
         }
-    }
+
 
 
 }

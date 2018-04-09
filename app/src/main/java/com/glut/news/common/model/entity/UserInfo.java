@@ -8,6 +8,8 @@ import com.google.gson.annotations.SerializedName;
 public class UserInfo {
     @SerializedName("User_Id")
     private int UserId;
+    @SerializedName("User_Picture")
+    private String UserLogo;
     @SerializedName("User_NickName")
     private String UserName;
     @SerializedName("User_Password")
@@ -22,10 +24,20 @@ public class UserInfo {
     private String UserDistrc;
     @SerializedName("User_Sex")
     private String UserSex;
-    @SerializedName("User_Picture")
-    private String UserLogo;
+
     @SerializedName("User_Describe")
     private String UserSign;
+
+    @SerializedName("User_Interest")
+    private String UserInterest;
+
+    public String getUserInterest() {
+        return UserInterest;
+    }
+
+    public void setUserInterest(String userInterest) {
+        UserInterest = userInterest;
+    }
 
     public int getUserId() {
         return UserId;

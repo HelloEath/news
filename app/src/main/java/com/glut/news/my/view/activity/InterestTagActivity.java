@@ -1,5 +1,6 @@
 package com.glut.news.my.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.glut.news.AppApplication;
+import com.glut.news.MainActivity;
 import com.glut.news.R;
+import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.ToastUtil;
-import com.glut.news.my.model.entity.InterestTag;
 import com.glut.news.my.presenter.impl.InterestTagActivityPresenterImpl;
 import com.google.gson.Gson;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -52,7 +55,8 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
     }
 
     private void initView() {
-       final int UserId=getIntent().getIntExtra("UserId",0);
+       // final String UserId=   getIntent().getStringExtra("UserId");
+      // final int UserId=getIntent().getIntExtra("UserId",0);
         final LayoutInflater mInflater = LayoutInflater.from(this);
         btn_go=findViewById(R.id.btn_IntersetGo);
         tagFlowLayout=findViewById(R.id.id_flowlayout);
@@ -62,13 +66,13 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
                 StringBuffer stringBuffer=new StringBuffer();
                 Gson gson=new Gson();
                 gson.toJson(tagList);
-                InterestTag interestTag=new InterestTag();
-                interestTag.setUserId(UserId);
-                interestTag.setInterestTag(gson.toJson(tagList));
-                i.getUserTagData(interestTag);//发送数据
-                Toast.makeText(InterestTagActivity.this,interestTag.toString(),Toast.LENGTH_LONG).show();
-               /* startActivity(new Intent(InterestTagActivity.this, MainActivity.class));
-                finish();*/
+                UserInfo userInfo=new UserInfo();
+                userInfo.setUserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+                userInfo.setUserInterest(gson.toJson(tagList).toString());
+                i.getUserTagData(userInfo);//发送数据
+                Toast.makeText(InterestTagActivity.this,userInfo.toString(),Toast.LENGTH_LONG).show();
+                startActivity(new Intent(InterestTagActivity.this, MainActivity.class));
+                finish();
             }
         });
         //初始化标签

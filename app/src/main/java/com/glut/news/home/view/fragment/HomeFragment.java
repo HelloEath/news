@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -30,12 +32,16 @@ import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.glut.news.R;
 import com.glut.news.common.utils.ApiConstants;
+import com.glut.news.common.utils.Base64CoderUtil;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.UserUtil;
 import com.glut.news.common.view.SearchActivity;
 import com.glut.news.common.view.searchview.ICallBack;
 import com.glut.news.common.view.searchview.SearchView;
 import com.glut.news.home.presenter.impl.HomeFragmentImpl;
+import com.glut.news.login.view.fragment.LoginActivity;
 import com.glut.news.my.view.activity.OtherSettingActivity;
 import com.glut.news.my.view.activity.StarWithHistoryActivity;
 import com.glut.news.my.view.activity.UserAlterActivity;
@@ -81,7 +87,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         if (SetUtil.getInstance().getIsFirstTime()){
             showTapTarget();
         }
-        showTapTarget();
+
 
 
         return v;
@@ -95,7 +101,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
 
                       TapTarget.forView(mLogo, "点击头像管理个人信息")
-                                .dimColor(android.R.color.black)
+                                .dimColor(android.R.color.white)
                                 .outerCircleColor(R.color.colorPrimary)
                                 .drawShadow(true)
                               .targetRadius(60)
@@ -144,27 +150,52 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         nacigation_header=headerView.findViewById(R.id.navigation_header_container);
         UserName=headerView.findViewById(R.id.UserName);
         toolbar=headerView.findViewById(R.id.toolbar);
-       /* ((AppCompatActivity)getActivity()).setActionBar(toolbar);
-        ActionBar a=getActivity().getActionBar();
-        if (a!=null){
-            a.setDisplayHomeAsUpEnabled(true);
 
-            a.setDisplayShowTitleEnabled(false);
-        };*/
         tabLayout=v.findViewById(R.id.tabLayout);
         mAddVideo=v.findViewById(R.id.addVideo);
         searchView=v.findViewById(R.id.search);
         mLogo=v.findViewById(R.id.circlrimage);
         viewpager=v.findViewById(R.id.viewger_home);
+       // mLogo.setVisibility(View.GONE);
 
     }
 
 
 
-    private void initData(View v) {
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(new RequestOptions().circleCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(ilogo);
+        Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
+                RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mLogo);
         UserName.setText(SpUtil.getUserFromSp("UserName"));
-        homeFragment.loadHistoryCount();//获取历史记录数
-        homeFragment.loadStarCount();//获取我的收藏数
+
+    }
+
+    private void initData(View v) {
+
+        if (UserUtil.isUserLogin()){
+
+            UserName.setText(SpUtil.getUserFromSp("UserName"));
+            homeFragment.loadHistoryCount();//获取历史记录数
+            homeFragment.loadStarCount();//获取我的收藏数
+            String ff=SpUtil.getUserFromSp("UserLogo");
+            byte[] d=Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"));
+            Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(new RequestOptions().circleCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(ilogo);
+            Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
+                    RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mLogo);
+
+
+        }else {
+            UserName.setText("我是谁");
+            m.findItem(R.id.navigation_item_info).setVisible(false);
+            Glide.with(getContext()).load(R.drawable.unlogin_logo).apply(new RequestOptions().circleCrop()).into(ilogo);
+            Glide.with(getContext()).load(R.drawable.unlogin_logo).apply(
+                    RequestOptions.circleCropTransform()).into(mLogo);
+        }
+
         navigationView.setItemIconTintList(null);
         titles.add("推荐");
         titles.add("互联网");
@@ -178,10 +209,13 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
                 nacigation_header.setBackground(resource);
             }
         };
-        Glide.with(getContext()).load(ApiConstants.welcomeImageAPi).apply(new RequestOptions().fitCenter()).into(simpleTarget);
-        Glide.with(getContext()).load(R.drawable.logo).apply(new RequestOptions().circleCrop()).into(ilogo);
-        Glide.with(getContext()).load(R.drawable.logo).apply(
-                RequestOptions.circleCropTransform()).into(mLogo);
+        if (NetUtil.isWifiConnected()){
+
+            Glide.with(getContext()).load(ApiConstants.welcomeImageAPi).apply(new RequestOptions().fitCenter()).into(simpleTarget);
+
+        }else {
+            nacigation_header.setBackgroundColor(getResources().getColor(R.color.side_1));
+        }
         Glide.with(getContext()).load(R.drawable.add).into(mAddVideo);
 
         for (int i=0;i<titles.size();i++){
@@ -223,6 +257,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
             @Override
             public void onClick(View v) {
 
+                homeFragment.loadHistoryCount();//获取历史记录数
+                homeFragment.loadStarCount();//获取我的收藏数
                 drawerLayout.openDrawer(Gravity.LEFT);
 
             }
@@ -240,21 +276,58 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
                         switch (menuItem.getItemId()) {
 
                             case R.id.navigation_item_star:
+                                Intent i=null;
+                                if (UserUtil.isUserLogin()){
+i
+                                    =new Intent(getActivity(),StarWithHistoryActivity.class);
+                                    i.putExtra("type","2");
+                                    startActivity(i);
+                                }else {
+                                    Snackbar s= Snackbar.make(getView(),"登录查看的你收藏记录",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(new Intent(getActivity(), LoginActivity.class));
 
-                                Intent i=new Intent(getActivity(),StarWithHistoryActivity.class);
-                                i.putExtra("type","2");
-                                startActivity(i);
+                                        }
+                                    });
+                                    View sv=s.getView();
+//文字的颜色
+                                    ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                                    sv.setBackgroundColor(0xffffffff);
+                                    s.show();
+
+
+                                }
+
                                 break;
                             case R.id.navigation_item_history:
 
-                                i=new Intent(getActivity(),StarWithHistoryActivity.class);
-                                i.putExtra("type","1");
-                                startActivity(i);
+                                if (UserUtil.isUserLogin()){
+
+                                    i=new Intent(getActivity(),StarWithHistoryActivity.class);
+                                    i.putExtra("type","1");
+                                    startActivity(i);
+                                }else {
+
+                                    Snackbar s= Snackbar.make(getView(),"登录查看你的历史记录",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            startActivity(new Intent(getActivity(), LoginActivity.class));
+
+                                        }
+                                    });
+                                    View sv=s.getView();
+//文字的颜色
+                                    ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                                    sv.setBackgroundColor(0xffffffff);
+                                    s.show();
+
+                                }
+
 
                                 break;
                             case R.id.navigation_item_info:
-                                i=new Intent(getActivity(),UserAlterActivity.class);
-                                startActivity(i);
+                                startActivity(new Intent(getContext(),UserAlterActivity.class));
                                 break;
                             case R.id.nav_setting:
                                     i=new Intent(getActivity(),OtherSettingActivity.class);

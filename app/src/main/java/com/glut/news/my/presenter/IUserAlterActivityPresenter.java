@@ -1,5 +1,7 @@
 package com.glut.news.my.presenter;
 
+import okhttp3.RequestBody;
+
 /**
  * Created by yy on 2018/3/24.
  */
@@ -12,4 +14,6 @@ public interface IUserAlterActivityPresenter {
     void alterUserDistrc(String newDistrc);
     void logOut();
 
+    void alterUserLogo(String userId, RequestBody requestBody);
+    void alterUserLogoByBase64(String newLogo);
 }

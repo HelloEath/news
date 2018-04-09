@@ -3,7 +3,7 @@
     <style name="MyToolbar" parent="Base.Widget.AppCompat.Toolbar">
         <!--Toolbar标题颜色-->
         <item name="titleTextColor">#4e4e4e</item>
-        <item name="android:background">#fff</item>
+        <item name="android:background">#00000000</item>
 
         <!--ActionBar默认按钮的颜色-->
         <item name="colorControlNormal">#4e4e4e</item>

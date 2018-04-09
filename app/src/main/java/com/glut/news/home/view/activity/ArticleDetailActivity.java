@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,8 +35,12 @@ import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.adater.ArticleCommentAdater;
 import com.glut.news.common.utils.DateUtil;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.ToastUtil;
+import com.glut.news.common.utils.UserUtil;
 import com.glut.news.home.presenter.impl.ArticleDetailPresenterImpl;
+import com.glut.news.login.view.fragment.LoginActivity;
 import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentListModel;
@@ -65,33 +70,54 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private EditText mCommentValue;
     private Toolbar toolbar;
     private String titleString;
+    private RelativeLayout relativeLayout;
     private ArticleDetailPresenterImpl articleDetailPresenter=new ArticleDetailPresenterImpl(this);
 
     String  ids;
     private int nextPage;
+    private String contentType;
     private final static String TAG="ArticleDetailActivity";
     private LoadingView loadView;
+    private String userId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
         //String id=getIntent().getStringExtra("id");
-        int id=getIntent().getIntExtra("id",0);
-        ids=id+"";
 
-        recoreHistory();
-        String url="http://192.168.191.1:8085/News/article/detailArticle?article_Id="+id;
         initView();
-        initWebView(url);
+        initData();
+
         loadData();
         AppApplication.getInstance().addActivity(this);
 
     }
 
+    private void initData() {
+        int id=getIntent().getIntExtra("id",0);
+        contentType=getIntent().getStringExtra("ContentType");
+        ids=id+"";
+
+
+
+    }
+
     private void loadData() {
 
-       loadCommentData();//加载评论数据
-        recoreHistory();//记录历史数据
+        if (NetUtil.isNetworkConnected()){
+            String url="http://192.168.191.1:8085/News/article/detailArticle?article_Id="+id;
+            initWebView(url);
+            if (UserUtil.isUserLogin()) {
+                userId=SpUtil.getUserFromSp("UserId");
+                recoreHistory();//记录历史数据
+            }
+
+            loadCommentData();//加载评论数据
+        }else {
+            Toast.makeText(ArticleDetailActivity.this,"网络已走失",Toast.LENGTH_SHORT).show();
+        }
+
+
 
     }
 
@@ -99,8 +125,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private void star(){
         Star star=new Star();
         star.setStar_ContentId(id);
-        star.setStar_UserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        star.setStar_UserId(Integer.parseInt(userId));
         star.setStar_Type(1);
+        star.setContent_type(contentType);
         star.setStar_Time(DateUtil.formatDate_getCurrentDate());
         articleDetailPresenter.star(star);//
 
@@ -108,8 +135,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private void recoreHistory() {
         History h=new History();
         h.setHistory_Article(Integer.parseInt(ids));
-        h.setHistory_Persion(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        h.setHistory_Persion(Integer.parseInt(userId));
         h.setHistory_Type(1);
+        h.setContent_type(contentType);
         h.setHistory_Time(DateUtil.formatDate_getCurrentDate());
       articleDetailPresenter.onHistory(h);
     }
@@ -189,7 +217,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
-
+        relativeLayout=findViewById(R.id.relativeLayout);
         toolbar=findViewById(R.id.toolbar);
         loadView= (LoadingView) findViewById(R.id.loadView);
         title= (TextView) findViewById(R.id.title);
@@ -246,7 +274,12 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
                 finish();
                 break;
             case R.id.menu_action_share:
-                share();
+                if (NetUtil.isNetworkConnected()){
+                    share();
+                }else {
+                   Toast.makeText(ArticleDetailActivity.this,"网络已走失",Toast.LENGTH_SHORT).show();
+                }
+
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -269,26 +302,55 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         switch (v.getId()){
             case R.id.btn_sendcomment:
 
-                //点击发表后收起虚拟键盘
-                InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mCommentValue.getWindowToken(), 0);
-                Toast.makeText(this,mCommentValue.getText(),Toast.LENGTH_SHORT).show();
+                if (NetUtil.isNetworkConnected()){
+                    sendComment();
+                }else {
+                    Toast.makeText(ArticleDetailActivity.this,"网络已走失",Toast.LENGTH_SHORT).show();
+                }
 
-                VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
-                //videoCommentListModel.setAuthor_logo(R.drawable.logo);
-                String userName= SpUtil.getUserFromSp("userName");
-                String userLogo=SpUtil.getUserFromSp("userLogo");
-                videoCommentListModel.setAuthor_name("地球人");
-                videoCommentListModel.setComment_Content(mCommentValue.getText()+"");
-
-                videoCommentListModel.setComment_Time(DateUtil.formatDate_getCurrentDate());
-                videoCommentListModel.setLikes(0);
-                commentAdater.addSingGonComments(videoCommentListModel);
-                mCommentValue.setText("");
                 break;
         }
     }
 
+    public void sendComment(){
+
+        if (UserUtil.isUserLogin()){
+
+            //点击发表后收起虚拟键盘
+            InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mCommentValue.getWindowToken(), 0);
+            Toast.makeText(this,mCommentValue.getText(),Toast.LENGTH_SHORT).show();
+
+            VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
+            //videoCommentListModel.setAuthor_logo(R.drawable.logo);
+            String userName= SpUtil.getUserFromSp("userName");
+            String userLogo=SpUtil.getUserFromSp("userLogo");
+            videoCommentListModel.setAuthor_name(userName);
+            videoCommentListModel.setComment_Content(mCommentValue.getText()+"");
+            videoCommentListModel.setAuthor_logo(userLogo);
+            videoCommentListModel.setComment_Time(DateUtil.formatDate_getCurrentDate());
+            videoCommentListModel.setLikes(0);
+            commentAdater.addSingGonComments(videoCommentListModel);
+            mCommentValue.setText("");
+        }else {
+
+            Snackbar s= Snackbar.make(relativeLayout,"登录获得评论技能",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startActivity(new Intent(ArticleDetailActivity.this, LoginActivity.class));
+
+                }
+            });
+            View sv=s.getView();
+//文字的颜色
+            ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+            sv.setBackgroundColor(0xffffffff);
+            s.show();
+
+
+        }
+
+    }
     private void loadMoreCommentData(){
         articleDetailPresenter.loadMoreComment();//加载评论数据
 
@@ -314,11 +376,11 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onStarSuccess() {
 
-        Toast.makeText(this,"收藏成功",Toast.LENGTH_SHORT).show();
+        ToastUtil.showSuccess("收藏成功",3000,this);
     }
 
     @Override
     public void onStarFail() {
-        Toast.makeText(this,"收藏失败",Toast.LENGTH_SHORT).show();
+        ToastUtil.showError("收藏失败",3000,this);
     }
 }

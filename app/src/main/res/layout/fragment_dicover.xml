@@ -4,54 +4,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-
+android:background="@color/app_main_tab"
     >
 
-<!--
-
-    <LinearLayout
-        android:id="@+id/news_fragment_main_horizontalscrollview"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:fitsSystemWindows="true"
-        android:clipToPadding="true"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
-        android:gravity="center_horizontal">
-
-        <com.glut.news.common.view.customview.VideoTitleHorizontalScrollView
-            android:id="@+id/myHorizeontal"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:fillViewport="true"
-            android:layout_margin="5dp"
-
-            android:layout_marginLeft="30dp"
-            android:layout_below="@+id/news_activity_main_title_down"
-
-            android:scrollbars="none">
-
-        </com.glut.news.common.view.customview.VideoTitleHorizontalScrollView>
-
-      &lt;!&ndash;  <LinearLayout
-            android:id="@+id/news_fragment_main_layout_addtitle"
-            android:layout_width="0dp"
-            android:layout_height="28dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:scaleType="fitXY"
-                android:clickable="false"
-                android:duplicateParentState="true"
-                android:background="@drawable/add"></ImageButton>
-        </LinearLayout>&ndash;&gt;
-    </LinearLayout>
--->
     <!-- 下方滚动的下划线颜色  -->
     app:tabIndicatorColor="#33aa22"
     <!-- 下方指示条的高度  -->
@@ -74,7 +29,7 @@
     app:tabIndicatorHeight="2dp"
     app:tabSelectedTextColor="#2fa881"
 app:tabPadding="2dp"
-
+android:background="@color/app_main_tab"
     app:tabTextColor="#686868"
     app:tabMode="scrollable"
     >

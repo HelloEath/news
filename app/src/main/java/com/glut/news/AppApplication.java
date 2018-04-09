@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.mob.MobSDK;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +21,13 @@ public class AppApplication extends Application {
     private static Context context;
     public static List<Object> activitys = new ArrayList<Object>();
     private static AppApplication instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
      //  RxTool.init(this);//初始化工具箱
+        MobSDK.init(this);//初始化Mob
         context=this;
-
-
 
 
 

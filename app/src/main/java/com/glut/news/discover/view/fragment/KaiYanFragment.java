@@ -13,13 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.glut.news.R;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.view.customview.VideoPlayer;
 import com.glut.news.discover.model.adater.KaiYanAdater;
 import com.glut.news.discover.model.entity.KaiYanModel;
 import com.glut.news.discover.presenter.impl.KaiYanPresenterImpl;
-import com.glut.news.discover.view.fragment.activity.IKaiYanView;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by yy on 2018/2/7.
  */
 
-public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefreshListener,IKaiYanView {
+public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefreshListener,IKaiYanFragmentView {
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -129,105 +130,33 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
     }
 
     public void loadDta() {
+        if (NetUtil.isNetworkConnected()){
+            kaiYanPresenter.loadData();
 
-        kaiYanPresenter.loadData();
-/*
-
-        RetrofitManager.builder(RetrofitService.KAIYAB_BASE_URL,"KaiYanService").getLatestNews3()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<KaiYanModel, KaiYanModel>() {
-                    @Override
-                    public KaiYanModel call(KaiYanModel kaiYanModel) {
-                        return kaiYanModel;
-                    }
-                })
-                .subscribe(new Action1<KaiYanModel>() {
-                    @Override
-                    public void call(KaiYanModel kaiYanModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (kaiYanModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-
-                            nextPage= kaiYanModel.getNextPageUrl().substring(55, kaiYanModel.getNextPageUrl().length()-7);
-
-                            kaiYanAdater.changeData(kaiYanModel.getItemList());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-
-                    }
-                });
-
-*/
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
 
     }
     //加载更多
     private void loadDataBefore() {
-        kaiYanPresenter.loadBeforeData();
-       /* RetrofitManager.builder(RetrofitService.KAIYAB_BASE_URL,"KaiYanService").getNextPageNews(nextPage)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<KaiYanModel, KaiYanModel>() {
-                    @Override
-                    public KaiYanModel call(KaiYanModel kaiYanModel) {
-                        return kaiYanModel;
-                    }
-                })
-                .subscribe(new Action1<KaiYanModel>() {
-                    @Override
-                    public void call(KaiYanModel kaiYanModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (kaiYanModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-                            nextPage= kaiYanModel.getNextPageUrl().substring(55, kaiYanModel.getNextPageUrl().length()-7);
+        if (NetUtil.isNetworkConnected()){
+            kaiYanPresenter.loadBeforeData();
 
-                            kaiYanAdater.addData(kaiYanModel.getItemList());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadBeforeSnackbar.dismiss();
-                        mTvLoadError.setVisibility(View.GONE);
-                        isloading=false;
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadBeforeSnackbar.show();
-                        mPbLoading.setVisibility(View.GONE);
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-                    }
-                });*/
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
     public void onRefresh() {
-        loadDta();
+        if (NetUtil.isNetworkConnected()){
+            loadDta();
+
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
     }
 
 

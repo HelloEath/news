@@ -1,4 +1,4 @@
-package com.glut.news.discover.view.fragment.activity;
+package com.glut.news.discover.view.fragment;
 
 import com.glut.news.discover.model.entity.KaiYanModel;
 
@@ -6,7 +6,7 @@ import com.glut.news.discover.model.entity.KaiYanModel;
  * Created by yy on 2018/3/12.
  */
 
-public interface IKaiYanView {
+public interface IKaiYanFragmentView {
     void showLoading();
     void hideLoading();
     void showEmpty();

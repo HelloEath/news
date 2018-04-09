@@ -12,32 +12,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.glut.news.R;
+import com.glut.news.common.utils.NetUtil;
 import com.glut.news.discover.model.adater.OneAdater;
-import com.glut.news.discover.model.entity.OneModel;
 import com.glut.news.discover.model.entity.OneDataModel;
-import com.glut.news.discover.model.entity.OneDateListModel;
-import com.glut.news.common.utils.manager.RetrofitManager;
-import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.discover.model.entity.OneModel;
+import com.glut.news.discover.presenter.impl.OneFragmentPresenterImpl;
 import com.glut.news.discover.view.fragment.activity.OneDetailActivity;
 import com.yalantis.phoenix.PullToRefreshView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
-
 /**
  * Created by yy on 2018/2/4.
  */
-public class OneFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener {
+public class OneFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IOneFragmentView {
 
     private RecyclerView recyclerView;
     private PullToRefreshView refreshLayout;
@@ -53,15 +46,12 @@ public class OneFragment extends android.support.v4.app.Fragment implements Pull
     private Snackbar mLoadBeforeSnackbar;
 
 
-
+private OneFragmentPresenterImpl o=new OneFragmentPresenterImpl(this);
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my, container, false);
-        //透明状态栏
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        //透明导航栏
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+
         initView(v);
         loadDta();
         return v;
@@ -89,11 +79,17 @@ public class OneFragment extends android.support.v4.app.Fragment implements Pull
         oneAdater.setOnItemClickListener(new OneAdater.OnItemClickListener() {
             @Override
             public void OnItemclick(View v, String id, String author) {
-                Intent i=new Intent(getActivity(),OneDetailActivity.class);
-                i.putExtra("author",author);
-                i.putExtra("id",id);
 
-                startActivity(i);
+                if (NetUtil.isNetworkConnected()){
+                    Intent i=new Intent(getActivity(),OneDetailActivity.class);
+                    i.putExtra("author",author);
+                    i.putExtra("id",id);
+
+                    startActivity(i);
+                }else {
+                    Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -112,7 +108,7 @@ public class OneFragment extends android.support.v4.app.Fragment implements Pull
 
                 if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
                     isloading=true;
-                    loadDataBefore();
+                    o.loadMoreData();//加载以前的数据
 
 
                 }
@@ -140,147 +136,53 @@ public class OneFragment extends android.support.v4.app.Fragment implements Pull
     }
 
     public void loadDta() {
+if (NetUtil.isNetworkConnected()){
+    o.loadData();
+}else {
 
-        RetrofitManager.builder(RetrofitService.ONE_MOMENT_BASE,"OneService").getOneDateList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<OneDateListModel, OneDateListModel>() {
-                    @Override
-                    public OneDateListModel call(OneDateListModel douBanList) {
-                        return douBanList;
-                    }
-                })
-                .subscribe(new Action1<OneDateListModel>() {
-                    @Override
-                    public void call(OneDateListModel oneDateListModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (oneDateListModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
+    Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+}
 
-                            currentDate=Integer.parseInt(oneDateListModel.getData().get(0))-1;
-                            loadData2(oneDateListModel.getData().get(0));
-                          // oneAdater.changeData(douBanList.getPosts());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-
-                    }
-                });
 
 
     }
 
-    private void loadData2(String s) {
-
-
-        RetrofitManager.builder(RetrofitService.ONE_MOMENT_BASE,"OneService").getOneLasteNews(s)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<OneModel, OneModel>() {
-                    @Override
-                    public OneModel call(OneModel oneModel) {
-                        return oneModel;
-                    }
-                })
-                .subscribe(new Action1<OneModel>() {
-                    @Override
-                    public void call(OneModel oneModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (oneModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-
-                            oneAdater.changeData(oneModel.getData().getContent_list());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-
-                    }
-                });
-    }
 
     //加载以前的数据
     private void loadDataBefore() {
-        RetrofitManager.builder(RetrofitService.ONE_MOMENT_BASE,"OneService").getOneLasteNews(currentDate+"")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<OneModel, OneModel>() {
-                    @Override
-                    public OneModel call(OneModel oneModel) {
-                        return oneModel;
-                    }
-                })
-                .subscribe(new Action1<OneModel>() {
-                    @Override
-                    public void call(OneModel oneModel) {
-                        mPbLoading.setVisibility(View.GONE);
-                        if (oneModel ==null){
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
-                            currentDate = currentDate-1;
-
-                            oneAdater.addData(oneModel.getData().getContent_list());
-                            mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                        mLoadBeforeSnackbar.dismiss();
-                        mTvLoadError.setVisibility(View.GONE);
-                        isloading=false;
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        mLoadBeforeSnackbar.show();
-                        mPbLoading.setVisibility(View.GONE);
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
-                    }
-                });
+    o.loadMoreData();
     }
 
     @Override
     public void onRefresh() {
-        loadDta();
+        if (NetUtil.isNetworkConnected()){
+            loadDta();
+
+        }else {
+            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void loadDataSuccess(OneModel o) {
+        oneAdater.changeData(o.getData().getContent_list());
+
+    }
+
+    @Override
+    public void loadMoreDataSuccess(OneModel o) {
+        oneAdater.addData( o.getData().getContent_list());
+
+    }
+
+    @Override
+    public void loadDataFail() {
+
+    }
+
+    @Override
+    public void loadMoreDataFail() {
+
     }
 }
 

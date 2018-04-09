@@ -6,12 +6,19 @@ import android.net.NetworkInfo;
 
 import com.glut.news.AppApplication;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+
 /**
  * Created by yy on 2018/2/1.
  */
 public class NetUtil {
 
-
+    public static void sendHttpRequest(String address,okhttp3.Callback callback){
+        OkHttpClient client=new OkHttpClient();
+        Request request=new Request.Builder().url(address).build();
+        client.newCall(request).enqueue(callback);
+    }
     public static boolean isNetworkConnected() {
         if (AppApplication.getContext() != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager)AppApplication.getContext()

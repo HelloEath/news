@@ -1,4 +1,4 @@
-package com.glut.news.discover.view.fragment.activity;
+package com.glut.news.discover.view.fragment;
 
 import com.glut.news.discover.model.entity.GuoKrListModel;
 
@@ -6,7 +6,7 @@ import com.glut.news.discover.model.entity.GuoKrListModel;
  * Created by yy on 2018/3/12.
  */
 
-public interface IGuoKrView {
+public interface IGuoKrFragmentView {
 
     void showLoading();
     void hideLoading();
