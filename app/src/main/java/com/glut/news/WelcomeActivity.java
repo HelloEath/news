@@ -89,11 +89,19 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void run() {
 
-                //从闪屏界面跳转到首界面
+              /*  if (SetUtil.getInstance().getIsFirstTime()){//第一次进入APP
+                    Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else{//第二次进入APP
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }*/
+
                 Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
                 startActivity(intent);
                 finish();
-
 
             }
         }, 5000);//延迟5S后发送handler信息
@@ -170,6 +178,15 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.btn_tiaoguo:
                 //从闪屏界面跳转到首界面
+                  /*  if (SetUtil.getInstance().getIsFirstTime()){//第一次进入APP
+                    Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else{//第二次进入APP
+                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }*/
                 Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

@@ -169,7 +169,10 @@ if (NetUtil.isNetworkConnected()){
 
                 break;
             case R.id.fab2:
-                UserInfo userInfo=new UserInfo();
+                startActivity(new Intent(LoginActivity.this,ForgetPwdActivity.class));
+
+
+               /* UserInfo userInfo=new UserInfo();
                 if (!SpUtil.getUserFromSp("UserEmail").equals("null")){
                     userInfo.setUserEmail(SpUtil.getUserFromSp("UserEmail"));
                 }else {
@@ -182,7 +185,7 @@ if (NetUtil.isNetworkConnected()){
                 l.toLogin(userInfo);
 
                 Intent i=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(i);
+                startActivity(i);*/
                 break;
         }
 

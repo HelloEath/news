@@ -626,6 +626,17 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
     @Override
     public void logOutSuccess() {
         ToastUtil.showSuccess("登出成功",3000,UserAlterActivity.this);
+        //清除客户端上用户数据
+        SpUtil.saveUserToSp("UserId","null");
+        SpUtil.saveUserToSp("UserName","null");
+        SpUtil.saveUserToSp("UserSex","null");
+
+        SpUtil.saveUserToSp("UserLogo","null");
+        SpUtil.saveUserToSp("UserDistric","null");
+
+        SpUtil.saveUserToSp("UserDesc","null");
+
+
         Intent intent=new Intent(UserAlterActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();

@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
@@ -35,6 +37,9 @@ import com.glut.news.my.view.activity.InterestTagActivity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+
 
 /**
  * Created by yy on 2018/3/17.
@@ -58,6 +63,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     private String    UserName;
     private String    UserPwd;
     private RelativeLayout logister_bg;
+    private EditText mEditText_seriCode;
+    private Button mButton_sendVeriCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +89,8 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
 
     private void initView() {
+        mEditText_seriCode=findViewById(R.id.et_veriCode);
+        mButton_sendVeriCode=findViewById(R.id.btn_sendVeriCode);
         logister_bg= (RelativeLayout) findViewById(R.id.register_bg);
         fab= (FloatingActionButton) findViewById(R.id.fab);
         cvAdd= (CardView) findViewById(R.id.cv_add);
@@ -107,10 +116,11 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
                     String Test=et_useremail.getText().toString();
                     UserInfo userInfo =new UserInfo();
+                    String veriCCode=mEditText_seriCode.getText().toString().trim();
                     if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
                         ToastUtil.showOnLoading("正在注册",RegisterActivity.this);
+                        submitCode("86",Test,veriCCode,userInfo);
 
-                        iRr.toRegister(userInfo);//发送请求
 
                     }else{
                         ToastUtil.showError("注册失败",3000,RegisterActivity.this);
@@ -126,8 +136,101 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
             }
         });
+
+        mButton_sendVeriCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!"".equals(et_useremail.getText().toString().trim())){
+                    pattern = Pattern.compile(PHONE_PATTERN);
+                    matcher = pattern.matcher(et_useremail.getText().toString().trim());
+                    if (matcher.matches()){
+                        sendCode("86", et_useremail.getText().toString().trim());
+
+                    }else {
+
+                        et_useremail.setError("手机号码格式有误");
+
+                    }
+
+
+                }else {
+                    ToastUtil.showError("手机号码不能为空",3000,RegisterActivity.this);
+                }
+
+
+
+            }
+        });
+    }
+    // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
+    public void sendCode(String country, String phone) {
+        // 注册一个事件回调，用于处理发送验证码操作的结果
+        SMSSDK.registerEventHandler(new EventHandler() {
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    // TODO 处理成功得到验证码的结果
+                    new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            Toast.makeText(RegisterActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                            // 进入loop中的循环，查看消息队列
+
+                            }.start();
+
+
+
+
+
+                    // 请注意，此时只是完成了发送验证码的请求，验证码短信还需要几秒钟之后才送达
+                } else{
+                    // TODO 处理错误的结果
+                    new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            Toast.makeText(RegisterActivity.this,"发送失败",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                        // 进入loop中的循环，查看消息队列
+
+                    }.start();
+
+
+                }
+
+            }
+        });
+        // 触发操作
+        SMSSDK.getVerificationCode(country, phone);
     }
 
+    // 提交验证码，其中的code表示验证码，如“1357”
+    public void submitCode(String country, String phone, String code,final  UserInfo userInfo) {
+        // 注册一个事件回调，用于处理提交验证码操作的结果
+        SMSSDK.registerEventHandler(new EventHandler() {
+            public void afterEvent(int event, int result, Object data) {
+                if (result == SMSSDK.RESULT_COMPLETE) {
+                    // TODO 处理验证成功的结果
+                    iRr.toRegister(userInfo);//发送请求
+                } else{
+                    // TODO 处理错误的结果
+                    ToastUtil.showError("验证码有误",3000,RegisterActivity.this);
+                }
+
+            }
+        });
+        // 触发操作
+        SMSSDK.submitVerificationCode(country, phone, code);
+    }
+
+    protected void onDestroy() {
+        super.onDestroy();
+        //用完回调要注销掉，否则可能会出现内存泄露
+        SMSSDK.unregisterAllEventHandler();
+    }
     private Boolean vailUserInfo(UserInfo userInfo, String UserName, String UserPwd, String UserRePwd, String Test) {
       boolean f=false;
         if (!"".equals(UserName)){
@@ -190,7 +293,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
             }
 
         }else{
-            et_useremail.setError("邮箱/手机号不能为空");
+            et_useremail.setError("手机号不能为空");
             f=false;
 
         }

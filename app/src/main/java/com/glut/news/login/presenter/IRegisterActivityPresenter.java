@@ -8,4 +8,5 @@ import com.glut.news.common.model.entity.UserInfo;
 
 public interface IRegisterActivityPresenter {
     void toRegister(UserInfo userInfo);
+
 }

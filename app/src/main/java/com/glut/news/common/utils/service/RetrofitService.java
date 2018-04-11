@@ -198,11 +198,12 @@ public interface RetrofitService {
     public interface UserService{
 
         //登录
-
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @POST("user/login")
         Observable<UserModel> login(@Body UserInfo userInfo);
 
         //注册
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @POST("user/register")
         Observable<UserModel> register(@Body UserInfo userInfo);
         //登出

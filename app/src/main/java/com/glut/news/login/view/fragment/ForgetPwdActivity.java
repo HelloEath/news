@@ -2,10 +2,12 @@ package com.glut.news.login.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -188,9 +190,29 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // TODO 处理成功得到验证码的结果
                     // 请注意，此时只是完成了发送验证码的请求，验证码短信还需要几秒钟之后才送达
-                    Toast.makeText(ForgetPwdActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+                    new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            Toast.makeText(ForgetPwdActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                        // 进入loop中的循环，查看消息队列
+
+                    }.start();
+
                 } else{
                     // TODO 处理错误的结果
+                    new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            Toast.makeText(ForgetPwdActivity.this,"发送失败",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                        // 进入loop中的循环，查看消息队列
+
+                    }.start();
                 }
 
             }

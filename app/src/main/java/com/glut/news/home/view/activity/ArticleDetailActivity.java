@@ -50,7 +50,6 @@ import com.mingle.widget.LoadingView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.id;
 import static android.view.KeyEvent.KEYCODE_BACK;
 
 
@@ -73,7 +72,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private RelativeLayout relativeLayout;
     private ArticleDetailPresenterImpl articleDetailPresenter=new ArticleDetailPresenterImpl(this);
 
-    String  ids;
+   private int  articleId;
     private int nextPage;
     private String contentType;
     private final static String TAG="ArticleDetailActivity";
@@ -94,9 +93,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initData() {
-        int id=getIntent().getIntExtra("id",0);
+        articleId=getIntent().getIntExtra("id",0);
         contentType=getIntent().getStringExtra("ContentType");
-        ids=id+"";
+
 
 
 
@@ -105,7 +104,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private void loadData() {
 
         if (NetUtil.isNetworkConnected()){
-            String url="http://192.168.191.1:8085/News/article/detailArticle?article_Id="+id;
+            String url="http://192.168.191.1:8085/News/article/detailArticle?Article_Id="+articleId;
             initWebView(url);
             if (UserUtil.isUserLogin()) {
                 userId=SpUtil.getUserFromSp("UserId");
@@ -124,7 +123,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     private void star(){
         Star star=new Star();
-        star.setStar_ContentId(id);
+        star.setStar_ContentId(articleId);
         star.setStar_UserId(Integer.parseInt(userId));
         star.setStar_Type(1);
         star.setContent_type(contentType);
@@ -134,7 +133,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
     private void recoreHistory() {
         History h=new History();
-        h.setHistory_Article(Integer.parseInt(ids));
+        h.setHistory_Article(articleId);
         h.setHistory_Persion(Integer.parseInt(userId));
         h.setHistory_Type(1);
         h.setContent_type(contentType);
@@ -356,7 +355,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     }
     private void loadCommentData() {
-        articleDetailPresenter.loadComment(Integer.parseInt(ids));//加载评论数据
+        articleDetailPresenter.loadComment(articleId);//加载评论数据
 
     }
 
