@@ -75,14 +75,13 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
             }
         };
         Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);
-        Glide.with(this).load(R.drawable.qq_icon).into(btn_QQ);
-        Glide.with(this).load(R.drawable.wechat_icon).into(btn_WeChat);
+        Glide.with(this).load(R.drawable.login_btn_qq).into(btn_QQ);
+        Glide.with(this).load(R.drawable.login_btn_wechat).into(btn_WeChat);
 
     }
 
     private void initView() {
         login_bg= (RelativeLayout) findViewById(R.id.login_bg);
-        btn_forGetPwd= (TextView) findViewById(R.id.btn_forgetPwd);
         btn_QQ= (ImageView) findViewById(R.id.btn_QQ);
         btn_WeChat= (ImageView) findViewById(R.id.btn_WeChat);
         etUsername = (EditText) findViewById(R.id.et_username);
@@ -95,7 +94,6 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
         //cv.setOnClickListener(this);
         btGo.setOnClickListener(this);
         btn_WeChat.setOnClickListener(this);
-        btn_forGetPwd.setOnClickListener(this);
         btn_QQ.setOnClickListener(this);
         fab2.setOnClickListener(this);
     }
@@ -138,27 +136,7 @@ if (NetUtil.isNetworkConnected()){
 
 }
                 break;
-            case R.id.btn_forgetPwd:
-                /*//要做的动画
-                Transition explode = TransitionInflater.from(this).inflateTransition(R.transition.fabtransition);
-//退出时使用
-                getWindow().setExitTransition(explode);
-//第一次进入时使用
-                getWindow().setEnterTransition(explode);
-//再次进入时使用
-                getWindow().setReenterTransition(explode);
 
-                startActivity(new Intent(this, ForgetPwdActivity.class),ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
-                *//*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    ActivityOptions options =
-                            ActivityOptions.makeSceneTransitionAnimation(this, fab, fab.getTransitionName());
-                    startActivity(new Intent(this, RegisterActivity.class), options.toBundle());
-                } else {
-                    startActivity(new Intent(this, RegisterActivity.class));
-                }*/
-
-                startActivity(new Intent(LoginActivity.this,ForgetPwdActivity.class));
-                break;
             case R.id.btn_QQ:
                 //lt.error();
 

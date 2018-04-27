@@ -72,17 +72,11 @@ public class VideoFragment extends android.support.v4.app.Fragment {
 
         }
 
-       /* fragmentList.add(new VideoTypeFragment("http://news.163.com/mobile/"));
-        fragmentList.add(new VideoTypeFragment("http://news.163.com/mobile/"));
-        fragmentList.add(new VideoTypeFragment("http://3g.163.com/ntes/special/00340D52/3gtouchlist.html?docid=A9O2HAB6jiying&amp;title=%E8%BD%BB%E6%9D%BE%E4%B8%80%E5%88%BB"));
-        fragmentList.add(new VideoTypeFragment("http://3g.163.com/touch/money/"));
-        fragmentList.add(new VideoTypeFragment("http://3g.163.com/touch/tech/"));*/
-
-
 
         pagerAdapter=new VideoAdapter(getChildFragmentManager(), fragmentList);
         this.viewPager.setAdapter(pagerAdapter);//设置adapter
         this.viewPager.setCurrentItem(0);//设置当前显示的页面
+        this.viewPager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewPager);
     }
 

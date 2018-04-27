@@ -30,7 +30,7 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onClick(View v) {
-        onItemclick.onItemClick( (String) v.getTag(R.string.h_id),(String)v.getTag(R.string.h_type),(String) v.getTag(R.string.player));
+        onItemclick.onItemClick( (String) v.getTag(R.string.h_id),(String)v.getTag(R.string.h_type),(String) v.getTag(R.string.h_type2));
     }
 
     public void OnItemClickListener(onItemclick o){
@@ -38,7 +38,7 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public interface onItemclick{
-        void onItemClick(String id,String type,String player);
+        void onItemClick(String id,String type,String contentType);
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -62,6 +62,8 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((HistoryViewHolder)holder).author.setText(historyList.get(position).getArticle_Author_name());
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_id,historyList.get(position).getArticle_Id()+"");
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type,"a");
+            ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type2,historyList.get(position).getArticle_Type());
+
 
         }else {
 
@@ -73,6 +75,8 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
         ((HistoryViewHolder)holder).author.setText(historyList.get(position).getVideo_Author_Name());
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_id,historyList.get(position).getVideo_Id()+"");
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type,"v");
+            ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type2,historyList.get(position).getArticle_Type());
+
             ((HistoryViewHolder)holder).itemView.setTag(R.string.player,historyList.get(position).getVideo_Player());
         }
         ((HistoryViewHolder)holder).itemView.setOnClickListener(this);

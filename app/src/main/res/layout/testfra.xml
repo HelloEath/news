@@ -38,7 +38,7 @@
                 android:scaleType="fitXY"
                 android:clickable="false"
                 android:duplicateParentState="true"
-                android:background="@drawable/add"></ImageButton>
+                android:background="@drawable/home_icon_add"></ImageButton>
         </LinearLayout>
     </LinearLayout>
 

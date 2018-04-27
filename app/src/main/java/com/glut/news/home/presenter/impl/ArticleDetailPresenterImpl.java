@@ -1,5 +1,6 @@
 package com.glut.news.home.presenter.impl;
 
+import com.glut.news.common.model.entity.Comment;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.home.presenter.IArticleDetailPresenter;
@@ -37,7 +38,6 @@ public class ArticleDetailPresenterImpl implements IArticleDetailPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<Integer, Integer>() {
@@ -49,7 +49,6 @@ public class ArticleDetailPresenterImpl implements IArticleDetailPresenter {
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer f) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (f==1){
                             articleDetailView.onStarSuccess();
                         }else{
@@ -77,14 +76,12 @@ public class ArticleDetailPresenterImpl implements IArticleDetailPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
 
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer comment) {
-                        //mPbLoading.setVisibility(View.GONE);
 
                     }
                 }, new Action1<Throwable>() {
@@ -96,61 +93,19 @@ public class ArticleDetailPresenterImpl implements IArticleDetailPresenter {
     }
 
     @Override
-    public void loadComment(int Id) {
+    public void loadComment(int Id, final String fp) {
+        if ("fp".equals(fp)){
+
+            NextPage=1;
+        }
         ArticleId=Id;
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"CommentService").getCOmment(ArticleId+"",1)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-
-                    }
-                })
-                .map(new Func1<VideoCommentsModel, VideoCommentsModel>() {
-                    @Override
-                    public VideoCommentsModel call(VideoCommentsModel guoKrList) {
-                        return guoKrList;
-                    }
-                })
-                .subscribe(new Action1<VideoCommentsModel>() {
-                    @Override
-                    public void call(VideoCommentsModel comment) {
-
-                        if (comment==null){
-
-                        }else{
-
-                            if (comment.getData()!=null)
-                                articleDetailView.changeAdater(comment);
-
-                            NextPage=comment.getNextpage();
-                            //mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
-
-                    }
-                });
-    }
-
-    @Override
-    public void loadMoreComment() {
         RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"CommentService").getCOmment(ArticleId+"",NextPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
+
                     }
                 })
                 .map(new Func1<VideoCommentsModel, VideoCommentsModel>() {
@@ -162,31 +117,154 @@ public class ArticleDetailPresenterImpl implements IArticleDetailPresenter {
                 .subscribe(new Action1<VideoCommentsModel>() {
                     @Override
                     public void call(VideoCommentsModel comment) {
-                        //mPbLoading.setVisibility(View.GONE);
+
                         if (comment==null){
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
+
                         }else{
 
-                            if (comment.getData()!=null)
-                                articleDetailView.addAdater(comment);
-                                NextPage=comment.getNextpage();
-                            //mTvLoadEmpty.setVisibility(View.GONE);
+                            if (comment.getStus().equals("ok")){
+
+                                if (comment.isHaveNextPage()){
+
+                                    if ("fp".equals(fp)){
+                                        articleDetailView.changeAdater(comment);
+
+
+                                    }else {
+
+                                        articleDetailView.addAdater(comment);
+                                    }
+                                    NextPage=comment.getNextpage();
+
+                                }else {
+                                    articleDetailView.addAdater(comment);
+
+                                    articleDetailView.noMoreData();
+
+                                }
+                            }else {
+
+
+                            }
+
                         }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
+    }
+
+
+    public void sendComment(Comment c) {
+
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "CommentService").putComment(c.getComment_Content(),c.getComment_Article()+"",c.getComment_Author()+"",c.getComment_Time(),c.getAuthor_logo(),c.getAuthor_name())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+                .map(new Func1<Comment, Comment>() {
+                    @Override
+                    public Comment call(Comment guoKrList) {
+                        return guoKrList;
+                    }
+                })
+                .subscribe(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        if (comment == null) {
+                        } else {
+
+                            if ("ok".equals(comment.getStus()) ){
+
+                                articleDetailView.onSendCommentSuccess();
+
+                            }else {
+                                articleDetailView.onSendCommentFail();
+                            }
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+
+                    }
+                });
+    }
+
+    public void updateComments() {
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "CommentService").updateComment(ArticleId+"",1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer comment) {
+
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                    }
+                });
+    }
+
+    public void deleteComment(String userId) {
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "CommentService").deleteComment(ArticleId+"",userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+                .map(new Func1<Comment, Comment>() {
+                    @Override
+                    public Comment call(Comment guoKrList) {
+                        return guoKrList;
+                    }
+                })
+                .subscribe(new Action1<Comment>() {
+                    @Override
+                    public void call(Comment comment) {
+                        if (comment == null) {
+                        } else {
+
+                            if ("ok".equals(comment.getStus()) ){
+                               articleDetailView.onDeleteCommentSuccess();
+
+                            }else {
+
+                                articleDetailView.onDeleteCommentFail();
+                            }
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+
+                    }
+                });
+
+
 
     }
 }

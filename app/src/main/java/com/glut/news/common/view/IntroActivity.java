@@ -38,10 +38,12 @@ public class IntroActivity extends AppIntro implements ISlideBackgroundColorHold
         // Add your slide fragments here.
         // AppIntro will automatically generate the dots indicator and buttons.
 
-        addSlide(FirstFragment.newInstance("首页","分类阅览图文资讯,即刻开启个性化推荐",R.drawable.home_bg,getResources().getColor(R.color.white)));
-        addSlide(FirstFragment.newInstance("视频","指尖上的短视频，足不出户知天下事",R.drawable.video_bg,getResources().getColor(R.color.white)));
-        addSlide(FirstFragment.newInstance("发现","每日高质量推文，发现不一样的世界",R.drawable.dicover_bg,getResources().getColor(R.color.white)));
-        addSlide(FirstFragment.newInstance("天气","温馨的天气提醒,每天愉悦的阅览体验",R.drawable.weather_bg,getResources().getColor(R.color.white)));
+     addSlide(FirstFragment.newInstance("首页","分类阅览图文资讯,即刻开启个性化推荐",R.drawable.tro_bg1,getResources().getColor(R.color.white)));
+        addSlide(FirstFragment.newInstance("视频","指尖上的短视频，足不出户知天下事",R.drawable.tro_bg2,getResources().getColor(R.color.white)));
+        addSlide(FirstFragment.newInstance("发现","每日高质量推文，发现不一样的世界",R.drawable.tro_bg3,getResources().getColor(R.color.white)));
+        addSlide(FirstFragment.newInstance("天气","温馨的天气提醒,每天愉悦的阅览体验",R.drawable.tro_bg4,getResources().getColor(R.color.white)));
+
+
 
         addSlide(FirstFragment2.newsInstance("不登录，无推荐，登录后才能开启个性化推荐",R.drawable.interest_bg,getSupportFragmentManager()));
 

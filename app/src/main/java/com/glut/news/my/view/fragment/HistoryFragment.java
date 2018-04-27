@@ -2,8 +2,8 @@ package com.glut.news.my.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +17,10 @@ import com.glut.news.my.model.entity.CommonData;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.my.presenter.impl.HistoryFragmentPresenterImpl;
 import com.glut.news.video.view.activity.VideoDetailActivity;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +36,13 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
 
     private HistoryAdater<CommonData> Ada;
 
-    private int NextPage;
     private String title;
     private boolean isloading;
+    private SmartRefreshLayout mRefreshLayout;
 
 
     private HistoryFragmentPresenterImpl starWithHistoryPresenter=new HistoryFragmentPresenterImpl(this) ;
 
-    private boolean IsLastPage;
    public HistoryFragment(){
 
     }
@@ -55,8 +58,13 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
         initView(v);
 
         initData();
-        starWithHistoryPresenter.loadHistory();
+        loadData();
         return v;
+    }
+
+    private void loadData() {
+        starWithHistoryPresenter.loadHistory("fp");
+
     }
 
     private void initData() {
@@ -66,53 +74,41 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
 
 
     private void initView(View v) {
+        mRefreshLayout=v.findViewById(R.id.refreshLayout);
         Ada=new HistoryAdater<CommonData>(getContext(),historyList);
 
         r=v.findViewById(R.id.recyclerview);
         LinearLayoutManager lm=new LinearLayoutManager(getContext());
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         r.setLayoutManager(lm);
-        r.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        //上拉加载更多
-        r.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        //下拉刷新
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2) ) {
-                    isloading=true;
-
-                    starWithHistoryPresenter.loadMoreHistory();
-
-
-
-
-
-                }
-
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                starWithHistoryPresenter.loadHistory("fp");
+            }
+        });
+        //加载更多
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                starWithHistoryPresenter.loadHistory("null");
             }
         });
         Ada.OnItemClickListener(new HistoryAdater.onItemclick() {
             @Override
-            public void onItemClick(String id, String type,String player) {
+            public void onItemClick(String id, String type,String contentType) {
                 if ("v".equals(type)){
 
                     Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-                    intent.putExtra("id",intent);
-                    intent.putExtra("player",player);
+                    intent.putExtra("id",id);
+                    intent.putExtra("ContentType",contentType);
                     startActivity(intent);
 
                 }else {
                     Intent intent=new Intent(getActivity(),ArticleDetailActivity.class);
-                    intent.putExtra("id",intent);
+                    intent.putExtra("id",id);
+                    intent.putExtra("ContentType",contentType);
 
                     startActivity(intent);
                 }
@@ -126,13 +122,28 @@ public class HistoryFragment extends android.support.v4.app.Fragment implements 
     @Override
     public void onLoadHistorySuccess(HistoryWithStarModel h) {
         Ada.changeDta(h.getData());
+        mRefreshLayout.setEnableLoadMore(true);
+        mRefreshLayout.finishRefresh(true);
 
+    }
 
+    @Override
+    public void onLoadHistoryFail() {
+
+       mRefreshLayout.finishRefresh(false);
+    }
+
+    @Override
+    public void onNoMoreHistoryData() {
+
+       mRefreshLayout.finishLoadMoreWithNoMoreData();
+       mRefreshLayout.setEnableLoadMore(false);
     }
 
     @Override
     public void onLoadMoreHistorySuccess(HistoryWithStarModel h) {
         Ada.addData(h.getData());
+        mRefreshLayout.finishLoadMore(true);
     }
 
 

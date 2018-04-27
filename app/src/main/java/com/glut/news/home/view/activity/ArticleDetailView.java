@@ -11,4 +11,14 @@ public interface ArticleDetailView {
     void changeAdater(VideoCommentsModel commonData);
     void onStarSuccess();
     void onStarFail();
+
+    void noMoreData();
+
+    void onSendCommentSuccess();
+
+    void onSendCommentFail();
+
+    void onDeleteCommentSuccess();
+
+    void onDeleteCommentFail();
 }

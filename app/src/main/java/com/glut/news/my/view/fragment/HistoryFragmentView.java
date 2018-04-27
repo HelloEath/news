@@ -10,7 +10,7 @@ public interface HistoryFragmentView {
 
 
     void onLoadHistorySuccess(HistoryWithStarModel h);
-    void onLoadMoreHistorySuccess(HistoryWithStarModel h);
-
-
+    void onLoadHistoryFail();
+    void  onLoadMoreHistorySuccess(HistoryWithStarModel h);
+    void onNoMoreHistoryData();
 }

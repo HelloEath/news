@@ -91,7 +91,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     private void initLocation() {
         if (NetUtil.isNetworkConnected()){
             locationClient.registerLocationListener(myLocationListener);
-
             initLocationOption();//初始化定位设置
             locationClient.start();
         }else {
@@ -121,7 +120,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 //bd09：百度墨卡托坐标；
 //海外地区定位，无需设置坐标类型，统一返回wgs84类型坐标
 
-        option.setScanSpan(0);
+        option.setScanSpan(2000);
 //可选，设置发起定位请求的间隔，int类型，单位ms
 //如果设置为0，则代表单次定位，即仅定位一次，默认为0
 //如果设置非0，需设置1000ms以上才有效
@@ -224,13 +223,17 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                 .setFragmentManager(getActivity().getSupportFragmentManager())    //此方法必须调用
                 .enableAnimation(true)    //启用动画效果
 
+
+
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
                         Toast.makeText(getActivity(), data.getName(), Toast.LENGTH_SHORT).show();
+                        titleCity.setText(data.getName());
                         initData(data.getName());//第一次初始化数据
-                        //titleCity.setText(data.getName());
+
                     }
+
 
                     @Override
                     public void onLocate() {
@@ -518,7 +521,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
         // titleCity.setText(weatherCity);
         toolbar.setTitle("");
 
-        toolbar.setNavigationIcon(R.drawable.btn_location);
+        toolbar.setNavigationIcon(R.drawable.weather_btn_location);
         sfresh = v.findViewById(R.id.refreshLayout);
 
         sfresh.setEnableLoadMore(false);

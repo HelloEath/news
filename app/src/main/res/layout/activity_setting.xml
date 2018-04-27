@@ -25,7 +25,6 @@
     <FrameLayout
 
         android:layout_width="match_parent"
-        android:background="@drawable/foot1"
         android:layout_height="200dp">
         <ImageView
             android:id="@+id/user_bg"
@@ -81,7 +80,7 @@
         android:id="@+id/star_logo"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:background="@drawable/star_icon"/>
+        android:background="@drawable/my_icon_star"/>
     <TextView
         android:id="@+id/star_num"
         android:layout_width="wrap_content"
@@ -117,7 +116,7 @@
                     android:id="@+id/history_logo"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:background="@drawable/history_icon"/>
+                    android:background="@drawable/my_icon_history"/>
                 <TextView
                     android:id="@+id/history_num"
                     android:layout_width="wrap_content"
@@ -141,7 +140,7 @@
         <ImageView
             android:id="@+id/alter_logo"
             android:layout_width="20dp"
-            android:background="@drawable/alter_icon"
+            android:background="@drawable/my_icon_alteruser"
             android:layout_margin="10dp"
             android:layout_height="20dp" />
 
@@ -160,7 +159,7 @@
         <ImageView
             android:id="@+id/setting_logo"
             android:layout_width="20dp"
-            android:background="@drawable/set_icon"
+            android:background="@drawable/my_icon_set"
             android:layout_margin="10dp"
             android:layout_height="20dp" />
 

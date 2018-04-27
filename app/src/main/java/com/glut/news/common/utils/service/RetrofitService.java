@@ -51,7 +51,7 @@ public interface RetrofitService {
 
     //视频APi
 
-    String VIDEO_BASE_URL="http://192.168.191.1:8085/News/";
+    String VIDEO_BASE_URL="http://192.168.191.1:8085/NewsServerApi/";
 
     //"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3"
     	//"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
@@ -133,23 +133,26 @@ public interface RetrofitService {
         @GET("video/getVideo")
         Observable<VideoModel> getVideo(@Query("pageNo")int pageno);
 
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @GET("video/getDetailVideo")
+        Observable<VideoModel> getDetailVideo(@Query("video_KeyWord")String videoType);
+
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_CONTROL_NETWORK)
         @GET("video/getTypeVideo")
         Observable<VideoModel> getTypeVideo(@Query("Video_Type") String type, @Query("pageNo")int pageno);
 
-        @FormUrlEncoded
-        @POST("video/updateVideoPlays")
-        Observable<Integer> updateVideoPlays(@Field("Video_Id") int ContentId);
+        @GET("video/getVideoDetailInfo")
+        Observable<VideoModel> getVideoDetailInfo(@Query("Video_Id") int ContentId);
 
     }
    /* 新闻*/
     public interface  ArticleService{
        /* 获取新闻列表*/
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
         @GET("article/typeArticle")
         Observable<ArticleModel> getTypeArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
        /* 获取新闻推荐列表*/
+       @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
        @GET("article/tuijian")
        Observable<ArticleModel> getTuiJianArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
@@ -164,7 +167,7 @@ public interface RetrofitService {
        /*插入评论*/
        @FormUrlEncoded
       @POST("comment/insertComment")
-       Observable<Comment> putComment(@Field("Comment_Content") String CommentContent,@Field("Comment_Article") String articleId,@Field("Comment_Author") String AuthorId,@Field("Comment_Time") String CommentTime);
+       Observable<Comment> putComment(@Field("Comment_Content") String CommentContent,@Field("Comment_Article") String articleId,@Field("Comment_Author") String AuthorId,@Field("Comment_Time") String CommentTime,@Field("Author_logo") String Author_logo,@Field("Author_name") String Author_name);
       /*删除评论*/
       @FormUrlEncoded
        @POST("comment/deleteComment")
@@ -211,28 +214,10 @@ public interface RetrofitService {
         @POST("user/logOut")
         Observable<UserModel> logOut(@Body UserInfo userInfo);
 
-        //修改用户名
+        //修改用户名/用户性别/用户desc/用户地区/用户密码/用户生日/
         @POST("user/updateUser")
-        Observable<UserModel> alterUserName(@Body UserInfo userInfo);
+        Observable<UserModel> alterUserInfo(@Body UserInfo userInfo);
 
-        //修改用户性别
-        @POST("user/updateUser")
-        Observable<UserModel> alterUserSex(@Body UserInfo userInfo);
-
-        //修改用户desc
-        @POST("user/updateUser")
-        Observable<UserModel> alterUserDesc(@Body UserInfo userInfo);
-
-        //修改用户地区
-        @POST("user/updateUser")
-        Observable<UserModel> alterUserDistrc(@Body UserInfo userInfo);
-
-        //修改用户密码
-        @POST("user/updateUser")
-        Observable<UserModel> alterUserPwd(@Body UserInfo userInfo);
-        //修改用户生日
-        @POST("user/updateUser")
-        Observable<UserModel> alterUserBirth(@Body UserInfo userInfo);
 
         //修改用户头像
         @Multipart
@@ -284,7 +269,7 @@ public interface RetrofitService {
     /*搜索*/
     public interface SearchService{
 
-        @GET("common/search")
-        Observable<HistoryWithStarModel> doSearch(@Query("searchValue") String value,@Query("NextPage") int NextPage);
+        @GET("search/searchData")
+        Observable<ArticleModel> doSearch(@Query("Article_Type") String value,@Query("pageNo") int NextPage);
     }
 }

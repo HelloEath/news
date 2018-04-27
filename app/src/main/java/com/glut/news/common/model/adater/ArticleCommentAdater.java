@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.glut.news.R;
-import com.glut.news.video.model.adater.VideoDatailAdater;
 import com.glut.news.video.model.entity.VideoCommentListModel;
 
 import java.util.List;
@@ -32,43 +31,10 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
         commentListList=clist;
     }
 
-    enum ITEM_TYPE{
-        NORAML,
-        FOOTER,
-        HEDER
 
-    }
-    public void  addFootView(View view){
-        FootView=view;
-    }
-    public void addHeadView(View view){
-        HeadView=view;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int c=getItemCount();
-        if (commentListList.size()==0){
-
-        }else {
-
-
-            if (position == 0) {
-                return VideoDatailAdater.ITEM_TYPE.HEDER.ordinal();
-            } else if (position == getItemCount() - 1) {
-                return VideoDatailAdater.ITEM_TYPE.FOOTER.ordinal();
-            } else {
-                return VideoDatailAdater.ITEM_TYPE.NORAML.ordinal();
-            }
-        }
-        return 0;
-    }
 
     public  void addSingGonComments(VideoCommentListModel v){
-
             commentListList.add(v);
-
-
         notifyItemInserted(commentListList.size());
         notifyDataSetChanged();
 
@@ -93,21 +59,8 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup paret, int viewType) {
         RecyclerView.ViewHolder viewHolder=null;
-        int d= ITEM_TYPE.HEDER.ordinal();
-        int x= ITEM_TYPE.NORAML.ordinal();
-        int y= ITEM_TYPE.FOOTER.ordinal();
-        if (viewType== ITEM_TYPE.HEDER.ordinal()){
-            if (HeadView!=null)
-                viewHolder=new RecyclerView.ViewHolder(HeadView){};
-        }
-        if (viewType== ITEM_TYPE.NORAML.ordinal()){
-            View view=layoutInflater.inflate(R.layout.item_video_detailcomment,paret,false);
-            viewHolder=new VideoDetailViewHolder(view);
-        }
-        if (viewType== ITEM_TYPE.FOOTER.ordinal()){
-            viewHolder=new RecyclerView.ViewHolder(FootView){};
-
-        }
+        View view=layoutInflater.inflate(R.layout.item_video_detailcomment,paret,false);
+        viewHolder=new VideoDetailViewHolder(view);
 
         return viewHolder;
     }
@@ -115,12 +68,7 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (position==0){
 
-
-        }else if (position==getItemCount()-1){
-
-        }else {
             Glide.with(context).load(commentListList.get(position).getAuthor_logo()).apply(RequestOptions.circleCropTransform()).into(  ((VideoDetailViewHolder) holder).mAntuorLogo);
 
             ((VideoDetailViewHolder) holder).mAuthorName.setText(commentListList.get(position).getAuthor_name());
@@ -128,7 +76,7 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
             ((VideoDetailViewHolder) holder).mDianZanSum.setText(commentListList.get(position).getLikes()+"");
             ((VideoDetailViewHolder) holder).mContent.setText(commentListList.get(position).getComment_Content());
             ((VideoDetailViewHolder) holder).mTime.setText(commentListList.get(position).getComment_Time());
-        }
+
     }
 
 
@@ -137,7 +85,7 @@ public class ArticleCommentAdater extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemCount() {
 
-        return commentListList.size()+1;
+        return commentListList.size();
     }
 
     public void changeData(List<VideoCommentListModel> data) {

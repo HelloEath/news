@@ -6,6 +6,6 @@ package com.glut.news.my.presenter;
 
 public interface IHistoryFragmentPresenter {
 
-    void loadHistory();
-    void loadMoreHistory();
+    void loadHistory(String fp);
+
 }

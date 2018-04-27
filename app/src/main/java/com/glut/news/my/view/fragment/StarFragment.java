@@ -2,8 +2,8 @@ package com.glut.news.my.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +18,10 @@ import com.glut.news.my.model.entity.CommonData;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.my.presenter.impl.StarFragmentPresenterImpl;
 import com.glut.news.video.view.activity.VideoDetailActivity;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,14 +36,12 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
 
     private HistoryAdater<CommonData> Ada;
 
-    private int NextPage;
     private String title;
-    private boolean isloading;
+    private SmartRefreshLayout mRefreshLayout;
 
 
     private StarFragmentPresenterImpl starPresenter=new StarFragmentPresenterImpl(this) ;
 
-    private boolean IsLastPage;
     public StarFragment(String s) {
         title=s;
     }
@@ -53,10 +55,14 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
 
         initData();
 
-        starPresenter.loadStarData();
+        loadData();
 
 
         return v;
+    }
+    private void loadData() {
+        starPresenter.loadStarData("fp");
+
     }
 
     private void initData() {
@@ -66,53 +72,41 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
 
 
     private void initView(View v) {
+        mRefreshLayout=v.findViewById(R.id.refreshLayout);
         Ada=new HistoryAdater<CommonData>(getContext(),historyList);
 
         r=v.findViewById(R.id.recyclerview);
         LinearLayoutManager lm=new LinearLayoutManager(getContext());
         lm.setOrientation(LinearLayoutManager.VERTICAL);
         r.setLayoutManager(lm);
-        r.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        //上拉加载更多
-        r.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                starPresenter.loadStarData("fp");
+            }
+        });
 
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-
-
-                    starPresenter.loadMoreStarData();
-
-
-
-
-                }
-
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                starPresenter.loadStarData("null");
             }
         });
 
         Ada.OnItemClickListener(new HistoryAdater.onItemclick() {
             @Override
-            public void onItemClick(String id, String type,String player) {
+            public void onItemClick(String id, String type,String ContentType) {
                 if ("v".equals(type)){
 
                     Intent intent=new Intent(getActivity(),VideoDetailActivity.class);
-                    intent.putExtra("id",intent);
-                    intent.putExtra("player",player);
+                    intent.putExtra("id",id);
+                    intent.putExtra("ContentType",ContentType);
                     startActivity(intent);
 
                 }else {
                     Intent intent=new Intent(getActivity(),ArticleDetailActivity.class);
-                    intent.putExtra("id",intent);
+                    intent.putExtra("id",id);
+                    intent.putExtra("ContentType",ContentType);
 
                     startActivity(intent);
                 }
@@ -126,11 +120,13 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
     @Override
     public void onLoadStarSuccess(HistoryWithStarModel h) {
         Ada.changeDta(h.getData());
+        mRefreshLayout.finishRefresh(true);
 
     }
 
     @Override
     public void onLoadSMoretarSuccess(HistoryWithStarModel h) {
+        mRefreshLayout.finishLoadMore(true);
         Ada.addData(h.getData());
     }
 
@@ -138,6 +134,7 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
     @Override
     public void onLoadStarFail() {
 
+        mRefreshLayout.finishRefresh(false);
         Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
     }
 
@@ -146,6 +143,13 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
         Toast.makeText(getContext(),"加载更多失败",Toast.LENGTH_SHORT).show();
 
 
+        mRefreshLayout.finishLoadMoreWithNoMoreData();
+    }
+
+    @Override
+    public void onNoMoreData() {
+        mRefreshLayout.finishLoadMoreWithNoMoreData();
+        mRefreshLayout.setEnableLoadMore(false);
     }
 
 }

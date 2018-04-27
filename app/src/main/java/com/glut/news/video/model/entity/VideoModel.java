@@ -10,10 +10,19 @@ public class VideoModel {
 
 
 
+    private boolean isHaveNextPage;
     private String stus;
     private List<VideoList> data;
     public int getNextpage() {
         return nextpage;
+    }
+
+    public boolean isHaveNextPage() {
+        return isHaveNextPage;
+    }
+
+    public void setHaveNextPage(boolean haveNextPage) {
+        isHaveNextPage = haveNextPage;
     }
 
     public void setNextpage(int nextpage) {

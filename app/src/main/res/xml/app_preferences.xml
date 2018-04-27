@@ -8,33 +8,35 @@
     <PreferenceCategory
 
         android:title="基本设置">
-        <CheckBoxPreference
+       <!-- <CheckBoxPreference
             android:key="@string/save_net_mode"
 
             android:summary="仅在Wi-Fi环境下才自动加载图片"
-            android:title="省流量模式"/>
-        <Preference
-            android:summary="删除已缓存的文章内容及图片"
-            android:dependency=""
-            android:key="clearCache"
-            android:title="清空缓存" />
-    </PreferenceCategory>
-    <PreferenceCategory
-        android:title="@string/video_setting">
-
-      <!--  <CheckBoxPreference
-            android:defaultValue="false"
-            android:key="video_force_landscape"
-            android:summary="@string/video_force_landscape_summary"
-            android:title="@string/video_force_landscape"/>-->
+            android:title="省流量模式"/>-->
 
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="video_auto_play"
             android:summary="@string/video_auto_play_summary"
             android:title="@string/video_auto_play"/>
-
+        <Preference
+            android:summary="删除已缓存的文章内容及图片"
+            android:dependency=""
+            android:key="clearCache"
+            android:title="清空缓存" />
     </PreferenceCategory>
+   <!-- <PreferenceCategory
+        android:title="@string/video_setting">
+
+      &lt;!&ndash;  <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="video_force_landscape"
+            android:summary="@string/video_force_landscape_summary"
+            android:title="@string/video_force_landscape"/>&ndash;&gt;
+
+
+
+    </PreferenceCategory>-->
 
     <PreferenceCategory
         android:title="@string/about_settings">

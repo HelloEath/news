@@ -6,8 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +18,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +36,7 @@ import android.widget.Toast;
 import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.adater.ArticleCommentAdater;
+import com.glut.news.common.model.entity.Comment;
 import com.glut.news.common.utils.DateUtil;
 import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
@@ -45,7 +48,12 @@ import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentListModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
+import com.ldoublem.thumbUplib.ThumbUpView;
 import com.mingle.widget.LoadingView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,24 +86,60 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private final static String TAG="ArticleDetailActivity";
     private LoadingView loadView;
     private String userId;
+    private LinearLayout mLayout;
+    private SmartRefreshLayout mRefreshLayout;
+    private ThumbUpView thumbUpView;
+    private Comment c;
+    private  LinearLayout linearLayout;
+    private TextView textView;
+    private LinearLayout linearLayout1;
+    private NestedScrollView mNestedScrollView;
+    private LinearLayout mLinearLayout_sendComment;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_article_detail);
-        //String id=getIntent().getStringExtra("id");
-
         initView();
         initData();
-
         loadData();
         AppApplication.getInstance().addActivity(this);
 
     }
 
     private void initData() {
-        articleId=getIntent().getIntExtra("id",0);
+        articleId=Integer.parseInt(getIntent().getStringExtra("id"));
+        userId=SpUtil.getUserFromSp("UserId");
         contentType=getIntent().getStringExtra("ContentType");
+        thumbUpView.setOnThumbUp(new ThumbUpView.OnThumbUp() {
+            @Override
+            public void like(boolean like) {
+                if (like){
+                    if (UserUtil.isUserLogin()){
+                        star();
 
+                    }else {
+                        Snackbar s= Snackbar.make(relativeLayout,"登录才有的特权",Snackbar.LENGTH_LONG).setAction("点我立即登录", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                startActivity(new Intent(ArticleDetailActivity.this, LoginActivity.class));
+
+                            }
+                        });
+                        View sv=s.getView();
+//文字的颜色
+                        ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                        sv.setBackgroundColor(0xffffffff);
+                        s.show();
+
+                    }
+
+                }
+
+            }
+
+
+        });
 
 
 
@@ -104,14 +148,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private void loadData() {
 
         if (NetUtil.isNetworkConnected()){
-            String url="http://192.168.191.1:8085/News/article/detailArticle?Article_Id="+articleId;
+            String url="http://192.168.191.1:8085/NewsServerApi/article/detailArticle?Article_Id="+articleId;
             initWebView(url);
-            if (UserUtil.isUserLogin()) {
-                userId=SpUtil.getUserFromSp("UserId");
-                recoreHistory();//记录历史数据
-            }
 
-            loadCommentData();//加载评论数据
         }else {
             Toast.makeText(ArticleDetailActivity.this,"网络已走失",Toast.LENGTH_SHORT).show();
         }
@@ -131,14 +170,16 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         articleDetailPresenter.star(star);//
 
     }
-    private void recoreHistory() {
-        History h=new History();
-        h.setHistory_Article(articleId);
-        h.setHistory_Persion(Integer.parseInt(userId));
-        h.setHistory_Type(1);
-        h.setContent_type(contentType);
-        h.setHistory_Time(DateUtil.formatDate_getCurrentDate());
-      articleDetailPresenter.onHistory(h);
+
+    private void recordHistory(){
+        History history=new History();
+        history.setContent_type(contentType);
+        history.setHistory_Persion(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        history.setHistory_Article(articleId);
+        history.setHistory_Type(1);
+        history.setHistory_Time(DateUtil.formatDate_getCurrentDateByF("yyyy-MM-dd"));
+        articleDetailPresenter.onHistory(history);
+
     }
 
 
@@ -164,13 +205,18 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                //loadView.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 loadView.setVisibility(View.GONE);
+                loadCommentData("fp");//加载评论数据
+                mNestedScrollView.setVisibility(View.VISIBLE);
+                mLinearLayout_sendComment.setVisibility(View.VISIBLE);
+                if (UserUtil.isUserLogin()){
+                    recordHistory();//记载到历史
+                }
 
             }
 
@@ -216,6 +262,10 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void initView() {
+        thumbUpView=findViewById(R.id.btn_star);
+        mLinearLayout_sendComment=findViewById(R.id.sendcomment_lay);
+        mRefreshLayout=findViewById(R.id.refreshLayout);
+        mLayout=findViewById(R.id.comment_lay);
         relativeLayout=findViewById(R.id.relativeLayout);
         toolbar=findViewById(R.id.toolbar);
         loadView= (LoadingView) findViewById(R.id.loadView);
@@ -223,12 +273,13 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         author= (TextView) findViewById(R.id.author);
         time= (TextView) findViewById(R.id.time);
         mWebView= (WebView) findViewById(R.id.content);
-        //mComment= (RecyclerView) findViewById(R.id.articleComment);
-        //mNestRefresh=findViewById(R.id.nested_view);
+        mComment= (RecyclerView) findViewById(R.id.oneCommentsModel);
+        mNestedScrollView=findViewById(R.id.nested_view);
         btn_sendComment= (RelativeLayout) findViewById(R.id.btn_sendcomment);
         mCommentValue= (EditText) findViewById(R.id.comment_value);
         videoCommentListModels =new ArrayList<>();
         commentAdater=new ArticleCommentAdater(this, videoCommentListModels);
+        mComment.setNestedScrollingEnabled(false);
 
         setSupportActionBar(toolbar);
         //mNestRefresh.setOnRefreshListener(this);
@@ -252,17 +303,25 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         btn_sendComment.setOnClickListener(this);
 
         LinearLayoutManager l=new LinearLayoutManager(this);
-        //linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        l.setOrientation(LinearLayoutManager.VERTICAL);
         l.setOrientation(OrientationHelper.VERTICAL);
 
-       // mComment.setLayoutManager(l);
+        mComment.setLayoutManager(l);
+        mComment.setAdapter(commentAdater);
+        //加载评论
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
 
-        View FooterView= LayoutInflater.from(this).inflate(R.layout.item_video_detailfoot,mComment,false);
-        commentAdater.addFootView(FooterView);
-        commentAdater.addHeadView(FooterView);
-
-       // mComment.setAdapter(commentAdater);
-
+            }
+        });
+        //加载更多评论
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                loadCommentData("null");
+            }
+        });
 
     }
 
@@ -320,16 +379,21 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             imm.hideSoftInputFromWindow(mCommentValue.getWindowToken(), 0);
             Toast.makeText(this,mCommentValue.getText(),Toast.LENGTH_SHORT).show();
 
-            VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
+
+
+
             //videoCommentListModel.setAuthor_logo(R.drawable.logo);
-            String userName= SpUtil.getUserFromSp("userName");
-            String userLogo=SpUtil.getUserFromSp("userLogo");
-            videoCommentListModel.setAuthor_name(userName);
-            videoCommentListModel.setComment_Content(mCommentValue.getText()+"");
-            videoCommentListModel.setAuthor_logo(userLogo);
-            videoCommentListModel.setComment_Time(DateUtil.formatDate_getCurrentDate());
-            videoCommentListModel.setLikes(0);
-            commentAdater.addSingGonComments(videoCommentListModel);
+            String userName= SpUtil.getUserFromSp("UserName");
+            String userLogo=SpUtil.getUserFromSp("UserLogo");
+
+            c=new Comment();
+            c.setAuthor_logo(userLogo);
+            c.setAuthor_name(userName);
+            c.setComment_Content(mCommentValue.getText()+"");
+            c.setComment_Article(articleId);
+            c.setComment_Likes(0);
+            c.setComment_Time(DateUtil.formatDate_getCurrentDate());
+            articleDetailPresenter.sendComment(c);
             mCommentValue.setText("");
         }else {
 
@@ -350,12 +414,10 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         }
 
     }
-    private void loadMoreCommentData(){
-        articleDetailPresenter.loadMoreComment();//加载评论数据
 
-    }
-    private void loadCommentData() {
-        articleDetailPresenter.loadComment(articleId);//加载评论数据
+    private void loadCommentData(String fp) {
+        articleDetailPresenter.loadComment(articleId,fp);//加载评论数据
+
 
     }
 
@@ -365,11 +427,17 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     @Override
     public void addAdater(VideoCommentsModel commonData) {
         commentAdater.addComments(commonData.getData());
+        mRefreshLayout.finishLoadMore(true);
+        mLayout.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void changeAdater(VideoCommentsModel commonData) {
         commentAdater.changeData(commonData.getData());
+        mRefreshLayout.setEnableLoadMore(true);
+        mRefreshLayout.finishRefresh(true);
+        mLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -381,5 +449,75 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onStarFail() {
         ToastUtil.showError("收藏失败",3000,this);
+    }
+
+    @Override
+    public void noMoreData() {
+        mRefreshLayout.finishLoadMoreWithNoMoreData();
+        mRefreshLayout.setEnableLoadMore(false);
+    }
+
+    @Override
+    public void onSendCommentSuccess() {
+        sendSuccess();
+        articleDetailPresenter.updateComments();//评论数加一
+        Toast.makeText(this,"发送成功",Toast.LENGTH_SHORT).show();
+    }
+
+    private void sendSuccess() {
+        VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
+        videoCommentListModel.setAuthor_name(c.getAuthor_name());
+        videoCommentListModel.setComment_Content(c.getComment_Content());
+        videoCommentListModel.setAuthor_logo(c.getAuthor_logo());
+        videoCommentListModel.setComment_Time(DateUtil.formatDate_getCurrentDate());
+        videoCommentListModel.setLikes(0);
+        commentAdater.addSingGonComments(videoCommentListModel);
+
+        mComment.scrollToPosition(0);
+
+        mCommentValue.setText("");
+        View vv=  mComment.getChildAt(0);
+
+        linearLayout= (LinearLayout) vv;
+         linearLayout1= linearLayout.findViewById(R.id.delete);
+        textView=new TextView(this);
+
+        textView.setText("删除");
+        mLayout.setVisibility(View.VISIBLE);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DeleteComment(userId);
+
+            }
+        });
+        linearLayout1.addView(textView);
+
+    }
+
+    private void DeleteComment( String userId) {
+       articleDetailPresenter.deleteComment(userId);
+
+
+    }
+
+    @Override
+    public void onSendCommentFail() {
+        Toast.makeText(ArticleDetailActivity.this,"发送失败",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onDeleteCommentSuccess() {
+        commentAdater.removeComments();
+        linearLayout1.removeView(textView);
+        Toast.makeText(ArticleDetailActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onDeleteCommentFail() {
+        Toast.makeText(ArticleDetailActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
+
     }
 }

@@ -9,6 +9,15 @@ public class VideoCommentsModel {
     private int nextpage;//	3
     private String stus;//	"ok"
     private List<VideoCommentListModel> data;
+    private boolean isHaveNextPage;
+
+    public boolean isHaveNextPage() {
+        return isHaveNextPage;
+    }
+
+    public void setHaveNextPage(boolean haveNextPage) {
+        isHaveNextPage = haveNextPage;
+    }
 
     public int getNextpage() {
         return nextpage;

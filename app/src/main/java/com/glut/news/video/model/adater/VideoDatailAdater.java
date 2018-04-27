@@ -22,9 +22,7 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
     private Context context;
     private List<VideoCommentListModel> commentListList;
     private LayoutInflater layoutInflater;
-    private View noramlView;
-    private View FootView;
-    private View HeadView;
+
     public VideoDatailAdater(Context context, List<VideoCommentListModel> clist) {
           this.context=context;
         layoutInflater=  LayoutInflater.from(context);
@@ -40,44 +38,13 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
         }
     }
 
-   public enum ITEM_TYPE{
-        NORAML,
-        FOOTER,
-        HEDER
-
-    }
-    public void  addFootView(View view){
-        FootView=view;
-    }
-    public void addHeadView(View view){
-        HeadView=view;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        int c=getItemCount();
-        if (commentListList.size()==0){
-
-        }else {
 
 
-            if (position == 0) {
-                return ITEM_TYPE.HEDER.ordinal();
-            } else if (position == getItemCount() - 1) {
-                return ITEM_TYPE.FOOTER.ordinal();
-            } else {
-                return ITEM_TYPE.NORAML.ordinal();
-            }
-        }
-        return 0;
-    }
 
 
 
     public  void addComments(VideoCommentListModel v){
        commentListList.add(0,v);
-       // notifyItemInserted(0);
-        notifyItemChanged(0);
         notifyDataSetChanged();
 
     }
@@ -90,21 +57,11 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup paret, int viewType) {
         RecyclerView.ViewHolder viewHolder=null;
-        int d=ITEM_TYPE.HEDER.ordinal();
-        int x=ITEM_TYPE.NORAML.ordinal();
-        int y=ITEM_TYPE.FOOTER.ordinal();
-       if (viewType==ITEM_TYPE.HEDER.ordinal()){
-           if (HeadView!=null)
-           viewHolder=new RecyclerView.ViewHolder(HeadView){};
-       }
-        if (viewType==ITEM_TYPE.NORAML.ordinal()){
-            View view=layoutInflater.inflate(R.layout.item_video_detailcomment,paret,false);
-            viewHolder=new  VideoDetailViewHolder(view);
-        }
-        if (viewType==ITEM_TYPE.FOOTER.ordinal()){
-            viewHolder=new RecyclerView.ViewHolder(FootView){};
+        View view=layoutInflater.inflate(R.layout.item_video_detailcomment,paret,false);
 
-        }
+        viewHolder=new  VideoDetailViewHolder(view);
+
+
 
         return viewHolder;
     }
@@ -112,22 +69,17 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if (position==0){
 
 
-        }else if (position==getItemCount()-1){
-
-        }else {
-
-            Glide.with(context).load(commentListList.get(position-1).getAuthor_logo()).apply(
+            Glide.with(context).load(commentListList.get(position).getAuthor_logo()).apply(
                     RequestOptions.circleCropTransform()).into(  ((VideoDetailViewHolder) holder).mAntuorLogo);
 
-            ((VideoDetailViewHolder) holder).mAuthorName.setText(commentListList.get(position-1).getAuthor_name());
+            ((VideoDetailViewHolder) holder).mAuthorName.setText(commentListList.get(position).getAuthor_name());
             Glide.with(context).load(R.drawable.btn_dianzan).into( ((VideoDetailViewHolder) holder).mDianZanLogo);
-            ((VideoDetailViewHolder) holder).mDianZanSum.setText(commentListList.get(position-1).getLikes()+"");
-            ((VideoDetailViewHolder) holder).mContent.setText(commentListList.get(position-1).getComment_Content());
-            ((VideoDetailViewHolder) holder).mTime.setText(commentListList.get(position-1).getComment_Time());
-        }
+            ((VideoDetailViewHolder) holder).mDianZanSum.setText(commentListList.get(position).getLikes()+"");
+            ((VideoDetailViewHolder) holder).mContent.setText(commentListList.get(position).getComment_Content());
+            ((VideoDetailViewHolder) holder).mTime.setText(commentListList.get(position).getComment_Time());
+
         }
 
 
@@ -136,7 +88,7 @@ public class VideoDatailAdater extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemCount() {
 
-        return commentListList.size()+1;
+        return commentListList.size();
     }
 
     public void changeData(List<VideoCommentListModel> data) {

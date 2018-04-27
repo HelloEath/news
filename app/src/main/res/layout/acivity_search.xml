@@ -1,43 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar"
-    app:theme="@style/MyToolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <com.glut.news.common.view.searchview.SearchView
-        android:id="@+id/search"
-        android:layout_weight="6"
-        android:layout_width="0dp"
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        app:textSizeSearch="5dp"
-        app:textColorSearch="#3F51B5"
-        app:textHintSearch="输入查询关键字"
-        app:searchBlockHeight="130"
-        app:searchBlockColor="#ffffff"/>
-<TextView
-    android:id="@+id/btn_search"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="搜索"/>
-</android.support.v7.widget.Toolbar>
+        android:fitsSystemWindows="true">
 
-    <android.support.v4.widget.SwipeRefreshLayout
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            style="@style/Theme.Design.NoActionBar"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="96dp"
+            app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
+
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="6"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+                        <com.glut.news.common.view.searchview.SearchView
+                            android:id="@+id/search"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            app:textSizeSearch="5dp"
+                            app:textColorSearch="#3F51B5"
+                            app:textHintSearch="输入查询关键字"
+                            app:searchBlockHeight="130"
+                            app:searchBlockColor="#ffffff"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:gravity="center_horizontal"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/btn_search"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="搜索"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <com.mingle.widget.LoadingView
+        android:id="@+id/loadView"
+        android:background="#fff"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_height="match_parent">
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.scwang.smartrefresh.header.WaveSwipeHeader
+            android:layout_width="match_parent"
+            app:wshPrimaryColor="@color/side_1"
+            android:layout_height="wrap_content"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/search_result"
+            android:background="@color/app_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
 
         </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+        android:layout_width="match_parent"
+        app:srlAnimatingColor="@color/side_1"
+        android:layout_height="180dp"/>
+
+</com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

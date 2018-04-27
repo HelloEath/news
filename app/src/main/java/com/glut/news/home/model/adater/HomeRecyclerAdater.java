@@ -59,17 +59,7 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        ArticleModel.ArticleList newsTest=newsList.get(position);
-        if (newsTest==null){
-            return  2;
-        }else{
-            return 1;
-        }
 
-
-    }
 
     public void changeData(List<ArticleModel.ArticleList> mnewsList){
         newsList=mnewsList;
@@ -88,18 +78,9 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;
         RecyclerView.ViewHolder viewHolder = null;
-        switch (viewType){
-            case 2:
-                view=layoutInflater.inflate(R.layout.refresh_footer,parent,false);
-                viewHolder=new FooterViewHolder(view);
-
-                break;
-            case 1:
-                view=layoutInflater.inflate(R.layout.item_home_main,parent,false);
-                viewHolder=new ItemViewHolder(view);
-                view.setOnClickListener(this);
-                break;
-        }
+        view=layoutInflater.inflate(R.layout.item_home_main,parent,false);
+        viewHolder=new ItemViewHolder(view);
+        view.setOnClickListener(this);
 
         return viewHolder;
     }
@@ -108,32 +89,7 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(final  RecyclerView.ViewHolder  holder, int position) {
-      /*  Date date=new Date();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        int second = calendar.get(Calendar.SECOND);
-
-        try {
-            date=dateFormat.parse(newsList.get(position).date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }*/
-       /* Log.d("当前日期",day+"");
-        Log.d("发布时间",date.getDate()+"");
-        Log.d("当前时间",hours+"");
-        Log.d("发布时间",date.getHours()+"");
-        if (date.getDate()==day){
-            holder.time.setText(( hours-date.getHours())+"小时前");
-        }else{
-            holder.time.setText(date.getDay()+"");
-
-        }*/
         if (holder instanceof ItemViewHolder){
             holder.itemView.setTag(newsList.get(position).getArticle_Id());
             holder.itemView.setTag(R.string.content_type,newsList.get(position).getArticle_Type());
@@ -142,7 +98,7 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             ((ItemViewHolder)holder).author.setText(newsList.get(position).getArticle_Author_name());
             ((ItemViewHolder)holder).time.setText(newsList.get(position).getArticle_Time());
-            ((ItemViewHolder)holder).likes.setText(newsList.get(position).getArtilce_Comments()+"评论|"+newsList.get(position).getArticle_Likes()+"喜欢|");
+            ((ItemViewHolder)holder).likes.setText(newsList.get(position).getArticle_Looks()+"已阅  "+newsList.get(position).getArticle_Likes()+"喜欢");
             Glide.with(m).load(newsList.get(position).getArticle_Image()).into( ((ItemViewHolder)holder).imageView);
         }
 
@@ -181,17 +137,6 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         }
     }
-    /**
-     * 底部加载更多
-     */
-    class FooterViewHolder extends RecyclerView.ViewHolder{
-        private TextView p;
-        public FooterViewHolder(View itemView) {
-            super(itemView);
-            this.p=itemView.findViewById(R.id.refresh);
-        }
 
-
-    }
 
 }

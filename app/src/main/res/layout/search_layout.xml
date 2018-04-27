@@ -25,7 +25,7 @@
             android:layout_height="30dp"
             android:layout_weight="264"
             android:background="@drawable/search_bg"
-            android:drawableLeft="@drawable/search"
+            android:drawableLeft="@drawable/home_icon_search"
             android:drawablePadding="8dp"
             android:layout_marginTop="10dp"
             android:gravity="start|center_vertical"

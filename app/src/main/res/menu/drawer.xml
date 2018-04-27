@@ -4,15 +4,15 @@
 
     <item
         android:id="@+id/navigation_item_star"
-        android:icon="@drawable/star_icon"
+        android:icon="@drawable/my_icon_star"
         android:title="我的收藏|0"/>
     <item
         android:id="@+id/navigation_item_history"
-        android:icon="@drawable/history_icon"
+        android:icon="@drawable/my_icon_history"
         android:title="历史记录|0"/>
     <item
         android:id="@+id/navigation_item_info"
-        android:icon="@drawable/alter_icon"
+        android:icon="@drawable/my_icon_alteruser"
         android:title="修改信息"/>
 </group>
 
@@ -26,13 +26,13 @@
             android:icon="@mipmap/ic_launcher"
             android:title="夜间模式"/>-->
         <item android:id="@+id/nav_setting"
-            android:icon="@drawable/set_icon"
+            android:icon="@drawable/my_icon_set"
             android:title="设置"/>
         <!--<item android:id="@+id/nav_suggestion"
             android:icon="@mipmap/ic_launcher"
             android:title="意见反馈"/>-->
         <item android:id="@+id/nav_about"
-            android:icon="@drawable/about_icon"
+            android:icon="@drawable/my_icon_about_icon"
             android:title="关于"/>
 
     </group>

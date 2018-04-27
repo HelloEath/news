@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -40,7 +41,7 @@ import com.glut.news.common.utils.UserUtil;
 import com.glut.news.common.view.SearchActivity;
 import com.glut.news.common.view.searchview.ICallBack;
 import com.glut.news.common.view.searchview.SearchView;
-import com.glut.news.home.presenter.impl.HomeFragmentImpl;
+import com.glut.news.home.presenter.impl.HomeFragmentPresenterImpl;
 import com.glut.news.login.view.fragment.LoginActivity;
 import com.glut.news.my.view.activity.OtherSettingActivity;
 import com.glut.news.my.view.activity.StarWithHistoryActivity;
@@ -75,7 +76,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     private TextView UserName;
     private Menu m;
 
-    private HomeFragmentImpl homeFragment=new HomeFragmentImpl(this);
+    private HomeFragmentPresenterImpl homeFragment=new HomeFragmentPresenterImpl(this);
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -101,7 +102,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
 
                       TapTarget.forView(mLogo, "点击头像管理个人信息")
-                                .dimColor(android.R.color.white)
+                                .dimColor(android.R.color.transparent)
                                 .outerCircleColor(R.color.colorPrimary)
                                 .drawShadow(true)
                               .targetRadius(60)
@@ -156,7 +157,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         searchView=v.findViewById(R.id.search);
         mLogo=v.findViewById(R.id.circlrimage);
         viewpager=v.findViewById(R.id.viewger_home);
-       // mLogo.setVisibility(View.GONE);
 
     }
 
@@ -176,13 +176,18 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
     private void initData(View v) {
 
+        if (NetUtil.isNetworkConnected()){
+
+
+        }else {
+
+            Toast.makeText(getContext(),"网络走失了...",Toast.LENGTH_SHORT).show();
+        }
         if (UserUtil.isUserLogin()){
 
             UserName.setText(SpUtil.getUserFromSp("UserName"));
             homeFragment.loadHistoryCount();//获取历史记录数
             homeFragment.loadStarCount();//获取我的收藏数
-            String ff=SpUtil.getUserFromSp("UserLogo");
-            byte[] d=Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"));
             Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(new RequestOptions().circleCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(ilogo);
             Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
                     RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mLogo);
@@ -191,8 +196,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         }else {
             UserName.setText("我是谁");
             m.findItem(R.id.navigation_item_info).setVisible(false);
-            Glide.with(getContext()).load(R.drawable.unlogin_logo).apply(new RequestOptions().circleCrop()).into(ilogo);
-            Glide.with(getContext()).load(R.drawable.unlogin_logo).apply(
+            Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(new RequestOptions().circleCrop()).into(ilogo);
+            Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(
                     RequestOptions.circleCropTransform()).into(mLogo);
         }
 
@@ -216,7 +221,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         }else {
             nacigation_header.setBackgroundColor(getResources().getColor(R.color.side_1));
         }
-        Glide.with(getContext()).load(R.drawable.add).into(mAddVideo);
+        Glide.with(getContext()).load(R.drawable.home_icon_add).into(mAddVideo);
 
         for (int i=0;i<titles.size();i++){
 
@@ -343,6 +348,7 @@ i
                 });
 
         viewpager.setCurrentItem(0);
+        viewpager.setOffscreenPageLimit(1);
         tabLayout.setupWithViewPager(viewpager);
     }
 
@@ -363,6 +369,7 @@ i
     public void onLoadHistoryCountSuccess(int v) {
         m.findItem(R.id.navigation_item_star).setTitle("历史记录 | "+v);
     }
+
 
 
 }

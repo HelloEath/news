@@ -46,12 +46,15 @@
             android:id="@+id/video_watchs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           android:layout_centerInParent="true"/>
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+           android:layout_toLeftOf="@+id/video_commits"/>
 
         <TextView
             android:id="@+id/video_commits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="8dp"
             android:layout_alignParentRight="true"/>
 

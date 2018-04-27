@@ -32,13 +32,13 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onClick(View v) {
-        this.onItemListener.onItemClick(v,(String)v.getTag(),(String) v.getTag(R.string.videoPlayerUrl),(String) v.getTag(R.string.videoAbstract),(String)v.getTag(R.string.videoTitle));
+        this.onItemListener.onItemClick(v,(String)v.getTag(),(String) v.getTag(R.string.videoPlayerUrl),(String) v.getTag(R.string.videoAbstract),(String)v.getTag(R.string.videoTitle),(String)v.getTag(R.string.content_type));
     }
 
 
 
     public interface OnItemListener{
-        void onItemClick(View v,String id,String abstracts,String player,String title);
+        void onItemClick(View v,String id,String abstracts,String player,String title,String contentType);
     }
 
     public void setOnItemListener(OnItemListener o){
@@ -69,13 +69,14 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             videoHolder.itemView.setTag(R.string.videoPlayerUrl, videoList.get(position).getVideo_Player());
             videoHolder.itemView.setTag(R.string.videoAbstract, videoList.get(position).getVideo_Abstract());
             videoHolder.itemView.setTag(R.string.videoTitle, videoList.get(position).getVideo_Title());
+            videoHolder.itemView.setTag(R.string.content_type, videoList.get(position).getVideo_Type());
 
             videoHolder.itemView.setTag(videoList.get(position).getVideo_Id());
             videoHolder.video_author.setText(videoList.get(position).getVideo_Author_Name());
 
-            videoHolder.video_watchs.setText("播放量"+videoList.get(position).getVideo_Players());
+            videoHolder.video_watchs.setText("播放 "+videoList.get(position).getVideo_Players());
            // videoHolder.video_watchs.setText(videoList.get(position).getVideo_Players());
-            videoHolder.video_commits.setText("评论量"+videoList.get(position).getVideo_Comments());
+            videoHolder.video_commits.setText("喜欢 "+videoList.get(position).getVideo_Likes());
             videoHolder.mvideo.setUp(videoList.get(position).getVideo_Player(),JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,videoList.get(position).getVideo_Title());
             Glide.with(context).load(videoList.get(position).getVideo_Image()).into(videoHolder.mvideo.thumbImageView);
             Glide.with(context).load(videoList.get(position).getVideo_Author_Logo()).apply(

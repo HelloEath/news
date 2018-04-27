@@ -7,16 +7,25 @@ import java.util.List;
  */
 
 public class HistoryWithStarModel {
-    private int   nextpage;//	2
+    private boolean isHaveNextPage;
+    private int   nextPage;//	2
     private List<CommonData> data;
     private String stus;
 
-    public int getNextpage() {
-        return nextpage;
+    public boolean isHaveNextPage() {
+        return isHaveNextPage;
     }
 
-    public void setNextpage(int nextpage) {
-        this.nextpage = nextpage;
+    public void setHaveNextPage(boolean haveNextPage) {
+        isHaveNextPage = haveNextPage;
+    }
+
+    public int getNextpage() {
+        return nextPage;
+    }
+
+    public void setNextpage(int nextPage) {
+        this.nextPage = nextPage;
     }
 
     public List<CommonData> getData() {

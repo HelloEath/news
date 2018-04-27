@@ -41,8 +41,8 @@ public class EditText_Clear extends android.support.v7.widget.AppCompatEditText 
      * 步骤2：初始化 图标资源
      */
     private void init() {
-        clearDrawable = getResources().getDrawable(R.drawable.clear);
-        searchDrawable = getResources().getDrawable(R.drawable.search);
+        clearDrawable = getResources().getDrawable(R.drawable.home_btn_clear);
+        searchDrawable = getResources().getDrawable(R.drawable.home_icon_search);
 
         setCompoundDrawablesWithIntrinsicBounds(searchDrawable, null,
                 null, null);

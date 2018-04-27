@@ -2,12 +2,10 @@ package com.glut.news.login.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -19,12 +17,9 @@ import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
 import com.glut.news.common.model.entity.UserModel;
-import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 
-import cn.smssdk.EventHandler;
-import cn.smssdk.SMSSDK;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -100,14 +95,26 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
             case R.id.btn_confirm:
                 String newPwd=mEditText_newPwd.getText().toString().trim();
                 String reNewPwd=mEditText_reNewPwd.getText().toString().trim();
-                if (newPwd.equals(reNewPwd)){
-                    submitCode("86",mEditText_phone.getText().toString().trim(),mEditText_veriCode.getText().toString().trim());
-                    mPwdString=reNewPwd;
+                String phoneNum=mEditText_phone.getText().toString().trim();
+                if (!"".equals(phoneNum)){
+                    if (newPwd.equals(reNewPwd)){
+                        //submitCode("86",mEditText_phone.getText().toString().trim(),mEditText_veriCode.getText().toString().trim());
+                        mPwdString=reNewPwd;
+                        UserInfo userInfo=new UserInfo();
+                        userInfo.setUserPhone(phoneNum);
+                        userInfo.setUserPwd(reNewPwd);
+                        alterUserPwd(userInfo);
+
+                    }else {
+                        Toast.makeText(ForgetPwdActivity.this,"两次输入的密码不一致,请重新输入",Toast.LENGTH_SHORT).show();
+
+                    }
 
                 }else {
-                    Toast.makeText(ForgetPwdActivity.this,"两次输入的密码不一致,请重新输入",Toast.LENGTH_SHORT).show();
 
+                    Toast.makeText(ForgetPwdActivity.this,"手机号码不能为空",Toast.LENGTH_SHORT).show();
                 }
+
                 break;
             case R.id.btn_goBack:
                 startActivity(new Intent(ForgetPwdActivity.this,LoginActivity.class));
@@ -122,10 +129,7 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
         }
     }
 
-    public void alterUserPwd(String newPwd){
-        UserInfo userInfo=new UserInfo();
-        userInfo.setUserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
-        userInfo.setUserPwd(newPwd);
+    public void alterUserPwd(UserInfo userInfo){
         RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserPwd(userInfo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -170,7 +174,7 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
     }
 
     public void alterFail(){
-        Toast.makeText(ForgetPwdActivity.this,"修改失败",Toast.LENGTH_SHORT).show();
+        Toast.makeText(ForgetPwdActivity.this,"修改失败,没有该用户",Toast.LENGTH_SHORT).show();
 
 
 
@@ -184,7 +188,7 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
     }
     // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
     public void sendCode(String country, String phone) {
-        // 注册一个事件回调，用于处理发送验证码操作的结果
+       /* // 注册一个事件回调，用于处理发送验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
@@ -218,12 +222,12 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
             }
         });
         // 触发操作
-        SMSSDK.getVerificationCode(country, phone);
+        SMSSDK.getVerificationCode(country, phone);*/
     }
 
     // 提交验证码，其中的code表示验证码，如“1357”
     public void submitCode(String country, String phone, String code) {
-        // 注册一个事件回调，用于处理提交验证码操作的结果
+       /* // 注册一个事件回调，用于处理提交验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
@@ -236,13 +240,13 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
             }
         });
         // 触发操作
-        SMSSDK.submitVerificationCode(country, phone, code);
+        SMSSDK.submitVerificationCode(country, phone, code);*/
     }
 
     protected void onDestroy() {
         super.onDestroy();
         //用完回调要注销掉，否则可能会出现内存泄露
-        SMSSDK.unregisterAllEventHandler();
+        //SMSSDK.unregisterAllEventHandler();
     }
 
 }

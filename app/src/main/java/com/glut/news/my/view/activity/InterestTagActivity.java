@@ -68,6 +68,10 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
                 gson.toJson(tagList);
                 UserInfo userInfo=new UserInfo();
                 userInfo.setUserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+
+
+
+
                 userInfo.setUserInterest(gson.toJson(tagList).toString());
                 i.getUserTagData(userInfo);//发送数据
                 Toast.makeText(InterestTagActivity.this,userInfo.toString(),Toast.LENGTH_LONG).show();

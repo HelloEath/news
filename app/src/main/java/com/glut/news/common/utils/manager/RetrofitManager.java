@@ -145,7 +145,7 @@ public class RetrofitManager {
 
                             .addNetworkInterceptor(mRewriteCacheControlInterceptor)
                             .retryOnConnectionFailure(true)
-                            .connectTimeout(15, TimeUnit.SECONDS)
+                            .connectTimeout(30, TimeUnit.SECONDS)
                             .build();
 
                 }
@@ -338,19 +338,24 @@ public class RetrofitManager {
 
     /*News视频*/
 
-    //推荐
+    //首页推荐
             public Observable<VideoModel> getVideo (int pageno) {
 
                 return mVideoService.getVideo(pageno);
             }
+    //详情页推荐
+    public Observable<VideoModel> getDetailVideo (String videoType) {
+
+        return mVideoService.getDetailVideo(videoType);
+    }
 
     //获得分类视频列表
             public Observable<VideoModel> getTypeVideo (String type, int pageno){
                 return mVideoService.getTypeVideo(type, pageno);
             }
-    //更新视频播放量
-    public Observable<Integer> updateVideoPlays (int ContentId){
-        return mVideoService.updateVideoPlays(ContentId);
+    //获得视频详情页视频信息
+    public Observable<VideoModel> getVideoDetailInfo (int ContentId){
+        return mVideoService.getVideoDetailInfo(ContentId);
     }
 
     /*News文章*/
@@ -370,8 +375,8 @@ public class RetrofitManager {
         return  mCommentService.getComment(id,pageno);
     }
     //用户发表评论
-    public Observable<Comment> putComment(String ComentContent,String ArticleId, String AuthorId, String CommentTime){
-        return  mCommentService.putComment(ComentContent,ArticleId,AuthorId,CommentTime);
+    public Observable<Comment> putComment(String ComentContent,String ArticleId, String AuthorId, String CommentTime,String Author_logo,String Author_name){
+        return  mCommentService.putComment(ComentContent,ArticleId,AuthorId,CommentTime,Author_logo,Author_name);
     }
 
     //用户删除评论
@@ -412,30 +417,30 @@ public class RetrofitManager {
 
     //修改用户名请求
     public Observable<UserModel> alterUserName(UserInfo userInfo){
-        return mUserService.alterUserName(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户性别
     public Observable<UserModel> alterUserSex(UserInfo userInfo){
-        return mUserService.alterUserSex(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户desc
     public Observable<UserModel> alterUserDesc(UserInfo userInfo){
-        return mUserService.alterUserDesc(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户地区
     public Observable<UserModel> alterUserDistrc(UserInfo userInfo){
-        return mUserService.alterUserDistrc(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
     //修改用户密码
     public Observable<UserModel> alterUserPwd(UserInfo userInfo){
-        return mUserService.alterUserPwd(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
     //修改用户生日
     public Observable<UserModel> alterUserBitrth(UserInfo userInfo){
-        return mUserService.alterUserBirth(userInfo);
+        return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户头像
@@ -478,7 +483,7 @@ public class RetrofitManager {
     }
     /*搜索*/
 
-    public Observable<HistoryWithStarModel> doSearch(String v,int NextPage){
+    public Observable<ArticleModel> doSearch(String v,int NextPage){
         return mSearchService.doSearch(v,NextPage);
     }
 

@@ -11,4 +11,6 @@ public interface IStarFragmentView {
     void onLoadSMoretarSuccess(HistoryWithStarModel h);
     void onLoadStarFail();
     void onLoadSMoretarFail();
+
+    void onNoMoreData();
 }

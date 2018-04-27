@@ -5,7 +5,6 @@ import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.video.model.entity.VideoModel;
 import com.glut.news.video.presenter.IVideoTypeFragmentPresenter;
 import com.glut.news.video.view.fragment.IVideoTypeFragmentView;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -29,11 +28,14 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
     }
 
     @Override
-    public void loadVideoData(String videoType,final RefreshLayout r) {
+    public void loadVideoData(String videoType, final String fp) {
 
+        if ("fp".equals(fp)){
+            NextPage=1;
+        }
         if (videoType.equals("推荐")){
 
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getVideo(1)
+            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getVideo(NextPage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(new Action0() {
@@ -52,11 +54,36 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
                         public void call(VideoModel videoModel) {
 
                             if (videoModel ==null){
-                                iVideoTypeFragmentView.loadVideoDataFail(r);
+                                iVideoTypeFragmentView.loadVideoDataFail();
                             }else{
 
-                                NextPage= videoModel.getNextpage();
-                                iVideoTypeFragmentView.loadVideoDataSuccess(videoModel,r);
+                                if (videoModel.getStus().equals("ok")){
+
+                                    if (videoModel.isHaveNextPage()){
+
+                                        if ("fp".equals(fp)){
+                                            iVideoTypeFragmentView.loadVideoDataSuccess(videoModel);
+
+
+                                        }else {
+                                            iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+
+
+                                        }
+                                        NextPage= videoModel.getNextpage();
+
+
+                                    }else {
+                                        iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+                                        iVideoTypeFragmentView.noMoreData();
+
+
+                                    }
+
+                                }else {
+
+                                    iVideoTypeFragmentView.loadVideoDataFail();
+                                }
 
                             }
 
@@ -70,7 +97,7 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
                     });
 
         }else {
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getTypeVideo(videoType,1)
+            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getTypeVideo(videoType,NextPage)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(new Action0() {
@@ -88,104 +115,34 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
                         @Override
                         public void call(VideoModel videoModel) {
                             if (videoModel ==null){
-                                iVideoTypeFragmentView.loadVideoDataFail(r);
+                                iVideoTypeFragmentView.loadVideoDataFail();
                             }else{
 
-                                NextPage= videoModel.getNextpage();
-                                iVideoTypeFragmentView.loadVideoDataSuccess(videoModel,r);                              //mTvLoadEmpty.setVisibility(View.GONE);
-                            }
+                                if (videoModel.getStus().equals("ok")){
 
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
+                                    if (videoModel.isHaveNextPage()){
+                                        if ("fp".equals(fp)){
+                                            iVideoTypeFragmentView.loadVideoDataSuccess(videoModel);
+
+                                        }else {
+                                            iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+
+                                        }
+                                        NextPage= videoModel.getNextpage();
+
+                                    }else {
+                                        iVideoTypeFragmentView.noMoreData();
+                                        iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
 
 
-                        }
-                    });
-        }
-
-
-    }
-
-    @Override
-    public void loadMoreData(String videoType,final RefreshLayout r) {
-
-        if (videoType.equals("推荐")) {
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "VideoService").getVideo(NextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                        }
-                    })
-                    .map(new Func1<VideoModel, VideoModel>() {
-                        @Override
-                        public VideoModel call(VideoModel videoModel) {
-                            return videoModel;
-                        }
-                    })
-                    .subscribe(new Action1<VideoModel>() {
-                        @Override
-                        public void call(VideoModel videoModel) {
-                            if (videoModel == null) {
-                                iVideoTypeFragmentView.loadVideoMoreVideoDataFail(r);
-                            } else {
-
-                                //判断是否使用缓存数据
-                                if (NextPage== videoModel.getNextpage()){
-
+                                    }
 
                                 }else {
-                                    NextPage= videoModel.getNextpage();
-                                    iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel,r);                                }
 
-                            }
+                                    iVideoTypeFragmentView.loadVideoDataFail();
 
-
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-
-
-                        }
-                    });
-
-        } else {
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "VideoService").getTypeVideo(videoType, NextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                        }
-                    })
-                    .map(new Func1<VideoModel, VideoModel>() {
-                        @Override
-                        public VideoModel call(VideoModel videoModel) {
-                            return videoModel;
-                        }
-                    })
-                    .subscribe(new Action1<VideoModel>() {
-                        @Override
-                        public void call(VideoModel videoModel) {
-                            if (videoModel == null) {
-                                iVideoTypeFragmentView.loadVideoMoreVideoDataFail(r);
-
-                            }else{
-                                //判断是否使用缓存数据
-                                if (NextPage == videoModel.getNextpage()) {
-
-
-                                } else {
-                                    NextPage = videoModel.getNextpage();
                                 }
-                                iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel, r);
-
                             }
-
 
                         }
                     }, new Action1<Throwable>() {
@@ -197,5 +154,8 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
                     });
         }
 
+
     }
+
+
 }

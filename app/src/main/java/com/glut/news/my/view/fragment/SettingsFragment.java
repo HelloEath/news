@@ -10,6 +10,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 
 import com.glut.news.R;
 import com.glut.news.common.utils.CacheDataManager;
+import com.glut.news.common.utils.SpUtil;
 import com.glut.news.my.view.activity.OtherSettingActivity;
 
 import de.psdev.licensesdialog.LicensesDialog;
@@ -50,13 +51,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             e.printStackTrace();
         }
 
-       /* findPreference("changelog").setOnPreferenceClickListener(new android.preference.Preference.OnPreferenceClickListener() {
+        findPreference("video_auto_play").setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public boolean onPreferenceClick(android.preference.Preference preference) {
-                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.changelog_url))));
-                return false;
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                SpUtil.setSetingToSp("video_auto_play",(boolean)o);
+
+                return true;
             }
-        });*/
+        });
+        ;
 
         findPreference("licenses").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
@@ -103,7 +106,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setCacheData() {
         try {
-            findPreference("clearCache").setSummary(CacheDataManager.getTotalCacheSize(getActivity()));
+            findPreference("clearCache").setSummary("删除已缓存的文章内容及图片("+CacheDataManager.getTotalCacheSize(getActivity())+")");
         } catch (Exception e) {
             e.printStackTrace();
         }

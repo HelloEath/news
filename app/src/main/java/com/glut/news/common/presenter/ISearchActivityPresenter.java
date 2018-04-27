@@ -5,6 +5,5 @@ package com.glut.news.common.presenter;
  */
 
 public interface ISearchActivityPresenter {
-    void search(String v);
-    void loadMoreSearch(String v);
+    void search(String v,String fp);
 }

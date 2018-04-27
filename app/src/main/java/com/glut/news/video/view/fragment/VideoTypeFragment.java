@@ -58,11 +58,11 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     }
 
     private void initData() {
-        if (NetUtil.isNetworkConnected()){
-            v.loadVideoData(videoType,null);
+        v.loadVideoData(videoType,"fp");
+        if (!NetUtil.isNetworkConnected()){
 
-        }else {
             Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
+
         }
     }
 
@@ -86,7 +86,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
             public void onRefresh(RefreshLayout refreshlayout) {
 
                 if (NetUtil.isNetworkConnected()){
-                    v.loadVideoData(videoType,refreshlayout);
+                    v.loadVideoData(videoType,"fp");
 
 
                 }else {
@@ -103,7 +103,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
             public void onLoadMore(RefreshLayout refreshlayout) {
 
                 if (NetUtil.isNetworkConnected()){
-                    v.loadMoreData(videoType,refreshlayout);
+                    v.loadVideoData(videoType,"null");
 
 
                 }else {
@@ -120,13 +120,12 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
         //item点击事件
         videoRecyclerAdapter.setOnItemListener(new VideoRecyclerAdapter.OnItemListener() {
             @Override
-            public void onItemClick(View v, String position,String palyer,String a,String title) {
+            public void onItemClick(View v, String position,String palyer,String a,String title,String contentType) {
                 if (NetUtil.isNetworkConnected()){
-                    Intent i = new Intent(getActivity(), VideoDetailActivity.class);
+                    Intent i = new Intent(getContext(), VideoDetailActivity.class);
                     i.putExtra("id",position);
-                    i.putExtra("abstract",a);
-                    i.putExtra("player",palyer);
-                    i.putExtra("title",title);
+                    i.putExtra("ContentType",contentType);
+
                     startActivity(i);
 
                 }else {
@@ -148,43 +147,42 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
 
 
     @Override
-    public void loadVideoDataSuccess(VideoModel v,RefreshLayout r) {
+    public void loadVideoDataSuccess(VideoModel v) {
         videoRecyclerAdapter.changeData(v.getData());
-        if (r!=null){
-            r.finishRefresh(2000);
-        }
+        sfresh.finishRefresh(true);
+        sfresh.setEnableLoadMore(true);
 
 
 
     }
 
     @Override
-    public void loadVideoDataFail(RefreshLayout r) {
-        if (r!=null){
-            r.finishRefresh(false);
-        }
+    public void loadVideoDataFail() {
+        sfresh.finishRefresh(false);
 
 
     }
 
     @Override
-    public void loadVideoMoreVideoDataSuccesss(VideoModel v,RefreshLayout r) {
+    public void loadVideoMoreVideoDataSuccesss(VideoModel v) {
         videoRecyclerAdapter.addData(v.getData());
 
-        if (r!=null){
-          r.finishLoadMore(2000);
-
-      }
+        sfresh.finishLoadMore(true);
 
     }
 
 
     @Override
-    public void loadVideoMoreVideoDataFail(RefreshLayout r) {
+    public void loadVideoMoreVideoDataFail() {
+sfresh.finishLoadMoreWithNoMoreData();
 
-        if (r!=null){
-            r.finishLoadMore(false);
-        }
+    }
+
+    @Override
+    public void noMoreData() {
+
+        sfresh.finishLoadMoreWithNoMoreData();
+        sfresh.setEnableLoadMore(false);
 
     }
 }

@@ -34,14 +34,16 @@ public class StarFragmentPresenterImpl implements IStarFragmentPresenter {
     }
 
     @Override
-    public void loadStarData() {
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarList(UserId,1)
+    public void loadStarData(final String fp) {
+        if ("fp".equals(fp)){
+            NextPage=1;
+        }
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarList(UserId,NextPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<HistoryWithStarModel, HistoryWithStarModel>() {
@@ -53,97 +55,36 @@ public class StarFragmentPresenterImpl implements IStarFragmentPresenter {
                 .subscribe(new Action1<HistoryWithStarModel>() {
                     @Override
                     public void call(HistoryWithStarModel historyModel) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (historyModel == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
+                            starFragmentView.onLoadSMoretarFail();
                         } else {
 
                             if (historyModel.getData() != null)
-                                if (NextPage == historyModel.getNextpage()) {
+                               if (historyModel.isHaveNextPage()){
 
-                                    IsLastPage = true;
+                                if ("fp".equals(fp)){//上拉刷新
+                                   starFragmentView.onLoadStarSuccess(historyModel);
+                                }else {//加载更多
+                                    starFragmentView.onLoadSMoretarSuccess(historyModel);
+
                                 }
+                                   NextPage = historyModel.getNextpage();
+                            }else{
+                                   starFragmentView.onNoMoreData();
+
+                            }
 
 
-                            starFragmentView.onLoadStarSuccess(historyModel);
-                            NextPage = historyModel.getNextpage();
-
-
-                            //isloading = false;
-                            //mTvLoadEmpty.setVisibility(View.GONE);
                         }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
     }
 
-    @Override
-    public void loadMoreStarData() {
-        if (!IsLastPage) {
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarList(UserId,NextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                            //mPbLoading.setVisibility(View.VISIBLE);
-                        }
-                    })
-                    .map(new Func1<HistoryWithStarModel, HistoryWithStarModel>() {
-                        @Override
-                        public HistoryWithStarModel call(HistoryWithStarModel historyModel) {
-                            return historyModel;
-                        }
-                    })
-                    .subscribe(new Action1<HistoryWithStarModel>() {
-                        @Override
-                        public void call(HistoryWithStarModel historyWithStarModel) {
-                            //mPbLoading.setVisibility(View.GONE);
-                            if (historyWithStarModel == null) {
-                                // mTvLoadEmpty.setVisibility(View.VISIBLE);
-                            } else {
-
-                                if (historyWithStarModel.getData() != null)
-                                    if (NextPage == historyWithStarModel.getNextpage()) {
-
-                                        IsLastPage = true;
-                                    }
-
-
-                                starFragmentView.onLoadSMoretarSuccess(historyWithStarModel);
-                                NextPage = historyWithStarModel.getNextpage();
-
-
-                                //isloading = false;
-                                //mTvLoadEmpty.setVisibility(View.GONE);
-                            }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
-
-                        }
-                    });
-        }
-    }
 }

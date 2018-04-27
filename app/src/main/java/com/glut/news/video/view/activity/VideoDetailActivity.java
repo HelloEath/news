@@ -3,13 +3,13 @@ package com.glut.news.video.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.glut.news.AppApplication;
 import com.glut.news.BaseActivity;
 import com.glut.news.R;
@@ -32,34 +33,33 @@ import com.glut.news.common.utils.DateUtil;
 import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.UserUtil;
-import com.glut.news.common.utils.manager.RetrofitManager;
-import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.common.view.customview.VideoPlayer;
 import com.glut.news.login.view.fragment.LoginActivity;
-import com.glut.news.my.model.entity.History;
 import com.glut.news.my.model.entity.Star;
+import com.glut.news.video.model.adater.RecommentVideoAdater;
 import com.glut.news.video.model.adater.VideoDatailAdater;
 import com.glut.news.video.model.entity.VideoCommentListModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
-import com.glut.news.video.presenter.impl.VideoPresenterImpl;
+import com.glut.news.video.model.entity.VideoModel;
+import com.glut.news.video.presenter.impl.VideoDetailActivityPresenterImpl;
 import com.ldoublem.thumbUplib.ThumbUpView;
+import com.mingle.widget.LoadingView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.jzvd.JZVideoPlayerStandard;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static android.view.KeyEvent.KEYCODE_BACK;
 
 /**
  * Created by yy on 2018/1/28.
  */
-public class VideoDetailActivity extends BaseActivity implements View.OnClickListener,IVideoDetailView{
+public class VideoDetailActivity extends BaseActivity implements View.OnClickListener,IVideoDetailActivityView {
     private RecyclerView mComments;
     private NestedScrollView mNestRefresh;
     private VideoDatailAdater vda;
@@ -75,12 +75,30 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     private  String  id;
     private String title;
-    private int nextPage;
+
     private ThumbUpView thumbUpView;
     private TextView mLoadError;
     private TextView mLoadEmpty;
+    private String contentType;
+    private RecyclerView mRecyclerView_recomment;
+    private RecommentVideoAdater mRecommentVideoAdater;
+    private List<VideoModel.VideoList> mVideoLists;
 
-    private VideoPresenterImpl videoPresenter=new VideoPresenterImpl(this);
+    private ImageView videoAuthorLogo;
+    private TextView videoAuthorName;
+    private TextView videoAbstract;
+    private LinearLayout mLinearLayout_tuijian;
+    private LinearLayout mLinearLayout_comment;
+    private TextView mTextView_time;
+    private SmartRefreshLayout mRefreshLayout;
+    private LoadingView loadView;
+    private String UserId;
+    private Comment mComment;
+    private LinearLayout linearLayout1;
+    private TextView textView;
+    private  LinearLayout linearLayout;
+
+    private VideoDetailActivityPresenterImpl videoPresenter=new VideoDetailActivityPresenterImpl(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +117,9 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void loadData() {
         if (NetUtil.isNetworkConnected()){//有网状态
+            loadVideoInfoData();//加载视频详情信息
             loadCommentData();//加载评论数据
+            loadRecommenData();//加载推荐视频
             thumbUpView.setOnThumbUp(new ThumbUpView.OnThumbUp() {
                 @Override
                 public void like(boolean like) {
@@ -129,13 +149,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
 
             });
-            //Glide.with(this).load(R.drawable.btn_star).into(btn_star);
-            if (UserUtil.isUserLogin()){
-                recoreHistory();//记录到历史
 
-            }
-
-            videoPresenter.updatePlays();//更新播放量
 
 
         }else {
@@ -146,37 +160,16 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     }
 
-
-    private void recoreHistory() {
-        History h=new History();
-        h.setHistory_Article(Integer.parseInt(id));
-        String x=SpUtil.getUserFromSp("UserId");
-        h.setHistory_Persion(Integer.parseInt(x));
-        h.setHistory_Type(2);
-
-        h.setHistory_Time(DateUtil.formatDate_getCurrentDate());
-        videoPresenter.recordHistory(h);//记录浏览历史
+    private void loadVideoInfoData() {
+        videoPresenter.getVideoDetailInfo(Integer.parseInt(id));
     }
 
+
     private void initData() {
+        contentType=getIntent().getStringExtra("ContentType");
 
          id=getIntent().getStringExtra("id");
-        title=getIntent().getStringExtra("title");
-        String player=getIntent().getStringExtra("player");
-        String abstracts=getIntent().getStringExtra("abstract");
-        j.setUp(player,JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,title);
-        j.backButton.setVisibility(View.VISIBLE);
-
-
-        if (NetUtil.isWifiConnected()){//wifi网络自动播放视频
-            j.startVideo();
-
-        }else {//非wifi弹出对话框
-            j.showWifiDialog();
-
-        }
-
-
+        UserId=SpUtil.getUserFromSp("UserId");
 
 
 
@@ -206,18 +199,28 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadMoreCommentData(){
-        videoPresenter.loadMoreComment();
 
-
-    }
     private void loadCommentData() {
 
-        videoPresenter.loadComment(Integer.parseInt(id));
+        videoPresenter.loadComment("fp");
 
+    }
+    public void loadRecommenData(){
+
+        videoPresenter.loadRecommenData(contentType);
     }
 
     private void initView() {
+        loadView= (LoadingView) findViewById(R.id.loadView);
+
+        mRefreshLayout=findViewById(R.id.refreshLayout);
+        mTextView_time=findViewById(R.id.video_time);
+        mLinearLayout_comment=findViewById(R.id.comment_lay);
+        mLinearLayout_tuijian=findViewById(R.id.tuijian_lay);
+        videoAuthorLogo=findViewById(R.id.videoDetail_AuthorLogo);
+        videoAuthorName=findViewById(R.id.videoDetail_AuthorName);
+        videoAbstract=findViewById(R.id.videoDetail_videoAbstract);
+        mRecyclerView_recomment=findViewById(R.id.recycler_Recomment);
         mLoadError=findViewById(R.id.tv_load_error);
         relativeLayout=findViewById(R.id.relativeLayout);
         thumbUpView=findViewById(R.id.btn_star);
@@ -228,17 +231,49 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         j=findViewById(R.id.custom_videoplayer_standard);
        // btn_star=findViewById(R.id.btn_star);
         clist=new ArrayList<>();
+        mVideoLists=new ArrayList<>();
         LinearLayoutManager l = new LinearLayoutManager(this);
         l.setOrientation(OrientationHelper.VERTICAL);
-        //mNestRefresh.setOnRefreshListener(this);
         vda=new VideoDatailAdater(this,clist);
+        mRecommentVideoAdater=new RecommentVideoAdater(this,mVideoLists);
         mComments.setLayoutManager(l);
-        View FooterView= LayoutInflater.from(this).inflate(R.layout.item_video_detailfoot,mComments,false);
-        vda.addFootView(FooterView);
-        vda.addHeadView(FooterView);
+        l = new LinearLayoutManager(this);
+        l.setOrientation(OrientationHelper.VERTICAL);
+        mRecyclerView_recomment.setNestedScrollingEnabled(false);
+        mComments.setNestedScrollingEnabled(false);
+        mRecyclerView_recomment.setLayoutManager(l);
+
         mComments.setAdapter(vda);
+
+        mRecyclerView_recomment.setAdapter(mRecommentVideoAdater);
         btn_sendComment.setOnClickListener(this);
-       // btn_star.setOnClickListener(this);
+        mRecommentVideoAdater.setItemClickListener(new RecommentVideoAdater.OnItemClickListener() {
+
+
+            @Override
+            public void clickItem(View v, String id, String contentType) {
+                Intent i = new Intent(VideoDetailActivity.this, VideoDetailActivity.class);
+                i.putExtra("id",id);
+                i.putExtra("ContentType",contentType);
+
+                startActivity(i);
+                finish();
+            }
+        });
+        //评论加载
+        mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                videoPresenter.loadComment("fp");
+            }
+        });
+        //加载更多评论
+        mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                videoPresenter.loadComment("null");
+            }
+        });
 
     }
 
@@ -294,23 +329,23 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void  recordStar(){
         Star s=new Star();
-        String c=SpUtil.getUserFromSp("UserId");
-        s.setStar_UserId(Integer.parseInt(c));
+        s.setStar_UserId(Integer.parseInt(UserId));
         s.setStar_ContentId(Integer.parseInt(id));
+        s.setContent_type(contentType);
         s.setStar_Time(DateUtil.formatDate_getCurrentDate());
         s.setStar_Type(2);
         videoPresenter.recordStar(s);
 
     }
-    private void sendSuccess(Comment c){
+    private void sendSuccess(){
         VideoCommentListModel videoCommentListModel =new VideoCommentListModel();
 
         isComentSuccess=false;
-        videoCommentListModel.setAuthor_logo(SpUtil.getUserFromSp("UserLogo"));
-        videoCommentListModel.setAuthor_name(c.getAuthor_name());
-        videoCommentListModel.setComment_Content(c.getComment_Content());
+        videoCommentListModel.setAuthor_logo(mComment.getAuthor_logo());
+        videoCommentListModel.setAuthor_name(mComment.getAuthor_name());
+        videoCommentListModel.setComment_Content(mComment.getComment_Content());
 
-        videoCommentListModel.setComment_Time(c.getComment_Time());
+        videoCommentListModel.setComment_Time(mComment.getComment_Time());
         videoCommentListModel.setLikes(0);
         vda.addComments(videoCommentListModel);
         mComments.scrollToPosition(0);
@@ -318,20 +353,15 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         mCommentValue.setText("");
         View vv=  mComments.getChildAt(0);
 
-        LinearLayout linearLayout= (LinearLayout) vv;
-        final LinearLayout linearLayout1= linearLayout.findViewById(R.id.delete);
-        final TextView textView=new TextView(this);
+        linearLayout= (LinearLayout) vv;
+        linearLayout1= linearLayout.findViewById(R.id.delete);
+        textView=new TextView(this);
 
         textView.setText("删除");
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String UserId=SpUtil.getUserFromSp("UserId");
-                String ArticleId=SpUtil.getUserFromSp("ArticleId");
-                DeleteComment(ArticleId,UserId,linearLayout1,textView);
-
-
+                DeleteComment(UserId);
 
             }
         });
@@ -342,102 +372,44 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 //点击发表后收起虚拟键盘
         InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mCommentValue.getWindowToken(), 0);
-        //Toast.makeText(this,mCommentValue.getText(),Toast.LENGTH_SHORT).show();
-        //videoCommentListModel.setAuthor_logo(R.drawable.logo);
         String userName= SpUtil.getUserFromSp("UserName");
         String userLogo=SpUtil.getUserFromSp("UserLogo");
         String comment=mCommentValue.getText()+"";
         String time=DateUtil.formatDate_getCurrentDate();
-        Comment c=new Comment();
-        //c.setAuthor_logo();
-        c.setAuthor_name(userName);
-        c.setComment_Content(comment);
-        c.setComment_Likes(0);
-        c.setComment_Time(time);
-        c.setComment_Author(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
-        c.setComment_Article(Integer.parseInt(id));
-        // c.setAuthor_logo();
-        videoPresenter.sendComment(c);
+        mComment=new Comment();
+        mComment.setAuthor_logo(userLogo);
+        mComment.setAuthor_name(userName);
+        mComment.setComment_Content(comment);
+        mComment.setComment_Likes(0);
+        mComment.setComment_Time(time);
+        mComment.setComment_Author(Integer.parseInt(UserId));
+        mComment.setComment_Article(Integer.parseInt(id));
+        videoPresenter.sendComment(mComment);
 
     }
 
 
-    private boolean DeleteComment(String  ArticleId,String UserId,final LinearLayout linearLayout,final TextView t) {
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "CommentService").deleteComment(ArticleId,UserId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
-                    }
-                })
-                .map(new Func1<Comment, Comment>() {
-                    @Override
-                    public Comment call(Comment guoKrList) {
-                        return guoKrList;
-                    }
-                })
-                .subscribe(new Action1<Comment>() {
-                    @Override
-                    public void call(Comment comment) {
-                        //mPbLoading.setVisibility(View.GONE);
-                        if (comment == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        } else {
-
-                            if ("ok".equals(comment.getStus()) ){
-
-
-                                vda.removeComments();
-                                linearLayout.removeView(t);
-                                Toast.makeText(VideoDetailActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
-
-
-                            }else {
-                                Toast.makeText(VideoDetailActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
-
-                            }
-                            //mTvLoadEmpty.setVisibility(View.GONE);
-                        }
-                       /* mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);*/
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
-
-                    }
-                });
-
-        if (isComentSuccess){
-
-            return true;
-        }else {
-            return false;
-        }
+    private void DeleteComment(String UserId) {
+      videoPresenter.deleteComment(UserId);
 
     }
 
     @Override
     public void addCommentAdater(VideoCommentsModel v) {
         vda.addData(v.getData());
+        mRefreshLayout.finishLoadMore(true);
     }
 
     @Override
     public void changeCommentAdater(VideoCommentsModel v) {
         vda.changeData(v.getData());
+        mLinearLayout_comment.setVisibility(View.VISIBLE);
+        mRefreshLayout.finishRefresh(true);
     }
 
     @Override
-    public void onSendCommentSuccess(Comment c) {
-        sendSuccess(c);
+    public void onSendCommentSuccess() {
+        sendSuccess();
         videoPresenter.updateComments();//视频评论数加一
         Toast.makeText(this,"发送成功",Toast.LENGTH_SHORT).show();
     }
@@ -447,32 +419,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         Toast.makeText(this,"发送失败",Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void initListenter() {
-        //上拉加载更多
-        mComments.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
 
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-                    isloading=true;
-                    loadMoreCommentData();
-
-
-                }
-
-            }
-        });
-    }
 
     @Override
     public void onStarSuccess() {
@@ -484,6 +431,81 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     public void onStarFali() {
         Toast.makeText(this,"收藏失败",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onLoadVideoDetailDataSuccess() {
+
+    }
+
+    @Override
+    public void onLoadVideoDetailDataFail() {
+
+    }
+
+    @Override
+    public void addRecommentData(List<VideoModel.VideoList> data) {
+
+        mRecommentVideoAdater.changeData(data);
+        mLinearLayout_tuijian.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onloadVideoDetailInfoFail() {
+
+
+    }
+
+    @Override
+    public void onloadVideoDetailInfoSuccess(VideoModel videoModel) {
+        loadView.setVisibility(View.GONE);
+
+        VideoModel.VideoList v=videoModel.getData().get(0);
+        Glide.with(this).load(v.getVideo_Author_Logo()).apply(new RequestOptions().circleCrop()).into(videoAuthorLogo);
+        videoAuthorName.setText(v.getVideo_Author_Name());
+        mTextView_time.setText("发表于"+v.getVideo_PutTime());
+        videoAbstract.setText(v.getVideo_Abstract());
+        j.setUp(v.getVideo_Player(),JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,v.getVideo_Title());
+        j.backButton.setVisibility(View.VISIBLE);
+
+        Glide.with(this).load(v.getVideo_Image()).into(j.thumbImageView);
+
+        if (NetUtil.isWifiConnected()){//wifi网络自动播放视频
+            boolean d=SpUtil.getSetingFromSp("video_auto_play");
+            if (SpUtil.getSetingFromSp("video_auto_play"))
+            j.startVideo();
+
+        }else {//非wifi弹出对话框
+            j.showWifiDialog();
+
+        }
+
+        mRefreshLayout.finishRefresh(true);
+    }
+
+    @Override
+    public void onloadVideoCommentFail() {
+        mRefreshLayout.finishRefresh(false);
+    }
+
+    @Override
+    public void noMoreVideoComment() {
+        loadView.setVisibility(View.GONE);
+        mRefreshLayout.setNoMoreData(true);
+    }
+
+    @Override
+    public void onDeleteCommentSuccess() {
+        vda.removeComments();
+        linearLayout.removeView(textView);
+        Toast.makeText(VideoDetailActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onDeleteCommentFail() {
+        Toast.makeText(VideoDetailActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
 
     }
 }

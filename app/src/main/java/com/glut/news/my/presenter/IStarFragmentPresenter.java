@@ -5,6 +5,5 @@ package com.glut.news.my.presenter;
  */
 
 public interface IStarFragmentPresenter {
-    void loadStarData();
-    void loadMoreStarData();
+    void loadStarData(String fp);
 }

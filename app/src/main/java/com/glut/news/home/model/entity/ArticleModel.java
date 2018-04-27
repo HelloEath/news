@@ -9,6 +9,15 @@ public class ArticleModel {
   private int   nextpage;//	2
   private List<ArticleList> data;
   private String stus;
+  private boolean isHaveNextPage;
+
+    public boolean isHaveNextPage() {
+        return isHaveNextPage;
+    }
+
+    public void setHaveNextPage(boolean haveNextPage) {
+        isHaveNextPage = haveNextPage;
+    }
 
     public int getNextpage() {
         return nextpage;

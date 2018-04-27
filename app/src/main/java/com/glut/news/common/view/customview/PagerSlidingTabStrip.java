@@ -112,7 +112,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
 	private int lastScrollX = -1;
 
-	private int tabBackgroundResId = R.drawable.background_tab;
+	private int tabBackgroundResId = R.drawable.main_background_tab;
 	//Indicator的样式
 	private IndicatorMode curMode = IndicatorMode.MODE_WRAP_EXPAND_SAME;
 

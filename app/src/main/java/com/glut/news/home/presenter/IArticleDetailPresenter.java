@@ -10,6 +10,5 @@ import com.glut.news.my.model.entity.Star;
 public interface IArticleDetailPresenter {
     void star(Star s);
     void onHistory(History s);
-    void loadComment(int Id);
-    void loadMoreComment();
+    void loadComment(int Id,String fp);
 }

@@ -1,145 +1,294 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:id="@+id/relativeLayout"
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            style="@style/Theme.Design.NoActionBar"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="96dp"
+            app:expandedTitleTextAppearance="@style/CollapsingToolbarTitleStyle.About"
+
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+<RelativeLayout
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
     >
 
-<LinearLayout
-    android:id="@+id/ahead"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_alignParentTop="true"
-    android:layout_height="wrap_content">
-
-
-
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="200dp">
-
-
-    <cn.jzvd.JZVideoPlayerStandard
-        android:id="@+id/custom_videoplayer_standard"
+    <LinearLayout
+        android:id="@+id/ahead"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <cn.jzvd.JZVideoPlayerStandard
+                android:id="@+id/custom_videoplayer_standard"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+
+        </FrameLayout>
 
 
 
+    </LinearLayout>
 
-</FrameLayout>
-
-
-
-
-                <TextView
-                    android:id="@+id/author"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
-                    android:padding="13dp"
-                    android:textColor="#fff"
-                    android:textSize="8sp"
-                    />
-</LinearLayout>
-
-
-<LinearLayout
-android:layout_width="match_parent"
-android:orientation="vertical"
-    android:layout_below="@id/ahead"
-android:layout_height="wrap_content">
-
- <!--   <android.support.v4.widget.NestedScrollView
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/nested_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ahead"
+        android:background="@color/app_bg"
         android:scrollbars="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-      <android.support.v7.widget.RecyclerView
-          android:id="@+id/recycler_comment"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
-<!--    </android.support.v4.widget.NestedScrollView>-->
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+
+                android:orientation="vertical">
+                <com.mingle.widget.LoadingView
+                    android:id="@+id/loadView"
+                    android:background="#fff"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"/>
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp"
+
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/videoDetail_AuthorLogo"
+                        android:layout_width="50dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="50dp" />
+
+                    <TextView
+                        android:id="@+id/videoDetail_AuthorName"
+                        android:layout_margin="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/videoDetail_videoAbstract"
+                        android:layout_width="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/video_time"
+                        android:layout_width="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tuijian_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="5dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@color/side_1"></View>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="相关推荐"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/recomment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_Recomment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
 
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/comment_lay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:background="@color/app_main_tab"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="全部评论"
+                    android:layout_marginTop="10dp"
+
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
+                <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/refreshLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.scwang.smartrefresh.header.WaveSwipeHeader
+                        android:layout_width="match_parent"
+                        app:wshPrimaryColor="@color/side_1"
+                        android:layout_height="wrap_content"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
 
-        <include layout="@layout/include_empty" />
+                </android.support.v7.widget.RecyclerView>
+                <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+                    android:layout_width="match_parent"
+                    app:srlAnimatingColor="@color/side_1"
+                    android:layout_height="180dp"/>
 
-        <include layout="@layout/include_error" />
-
-        <include layout="@layout/include_loading" />
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-</LinearLayout>
+                <include layout="@layout/include_empty" />
+
+                <include layout="@layout/include_error" />
+
+                <include layout="@layout/include_loading" />
+
+
+            </LinearLayout>
+            <TextView
+                android:id="@+id/footer"
+                android:layout_width="match_parent"
+                android:background="@color/app_main_tab"
+                android:layout_height="45dp" />
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-      android:layout_alignParentBottom="true"
-android:background="#fff"
-        android:layout_height="wrap_content">
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#fff"
+        android:orientation="horizontal">
 
 
         <EditText
             android:id="@+id/comment_value"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="3"
-            android:hint="在此输入你的评论"
-            android:layout_height="wrap_content" />
+            android:hint="在此输入你的评论" />
 
-      <RelativeLayout
-          android:layout_width="0dp"
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
 
-          android:layout_weight="1"
-          android:layout_height="match_parent">
+            >
 
-          <com.ldoublem.thumbUplib.ThumbUpView
-              android:id="@+id/btn_star"
-              android:layout_width="30dp"
-              android:layout_height="30dp"
-              app:cracksColor="#33475f"
-              app:edgeColor="#2fa881"
-              app:fillColor="#2fa881"
-              android:layout_centerInParent="true"
-               />
+            <com.ldoublem.thumbUplib.ThumbUpView
+                android:id="@+id/btn_star"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                app:cracksColor="#33475f"
+                app:edgeColor="#2fa881"
+                app:fillColor="#2fa881" />
 
 
-      </RelativeLayout>
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/btn_sendcomment"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:layout_gravity="right"
+            android:layout_weight="1"
 
 
-            android:layout_height="match_parent">
-
+            >
 
 
             <TextView
-
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
-
-
-
                 android:layout_centerInParent="true"
-                android:text="发表"/>
+
+
+                android:text="发表" />
 
         </RelativeLayout>
 
     </LinearLayout>
 </RelativeLayout>
-
-
+</android.support.design.widget.CoordinatorLayout>
