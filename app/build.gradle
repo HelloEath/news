@@ -143,5 +143,6 @@ dependencies {
    // implementation  'com.linchaolong.android:imagepicker:1.5'
     // recyclerView动画
     //implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
-
+    //搜索框
+    implementation 'com.github.arimorty:floatingsearchview:2.0.3'
 }

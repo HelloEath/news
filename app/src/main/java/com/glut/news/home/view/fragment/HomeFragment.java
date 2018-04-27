@@ -39,7 +39,6 @@ import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.UserUtil;
 import com.glut.news.common.view.SearchActivity;
-import com.glut.news.common.view.searchview.ICallBack;
 import com.glut.news.common.view.searchview.SearchView;
 import com.glut.news.home.presenter.impl.HomeFragmentPresenterImpl;
 import com.glut.news.login.view.fragment.LoginActivity;
@@ -106,7 +105,13 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
                                 .outerCircleColor(R.color.colorPrimary)
                                 .drawShadow(true)
                               .targetRadius(60)
-                .id(1)
+                .id(1),
+                        TapTarget.forView(mAddVideo, "点击这个图标查找你要的信息")
+                                .dimColor(android.R.color.transparent)
+                                .outerCircleColor(R.color.colorPrimary)
+                                .drawShadow(true)
+                                .targetRadius(60)
+                                .id(2)
                         /*TapTarget.forToolbarNavigationIcon(toolbar, "点击这里展开侧栏")
                                 .dimColor(android.R.color.black)
                                 .outerCircleColor(R.color.colorPrimary)
@@ -139,30 +144,21 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     }
 
     private void initView(View v) {
-        lf=new ArrayList<>();
-
-        //toolbar= (Toolbar) v.findViewById(R.id.toolbar);
-        drawerLayout= (DrawerLayout)v. findViewById(R.id.drawerview);
-        navigationView= (NavigationView) v.findViewById(R.id.navigation_view);
+        lf = new ArrayList<>();
+        drawerLayout = (DrawerLayout) v.findViewById(R.id.drawerview);
+        navigationView = (NavigationView) v.findViewById(R.id.navigation_view);
         View headerView = navigationView.getHeaderView(0);
-         m= navigationView.getMenu();
+        m = navigationView.getMenu();
+        ilogo = headerView.findViewById(R.id.logo);
+        nacigation_header = headerView.findViewById(R.id.navigation_header_container);
+        UserName = headerView.findViewById(R.id.UserName);
+        tabLayout = v.findViewById(R.id.tabLayout);
+        mAddVideo = v.findViewById(R.id.addVideo);
+        mLogo = v.findViewById(R.id.circlrimage);
+        viewpager = v.findViewById(R.id.viewger_home);
 
-        ilogo =  headerView.findViewById(R.id.logo);
-        nacigation_header=headerView.findViewById(R.id.navigation_header_container);
-        UserName=headerView.findViewById(R.id.UserName);
-        toolbar=headerView.findViewById(R.id.toolbar);
-
-        tabLayout=v.findViewById(R.id.tabLayout);
-        mAddVideo=v.findViewById(R.id.addVideo);
-        searchView=v.findViewById(R.id.search);
-        mLogo=v.findViewById(R.id.circlrimage);
-        viewpager=v.findViewById(R.id.viewger_home);
 
     }
-
-
-
-
 
     @Override
     public void onResume() {
@@ -221,7 +217,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         }else {
             nacigation_header.setBackgroundColor(getResources().getColor(R.color.side_1));
         }
-        Glide.with(getContext()).load(R.drawable.home_icon_add).into(mAddVideo);
 
         for (int i=0;i<titles.size();i++){
 
@@ -248,15 +243,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
             }
         });
 
-        searchView.setOnClickSearch(new ICallBack() {
-         @Override
-         public void SearchAciton(String string) {
-
-             Intent intent=new Intent(getActivity(), SearchActivity.class);
-             intent.putExtra("v",string);
-             startActivity(intent);
-         }
-     });
 
         mLogo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,6 +257,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         mAddVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent=new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -362,12 +350,12 @@ i
 
     @Override
     public void onLoadStarCountSuccess(int v) {
-       m.findItem(R.id.navigation_item_history).setTitle("我的收藏 | "+v);
+       m.findItem(R.id.navigation_item_history).setTitle("我的收藏 ● "+v);
     }
 
     @Override
     public void onLoadHistoryCountSuccess(int v) {
-        m.findItem(R.id.navigation_item_star).setTitle("历史记录 | "+v);
+        m.findItem(R.id.navigation_item_star).setTitle("历史记录 ● "+v);
     }
 
 

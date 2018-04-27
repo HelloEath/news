@@ -1,26 +1,23 @@
 package com.glut.news.common.view;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.adater.SearchAdater;
 import com.glut.news.common.presenter.impl.SearchActivityPresenterImpl;
-import com.glut.news.common.view.searchview.ICallBack;
 import com.glut.news.common.view.searchview.SearchView;
 import com.glut.news.home.model.entity.ArticleModel;
 import com.glut.news.home.view.activity.ArticleDetailActivity;
@@ -50,6 +47,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
     private SmartRefreshLayout mRefreshLayout;
     private String SearchValue;
     private LoadingView mLoadingView;
+    private FloatingSearchView mFloatingSearchView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,24 +59,21 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
     }
 
     private void initData() {
-         SearchValue = getIntent().getStringExtra("v");
-        s.search(SearchValue,"fp");
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
     }
 
     private void initView() {
+        mFloatingSearchView=findViewById(R.id.floating_search_view);
         mLoadingView=findViewById(R.id.loadView);
         mRefreshLayout=findViewById(R.id.refreshLayout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mSearchView = (SearchView) findViewById(R.id.search);
         recyclerView = (RecyclerView) findViewById(R.id.search_result);
-        textView = (TextView) findViewById(R.id.btn_search);
         LinearLayoutManager l = new LinearLayoutManager(this);
         l.setOrientation(LinearLayoutManager.VERTICAL);
         searchData = new ArrayList<>();
         searchAdater = new SearchAdater(this, searchData);
         recyclerView.setLayoutManager(l);
         recyclerView.setAdapter(searchAdater);
-
         searchAdater.setOnItemClickListener(new SearchAdater.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int articleId, String contentType, String searchType) {
@@ -96,34 +91,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
                 }
             }
         });
-        mSearchView.setOnClickSearch(new ICallBack() {
-            @Override
-            public void SearchAciton(String string) {
-                SearchValue = string;
-                s.search(string,"fp");//执行搜索
-                mLoadingView.setVisibility(View.VISIBLE);
-                searchAdater.changeDta(new ArrayList<ArticleModel.ArticleList>());
 
-            }
-        });
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                s.search(SearchValue,"fp");//执行搜索
-            }
-        });
-        setSupportActionBar(toolbar);
-        //动态改变Toolbar返回按钮颜色：改为灰色
-        Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-
-        upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
-        ActionBar a = getSupportActionBar();
-        if (a != null) {
-            a.setDisplayShowTitleEnabled(false);
-            a.setDisplayHomeAsUpEnabled(true);
-        }
         mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
@@ -138,21 +106,92 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
 
             }
         });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
+        //监听返回按钮
+        mFloatingSearchView.setOnHomeActionClickListener(new FloatingSearchView.OnHomeActionClickListener() {
+            @Override
+            public void onHomeClicked() {
                 finish();
-                return true;
+            }
+        });
 
-        }
-        return false;
+        //字符变化监听
+        mFloatingSearchView.setOnQueryChangeListener(new FloatingSearchView.OnQueryChangeListener() {
+            @Override
+            public void onSearchTextChanged(String oldQuery, String newQuery) {
+               /* if (!oldQuery.equals("") && newQuery.equals("")) {
+                    mFloatingSearchView.clearSuggestions();
+                } else {
+
+                    //this shows the top left circular progress
+                    //you can call it where ever you want, but
+                    //it makes sense to do it when loading something in
+                    //the background.
+                    mFloatingSearchView.showProgress();
+
+                    //simulates a query call to a data source
+                    //with a new query.
+                    DataHelper.findSuggestions(getActivity(), newQuery, 5,
+                            FIND_SUGGESTION_SIMULATED_DELAY, new DataHelper.OnFindSuggestionsListener() {
+
+                                @Override
+                                public void onResults(List<ColorSuggestion> results) {
+
+                                    //this will swap the data and
+                                    //render the collapse/expand animations as necessary
+                                    mSearchView.swapSuggestions(results);
+
+                                    //let the users know that the background
+                                    //process has completed
+                                    mSearchView.hideProgress();
+                                }
+                            });
+                }
+
+                Log.d(TAG, "onSearchTextChanged()");
+            }*/
+            }
+        });
+        //点击搜索监听
+        mFloatingSearchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+            //点击建议栏
+            @Override
+            public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+            }
+
+            //点击键盘搜索
+            @Override
+            public void onSearchAction(String currentQuery) {
+                SearchValue=currentQuery;
+                s.search(currentQuery,"fp");
+                mLoadingView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        //获得焦点监听
+        mFloatingSearchView.setOnFocusChangeListener(new FloatingSearchView.OnFocusChangeListener() {
+            @Override
+            public void onFocus() {
+
+                    // 展示历史搜索项
+                    //mSearchView.swapSuggestions(DataHelper.getHistory(getActivity(), 3));
+
+
+            }
+
+            @Override
+            public void onFocusCleared() {
+                //你也可以将已经打上的搜索字符保存，以致在下一次点击的时候，搜索栏内还保存着之前输入的字符
+                //mSearchView.setSearchText(searchSuggestion.getBody());
+            }
+        });
     }
+
+
 
     @Override
     public void onSearchSuccess(ArticleModel h) {
+        mRefreshLayout.setEnableRefresh(true);
         mRefreshLayout.setEnableLoadMore(true);
         mRefreshLayout.finishRefresh();
         searchAdater.changeDta(h.getData());
