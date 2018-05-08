@@ -21,6 +21,11 @@
         android:layout_width="100dp"
         android:scaleType="fitXY"
         android:layout_height="match_parent" />
+    <cn.jzvd.JZVideoPlayerStandard
+        android:id="@+id/custom_videoplayer_standard"
+        android:layout_width="100dp"
+        android:visibility="gone"
+        android:layout_height="match_parent"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="10dp"

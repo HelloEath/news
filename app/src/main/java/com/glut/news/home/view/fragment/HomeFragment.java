@@ -221,7 +221,11 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         for (int i=0;i<titles.size();i++){
 
             tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
-            lf.add(new HomeTypeFragment(titles.get(i)));
+            HomeTypeFragment homeTypeFragment=new HomeTypeFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("title",titles.get(i));
+            homeTypeFragment.setArguments(bundle);
+            lf.add(homeTypeFragment);
         }
 
 

@@ -5,5 +5,5 @@ package com.glut.news.home.presenter;
  */
 
 public interface IHomeTypeFragmentPresenter {
-    void loadData(String f,String contentType);
+    void loadData(String u,String f,String contentType);
 }

@@ -5,5 +5,5 @@ package com.glut.news.video.presenter;
  */
 
 public interface IVideoTypeFragmentPresenter {
-    void loadVideoData(String type,String fp);
+    void loadVideoData(String u,String type,String fp);
 }

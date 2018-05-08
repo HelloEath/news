@@ -17,8 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.signature.ObjectKey;
 import com.glut.news.common.utils.ApiConstants;
 import com.glut.news.common.utils.DateUtil;
 import com.glut.news.common.view.IntroActivity;
@@ -59,10 +57,13 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_welcome);
         String updateTime = String.valueOf(System.currentTimeMillis()); // 在需要重新获取更新的图片时调用
         ImageView imageView = (ImageView) findViewById(R.id.welcomeimage);
-        Glide.with(this).load(ApiConstants.welcomeImageAPi)
+      /*  Glide.with(this).load(ApiConstants.welcomeImageAPi)
 
                 .apply(new RequestOptions().signature(new ObjectKey(updateTime)))
 
+                .into(imageView);*/
+
+        Glide.with(this).load(ApiConstants.welcomeImageAPi)
                 .into(imageView);
         initPermission();
         //WelcomeActivityPermissionsDispatcher.initLocationPermissionWithCheck(WelcomeActivity.this);

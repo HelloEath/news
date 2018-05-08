@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.mob.sdk'
+apply plugin: 'com.mob.sdk'
 
 // 在MobSDK的扩展中注册SMSSDK的相关信息
-/*MobSDK {
+MobSDK {
     appKey "2513e416852e0"
     appSecret "383b42e1b4aedcfd82852d8483e1f035"
 
     SMSSDK {}
-}*/
+}
 configurations.all {
     resolutionStrategy.force 'com.android.support:support-annotations:23.1.0'
 }
@@ -49,7 +49,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     testCompile 'junit:junit:4.12'
     implementation 'com.android.support:support-v4:27.1.0'
     implementation 'com.android.support:appcompat-v7:27.1.0'
@@ -118,11 +117,12 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-2'
 
     //日期选择控件（有support冲突，必须使用该方式依赖）
-    api("com.wdullaer:materialdatetimepicker:3.5.1") {
+    api('com.wdullaer:materialdatetimepicker:3.5.1') {
         exclude group: 'com.android.support'
     }
 
     //工具箱
+
     //implementation 'com.github.vondear:RxTools:v1.7.7.3'//请替换成上方 JitPack 最新的版本号
 
     //功能提示控件
@@ -132,17 +132,23 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:1.8.3'
 
     //城市选择
+
     //implementation 'com.zaaach:citypicker:2.0.1'
-    api("com.zaaach:citypicker:2.0.1") {
+    api('com.zaaach:citypicker:2.0.1') {
         exclude group: 'com.android.support'
     }
+
     //位置定位
     compile files('libs/BaiduLBS_Android.jar')
 
     //头像裁剪
-   // implementation  'com.linchaolong.android:imagepicker:1.5'
+
+    // implementation  'com.linchaolong.android:imagepicker:1.5'
+
     // recyclerView动画
+
     //implementation 'jp.wasabeef:recyclerview-animators:2.3.0'
+
     //搜索框
     implementation 'com.github.arimorty:floatingsearchview:2.0.3'
 }

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.glut.news.R;
 import com.glut.news.common.utils.NetUtil;
+import com.glut.news.common.utils.UserUtil;
 import com.glut.news.home.model.adater.HomeRecyclerAdater;
 import com.glut.news.home.model.entity.ArticleModel;
 import com.glut.news.home.presenter.impl.HomeTypeFragmentPresenterImpl;
@@ -45,9 +46,9 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
     private int nextPage;
     private String Article_Type;
 
-    public HomeTypeFragment(String s) {
-        Article_Type = s;
-    }
+
+
+
 
     private LoadingView loadingView;
 
@@ -59,11 +60,12 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
         View v = inflater.inflate(R.layout.fragment_home_type, container, false);
         initView(v);
         initData();
-        loadData("fp", Article_Type);
         return v;
     }
 
     private void initData() {
+        Article_Type=getArguments().getString("title");
+        loadData("fp", Article_Type);
     }
 
     private void initView(View v) {
@@ -79,15 +81,13 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
         //创建适配器
         //loadData();
         adapter = new HomeRecyclerAdater(getActivity(), newslist);
-
+        refresh.autoRefresh();
         recyclerView.setAdapter(adapter);
-
         refresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 if (NetUtil.isNetworkConnected()) {
                     loadData("fp", Article_Type);
-
                 } else {
                     Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
                     refresh.finishRefresh();
@@ -102,11 +102,9 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
                 if (NetUtil.isNetworkConnected()) {
                     loadMoreData(null, Article_Type);
-
                 } else {
-
                     Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
-                    refresh.finishRefresh();
+                    refresh.finishLoadMore();
                 }
 
             }
@@ -139,14 +137,26 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
 
     //加载更多数据
     private void loadMoreData(String f, String article_Type) {
-        hyf.loadData(null, Article_Type);//加载数据
+        if(UserUtil.isUserLogin()){
+            hyf.loadData("login","null", article_Type);//加载数据
+
+        }else {
+            hyf.loadData("","null", article_Type);//加载数据
+
+        }
 
 
     }
 
     //加载新闻列表数据
     private void loadData(String fp, String article_Type) {
-        hyf.loadData(fp, article_Type);//加载数据
+        if(UserUtil.isUserLogin()){
+            hyf.loadData("login",fp, article_Type);//加载数据
+
+        }else {
+            hyf.loadData("",fp, article_Type);//加载数据
+
+        }
 
     }
 
@@ -155,7 +165,7 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
     public void onloadDataSuccess(List<ArticleModel.ArticleList> data) {
         adapter.changeData(data);
         refresh.finishRefresh(true);
-        refresh.setEnableLoadMore(true);
+        refresh.setNoMoreData(false);
         Toast.makeText(getContext(), "刷新成功！", Toast.LENGTH_SHORT).show();
 
     }
@@ -175,14 +185,13 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
     public void onloadMoreDataSuccess(List<ArticleModel.ArticleList> data) {
         adapter.addData(data);
         refresh.finishLoadMore(true);
+        refresh.finishRefresh();
 
 
     }
 
     @Override
     public void onLoadEmptyData() {
-
-        refresh.setEnableLoadMore(false);
-        refresh.finishLoadMore(3000, true, true);
+        refresh.setNoMoreData(true);
     }
 }

@@ -86,17 +86,18 @@
         app:floatingSearch_leftActionMode="showHome"
         app:floatingSearch_menu="@menu/menu_main"
         app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
-    <com.mingle.widget.LoadingView
-        android:id="@+id/loadView"
-        android:background="#fff"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_marginTop="60dp"
         android:layout_height="match_parent">
+        <com.mingle.widget.LoadingView
+            android:id="@+id/loadView"
+            android:background="#fff"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshLayout"

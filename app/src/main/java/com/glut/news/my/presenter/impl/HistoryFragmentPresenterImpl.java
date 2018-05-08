@@ -51,7 +51,7 @@ private HistoryFragmentView historyFragmentView;
                     @Override
                     public void call(HistoryWithStarModel historyModel) {
                         if (historyModel == null) {
-                            historyFragmentView.onLoadHistoryFail();
+                            historyFragmentView.noHistoryData();
                         } else {
 
                             if (historyModel.getData() != null) {

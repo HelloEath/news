@@ -63,9 +63,9 @@ public class IntroActivity extends AppIntro implements ISlideBackgroundColorHold
 
         //切换动画
        // setZoomAnimation();
-        //setDepthAnimation();
+        setDepthAnimation();
        // setFadeAnimation();
-        setFlowAnimation();
+        //setFlowAnimation();
        //setSlideOverAnimation();
         // Hide Skip/Done button.
         showSkipButton(false);

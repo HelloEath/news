@@ -33,7 +33,7 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="30dp"
 
         >
         <com.mingle.widget.LoadingView
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:background="@color/app_bg"
 
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -86,6 +86,9 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="5dp"
                     android:text="全部评论"/>
             </LinearLayout>
 
@@ -94,6 +97,7 @@
             android:orientation="vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:background="@color/app_main_tab"
             android:layout_height="wrap_content">
 
             <com.scwang.smartrefresh.layout.SmartRefreshLayout

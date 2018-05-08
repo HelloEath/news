@@ -519,8 +519,10 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
                             RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);*/
                     String d=saveImage("UserLogo",image);
                     File file=new File(d);
+                    File imageFile = new File(Environment.getExternalStorageDirectory().getPath(),"123.png");
+                    RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
                     RequestBody requestBody=RequestBody.create(MediaType.parse("multipart/form-data"),file);
-                    u.alterUserLogo(SpUtil.getUserFromSp("UserId"),requestBody);
+                    u.alterUserLogo(SpUtil.getUserFromSp("UserId"),imageRequestBody);
                     //u.alterUserLogoByBase64(tp);
                     //也可以进行一些保存、压缩等操作后上传
 //                    String path = saveImage("crop", image);

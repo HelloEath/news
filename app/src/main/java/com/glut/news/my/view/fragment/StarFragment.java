@@ -42,8 +42,9 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
 
     private StarFragmentPresenterImpl starPresenter=new StarFragmentPresenterImpl(this) ;
 
-    public StarFragment(String s) {
-        title=s;
+
+    public StarFragment() {
+
     }
 
     @Nullable
@@ -82,14 +83,15 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
         mRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                starPresenter.loadStarData("fp");
+                starPresenter.loadStarData("null");
             }
         });
 
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                starPresenter.loadStarData("null");
+                Ada.changeDta(new ArrayList<CommonData>());
+                starPresenter.loadStarData("fp");
             }
         });
 
@@ -121,35 +123,35 @@ public class StarFragment extends android.support.v4.app.Fragment implements ISt
     public void onLoadStarSuccess(HistoryWithStarModel h) {
         Ada.changeDta(h.getData());
         mRefreshLayout.finishRefresh(true);
+        mRefreshLayout.setNoMoreData(false);
 
     }
 
     @Override
     public void onLoadSMoretarSuccess(HistoryWithStarModel h) {
         mRefreshLayout.finishLoadMore(true);
+        mRefreshLayout.finishRefresh(true);
+
         Ada.addData(h.getData());
     }
 
 
     @Override
     public void onLoadStarFail() {
-
         mRefreshLayout.finishRefresh(false);
-        Toast.makeText(getContext(),"加载失败",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"加载失败,下拉可再次刷新",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLoadSMoretarFail() {
-        Toast.makeText(getContext(),"加载更多失败",Toast.LENGTH_SHORT).show();
-
-
+        Toast.makeText(getContext(),"加载更多失败,下拉可再次刷新",Toast.LENGTH_SHORT).show();
         mRefreshLayout.finishLoadMoreWithNoMoreData();
     }
 
     @Override
     public void onNoMoreData() {
         mRefreshLayout.finishLoadMoreWithNoMoreData();
-        mRefreshLayout.setEnableLoadMore(false);
+
     }
 
 }

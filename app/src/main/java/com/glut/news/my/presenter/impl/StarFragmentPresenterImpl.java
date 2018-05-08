@@ -24,21 +24,22 @@ public class StarFragmentPresenterImpl implements IStarFragmentPresenter {
 
     private int UserId;
     private int NextPage;
+
     public StarFragmentPresenterImpl(IStarFragmentView starFragmentView) {
         this.starFragmentView = starFragmentView;
-        if (SpUtil.getUserFromSp("UserId")==null){
+        if (SpUtil.getUserFromSp("UserId") == null) {
 
-            UserId=Integer.parseInt(SpUtil.getUserFromSp("UserId"));
+            UserId = Integer.parseInt(SpUtil.getUserFromSp("UserId"));
 
         }
     }
 
     @Override
     public void loadStarData(final String fp) {
-        if ("fp".equals(fp)){
-            NextPage=1;
+        if ("fp".equals(fp)) {
+            NextPage = 1;
         }
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarList(UserId,NextPage)
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "StarService").getStarList(UserId, NextPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -56,23 +57,24 @@ public class StarFragmentPresenterImpl implements IStarFragmentPresenter {
                     @Override
                     public void call(HistoryWithStarModel historyModel) {
                         if (historyModel == null) {
-                            starFragmentView.onLoadSMoretarFail();
+                            starFragmentView.onLoadStarFail();
                         } else {
 
                             if (historyModel.getData() != null)
-                               if (historyModel.isHaveNextPage()){
+                                if (historyModel.isHaveNextPage()) {
 
-                                if ("fp".equals(fp)){//上拉刷新
-                                   starFragmentView.onLoadStarSuccess(historyModel);
-                                }else {//加载更多
+                                    if ("fp".equals(fp)) {//上拉刷新
+                                        starFragmentView.onLoadStarSuccess(historyModel);
+                                    } else {//加载更多
+                                        starFragmentView.onLoadSMoretarSuccess(historyModel);
+
+                                    }
+                                    NextPage = historyModel.getNextpage();
+                                } else {
                                     starFragmentView.onLoadSMoretarSuccess(historyModel);
+                                    starFragmentView.onNoMoreData();
 
                                 }
-                                   NextPage = historyModel.getNextpage();
-                            }else{
-                                   starFragmentView.onNoMoreData();
-
-                            }
 
 
                         }

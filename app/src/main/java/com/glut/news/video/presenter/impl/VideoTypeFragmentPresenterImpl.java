@@ -28,73 +28,143 @@ public class VideoTypeFragmentPresenterImpl implements IVideoTypeFragmentPresent
     }
 
     @Override
-    public void loadVideoData(String videoType, final String fp) {
+    public void loadVideoData(String u,String videoType, final String fp) {
 
         if ("fp".equals(fp)){
             NextPage=1;
         }
         if (videoType.equals("推荐")){
 
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getVideo(NextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                        }
-                    })
-                    .map(new Func1<VideoModel,VideoModel>() {
-                        @Override
-                        public VideoModel call(VideoModel videoModel) {
-                            return videoModel;
-                        }
-                    })
-                    .subscribe(new Action1<VideoModel>() {
-                        @Override
-                        public void call(VideoModel videoModel) {
+            if ("login".equals(u)){
+                RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getVideo("isinterest",NextPage)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(new Action0() {
+                            @Override
+                            public void call() {
+                            }
+                        })
+                        .map(new Func1<VideoModel,VideoModel>() {
+                            @Override
+                            public VideoModel call(VideoModel videoModel) {
+                                return videoModel;
+                            }
+                        })
+                        .subscribe(new Action1<VideoModel>() {
+                            @Override
+                            public void call(VideoModel videoModel) {
 
-                            if (videoModel ==null){
-                                iVideoTypeFragmentView.loadVideoDataFail();
-                            }else{
+                                if (videoModel ==null){
+                                    iVideoTypeFragmentView.loadVideoDataFail();
+                                }else{
 
-                                if (videoModel.getStus().equals("ok")){
+                                    if (videoModel.getStus().equals("ok")){
 
-                                    if (videoModel.isHaveNextPage()){
+                                        if (videoModel.isHaveNextPage()){
 
-                                        if ("fp".equals(fp)){
-                                            iVideoTypeFragmentView.loadVideoDataSuccess(videoModel);
+                                            if ("fp".equals(fp)){
+                                                iVideoTypeFragmentView.loadVideoDataSuccess(videoModel);
+
+
+                                            }else {
+                                                iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+
+
+                                            }
+                                            NextPage= videoModel.getNextpage();
 
 
                                         }else {
                                             iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+                                            iVideoTypeFragmentView.noMoreData();
 
 
                                         }
-                                        NextPage= videoModel.getNextpage();
-
 
                                     }else {
-                                        iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
-                                        iVideoTypeFragmentView.noMoreData();
 
-
+                                        iVideoTypeFragmentView.loadVideoDataFail();
                                     }
 
-                                }else {
-
-                                    iVideoTypeFragmentView.loadVideoDataFail();
                                 }
 
                             }
-
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
 
 
-                        }
-                    });
+                            }
+                        });
+
+
+            }else {
+
+                RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getVideo("nointerest",NextPage)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(new Action0() {
+                            @Override
+                            public void call() {
+                            }
+                        })
+                        .map(new Func1<VideoModel,VideoModel>() {
+                            @Override
+                            public VideoModel call(VideoModel videoModel) {
+                                return videoModel;
+                            }
+                        })
+                        .subscribe(new Action1<VideoModel>() {
+                            @Override
+                            public void call(VideoModel videoModel) {
+
+                                if (videoModel ==null){
+                                    iVideoTypeFragmentView.loadVideoDataFail();
+                                }else{
+
+                                    if (videoModel.getStus().equals("ok")){
+
+                                        if (videoModel.isHaveNextPage()){
+
+                                            if ("fp".equals(fp)){
+                                                iVideoTypeFragmentView.loadVideoDataSuccess(videoModel);
+
+
+                                            }else {
+                                                iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+
+
+                                            }
+                                            NextPage= videoModel.getNextpage();
+
+
+                                        }else {
+                                            iVideoTypeFragmentView.loadVideoMoreVideoDataSuccesss(videoModel);
+                                            iVideoTypeFragmentView.noMoreData();
+
+
+                                        }
+
+                                    }else {
+
+                                        iVideoTypeFragmentView.loadVideoDataFail();
+                                    }
+
+                                }
+
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+
+
+                            }
+                        });
+
+
+            }
+
+
 
         }else {
             RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL,"VideoService").getTypeVideo(videoType,NextPage)

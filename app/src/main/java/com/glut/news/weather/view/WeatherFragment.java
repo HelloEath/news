@@ -27,9 +27,13 @@ import com.glut.news.BaseFragment;
 import com.glut.news.R;
 import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
+import com.glut.news.weather.model.HeWeather6;
 import com.glut.news.weather.model.Weather;
 import com.glut.news.weather.model.Weather2;
 import com.glut.news.weather.model.WeatherUtili;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -45,6 +49,11 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yy on 2018/3/31.
@@ -71,6 +80,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     public LocationClient locationClient;
     private Toolbar toolbar;
     private SmartRefreshLayout sfresh;
+    private String localtionId;
 
     @Nullable
     @Override
@@ -174,13 +184,13 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
             //CityPicker.getInstance()
                   //  .locateComplete(new LocatedCity(city, province, "101280601"), LocateState.SUCCESS);
 
-            mWeatherId2 = stringBuilder.toString();
+            localtionId = stringBuilder.toString();
             if (district!=null){
                 city=city+district;
             }
             locationClient.stop();
             titleCity.setText(city);
-            initData(stringBuilder.toString());//
+            initData(localtionId);//
 
 
         }
@@ -263,12 +273,102 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
         //http://guolin.tech/api/weather?cityid=
 //https://free-api.heweather.com/s6/weather?location=
-        String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + weatherCity + "&key=7c6f7ed1b2e749a688a2f858294281cd";
-        String weatherUrl2 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=7c6f7ed1b2e749a688a2f858294281cd";
-        String weatherUrl3 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=7c6f7ed1b2e749a688a2f858294281cd";
+        String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
+        String weatherUrl2 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
+        String weatherUrl3 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
 
+        String key="7c6f7ed1b2e749a688a2f858294281cd";
         Log.d("和风天气api", weatherUrl);
         //请求基本天气数据
+        RetrofitManager.builder(RetrofitService.HE_WEATHER_URL, "WeatherService").getWeather(weatherCity,key)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+                .map(new Func1<HeWeather6, HeWeather6>() {
+                    @Override
+                    public HeWeather6 call(HeWeather6 h) {
+                        return h;
+                    }
+                })
+                .subscribe(new Action1<HeWeather6>() {
+                    @Override
+                    public void call(final HeWeather6 response) {
+
+                        //final Weather weather = WeatherUtili.handleWeatherResponse(responseText);
+                         final Weather weather =null;
+                       final String responseText= new Gson().toJson(response, HeWeather6.class);
+                        if (weather != null) {
+
+                            //开启新线程处理请求
+
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("weather.status", weather.status);
+                                    //判断请求到的数据是否合法
+                                    if (weather != null && "ok".equals(weather.status)) {
+                                        //把数据存入本地缓存
+                                        SpUtil.saveUserToSp("weather", responseText);
+                                        showWeatherInfo(weather);
+
+                                    } else {
+                                        Snackbar s = Snackbar.make(getView(), "天气数据异常", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                locationClient.start();//再次定位
+
+                                            }
+                                        });
+                                        View sv = s.getView();
+//文字的颜色
+                                        ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                                        sv.setBackgroundColor(0xffffffff);
+                                        s.show();
+
+                                    }
+                                    // swipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+
+                        } else {
+                            Snackbar s = Snackbar.make(getView(), "天气数据为空", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    locationClient.start();//再次定位
+
+                                }
+                            });
+                            View sv = s.getView();
+//文字的颜色
+                            ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                            sv.setBackgroundColor(0xffffffff);
+                            s.show();
+
+                        }
+
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+
+
+                    }
+                });
+
+
+
+
+
+
+
+/*
+
         NetUtil.sendHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -293,6 +393,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                     }
                 });
             }
+
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -351,6 +452,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
             }
         });
+*/
+
+
 
 //请求空气质量数据
         NetUtil.sendHttpRequest(weatherUrl2, new Callback() {
@@ -532,7 +636,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                 if (NetUtil.isNetworkConnected()){
                     refreshlayout.finishRefresh(3000);
                     if (!titleCity.getText().toString().equals("")){
-                        initData(titleCity.getText().toString());
+                        initData(localtionId);
                     }else {
                         locationClient.start();
                     }

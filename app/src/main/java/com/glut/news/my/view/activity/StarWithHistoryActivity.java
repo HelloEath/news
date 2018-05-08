@@ -64,8 +64,16 @@ public class StarWithHistoryActivity extends AppCompatActivity {
 
         titles.add("我的收藏");
         titles.add("历史记录");
-        fs.add(new StarFragment(titles.get(0)));
-        fs.add(new HistoryFragment(titles.get(1)));
+        StarFragment starFragment=new StarFragment();
+        Bundle bundle=new Bundle();
+        bundle.putString("t1","我的收藏");
+        starFragment.setArguments(bundle);
+        fs.add(starFragment);
+
+        HistoryFragment historyFragment=new HistoryFragment();
+        bundle.putString("t1","历史记录");
+        historyFragment.setArguments(bundle);
+        fs.add(historyFragment);
         tab.addTab(tab.newTab().setText(titles.get(0)));
         tab.addTab(tab.newTab().setText(titles.get(1)));
         SettingsFragmentAdater sft=new SettingsFragmentAdater(getSupportFragmentManager());

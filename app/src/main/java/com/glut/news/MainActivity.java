@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Explode;
 import android.widget.Toast;
 
 import com.glut.news.discover.view.fragment.DicoverFragment;
@@ -41,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AppApplication.getInstance().addActivity(this);
-        Explode explode = new Explode();
+       /* Explode explode = new Explode();
         explode.setDuration(500);
         getWindow().setExitTransition(explode);
-        getWindow().setEnterTransition(explode);
+        getWindow().setEnterTransition(explode);*/
         initView();
         initViewPager();
         initBottomBar();

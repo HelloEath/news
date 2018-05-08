@@ -66,7 +66,11 @@ public class VideoFragment extends android.support.v4.app.Fragment {
 
 
         for (int i=0;i<titles.size();i++){
-            fragmentList.add(new VideoTypeFragment(titles.get(i)));
+            VideoTypeFragment videoTypeFragment=new VideoTypeFragment();
+            Bundle bundle=new Bundle();
+            bundle.putString("title",titles.get(i));
+            videoTypeFragment.setArguments(bundle);
+            fragmentList.add(videoTypeFragment);
 
             tabLayout.addTab(tabLayout.newTab().setText(titles.get(i)));
 

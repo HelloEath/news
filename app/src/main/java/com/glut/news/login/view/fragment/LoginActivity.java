@@ -7,10 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.transition.Explode;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -62,6 +60,7 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         setContentView(R.layout.activity_login);
+
         initView();
         initData();
         AppApplication.getInstance().addActivity(this);
@@ -137,33 +136,8 @@ if (NetUtil.isNetworkConnected()){
 }
                 break;
 
-            case R.id.btn_QQ:
-                //lt.error();
-
-                break;
-            case R.id.btn_WeChat:
-              //  lt.success();
-               // lt.hide();
-
-                break;
             case R.id.fab2:
                 startActivity(new Intent(LoginActivity.this,ForgetPwdActivity.class));
-
-
-               /* UserInfo userInfo=new UserInfo();
-                if (!SpUtil.getUserFromSp("UserEmail").equals("null")){
-                    userInfo.setUserEmail(SpUtil.getUserFromSp("UserEmail"));
-                }else {
-                    userInfo.setUserPhone(SpUtil.getUserFromSp("UserPhone"));
-
-                }
-                if (!SpUtil.getUserFromSp("UserPwd").equals("null")){
-                    userInfo.setUserPwd(SpUtil.getUserFromSp("UserPwd"));
-                }
-                l.toLogin(userInfo);
-
-                Intent i=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(i);*/
                 break;
         }
 
@@ -202,18 +176,15 @@ if (NetUtil.isNetworkConnected()){
 
     @Override
     public void onLoginSuccess() {
-        Explode explode = new Explode();
+       /* Explode explode = new Explode();
         explode.setDuration(500);
 
         getWindow().setExitTransition(explode);
         getWindow().setEnterTransition(explode);
-        ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);
+        ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);*/
         Intent i2 = new Intent(this, MainActivity.class);
-
         i2.putExtra("UserId", SpUtil.getUserFromSp("UserId"));
-
-        startActivity(i2, oc2.toBundle());
-
+        startActivity(i2);
         finish();
     }
 
@@ -227,4 +198,6 @@ if (NetUtil.isNetworkConnected()){
         ToastUtil.showError("你的密码有点问题...",3000,LoginActivity.this);
 
     }
+
+
 }

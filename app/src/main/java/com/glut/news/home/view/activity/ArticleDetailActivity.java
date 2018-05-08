@@ -109,7 +109,6 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     private void initData() {
         articleId=Integer.parseInt(getIntent().getStringExtra("id"));
-        userId=SpUtil.getUserFromSp("UserId");
         contentType=getIntent().getStringExtra("ContentType");
         thumbUpView.setOnThumbUp(new ThumbUpView.OnThumbUp() {
             @Override
@@ -148,7 +147,9 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private void loadData() {
 
         if (NetUtil.isNetworkConnected()){
+            //String url="http://47.100.243.11/NewsServerApi/article/detailArticle?Article_Id="+articleId;
             String url="http://192.168.191.1:8085/NewsServerApi/article/detailArticle?Article_Id="+articleId;
+
             initWebView(url);
 
         }else {
@@ -161,6 +162,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
 
     private void star(){
+        userId=SpUtil.getUserFromSp("UserId");
         Star star=new Star();
         star.setStar_ContentId(articleId);
         star.setStar_UserId(Integer.parseInt(userId));
@@ -172,9 +174,10 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     }
 
     private void recordHistory(){
+        userId=SpUtil.getUserFromSp("UserId");
         History history=new History();
         history.setContent_type(contentType);
-        history.setHistory_Persion(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
+        history.setHistory_Persion(Integer.parseInt(userId));
         history.setHistory_Article(articleId);
         history.setHistory_Type(1);
         history.setHistory_Time(DateUtil.formatDate_getCurrentDateByF("yyyy-MM-dd"));
@@ -195,8 +198,8 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
         mWebView.setVerticalScrollbarOverlay(false);
         mWebView.setHorizontalScrollBarEnabled(false);
         mWebView.setHorizontalScrollbarOverlay(false);*/
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.getSettings().setDomStorageEnabled(false);
 
 
         mWebView.loadUrl(url);

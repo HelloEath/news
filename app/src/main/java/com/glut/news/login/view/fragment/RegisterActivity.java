@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.transition.Transition;
 import android.transition.TransitionInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
@@ -35,7 +37,8 @@ import com.glut.news.my.view.activity.InterestTagActivity;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
 
 
 /**
@@ -161,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
     // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
     public void sendCode(String country, String phone) {
-      /*  // 注册一个事件回调，用于处理发送验证码操作的结果
+        // 注册一个事件回调，用于处理发送验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
@@ -199,14 +202,14 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                 }
 
             }
-        });*/
+        });
         // 触发操作
-        //SMSSDK.getVerificationCode(country, phone);
+        SMSSDK.getVerificationCode(country, phone);
     }
 
     // 提交验证码，其中的code表示验证码，如“1357”
     public void submitCode(String country, String phone, String code,final  UserInfo userInfo) {
-        /*// 注册一个事件回调，用于处理提交验证码操作的结果
+        // 注册一个事件回调，用于处理提交验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
@@ -220,13 +223,13 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
             }
         });
         // 触发操作
-        SMSSDK.submitVerificationCode(country, phone, code);*/
+        SMSSDK.submitVerificationCode(country, phone, code);
     }
 
     protected void onDestroy() {
         super.onDestroy();
         //用完回调要注销掉，否则可能会出现内存泄露
-       // SMSSDK.unregisterAllEventHandler();
+        SMSSDK.unregisterAllEventHandler();
     }
     private Boolean vailUserInfo(UserInfo userInfo, String UserName, String UserPwd, String UserRePwd, String Test) {
       boolean f=true;

@@ -58,8 +58,9 @@ public class SearchActivityPresenterImpl implements ISearchActivityPresenter {
                                 NextPage= articleModel.getNextpage();
 
                             }else {
-                                iSearchActivityView.noMoreData();
+
                                 iSearchActivityView.onMoreSearchSuccess(articleModel);
+                                iSearchActivityView.noMoreData();
 
                             }
 

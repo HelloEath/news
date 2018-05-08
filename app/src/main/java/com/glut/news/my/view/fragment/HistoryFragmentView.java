@@ -13,4 +13,6 @@ public interface HistoryFragmentView {
     void onLoadHistoryFail();
     void  onLoadMoreHistorySuccess(HistoryWithStarModel h);
     void onNoMoreHistoryData();
+
+    void noHistoryData();
 }

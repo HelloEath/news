@@ -164,7 +164,7 @@
     <string name="videoAbstract">视频摘要</string>
     <string name="videoTitle">视频标题</string>
     <string name="share_from_jikezhiyue">即刻知阅</string>
-    <string name="double_click_exit">再按一次 say goodbye</string>
+    <string name="double_click_exit">再按一次离开应用</string>
     <string name="clear_cache_successfully">清除缓存成功</string>
     <string name="video_setting">视频设置</string>
     <string name="video_auto_play_summary"><![CDATA[开启后在Wifi环境下自动播放视频]]></string>
@@ -199,4 +199,5 @@
     <string name="VideoId">视频Id</string>
     <string name="h_type2">内容类型</string>
     <string name="menu_search">搜索</string>
+ <string name="nohistoryData">没有历史记录</string>
 </resources>

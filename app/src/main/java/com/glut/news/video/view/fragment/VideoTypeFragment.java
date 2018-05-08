@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.glut.news.R;
 import com.glut.news.common.utils.NetUtil;
+import com.glut.news.common.utils.UserUtil;
 import com.glut.news.common.view.customview.VideoPlayer;
 import com.glut.news.video.model.adater.VideoRecyclerAdapter;
 import com.glut.news.video.model.entity.VideoModel;
@@ -41,11 +42,8 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     private LinearLayoutManager linearLayoutManager;
     private VideoTypeFragmentPresenterImpl v=new VideoTypeFragmentPresenterImpl(this);
 
-    public VideoTypeFragment() {
-    }
-    public VideoTypeFragment(String videoType) {
-        this.videoType=videoType;
-    }
+
+
 
 
     @Nullable
@@ -53,12 +51,20 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_video_type,container,false);
         initView(view);
-       initData();
+        initData();
         return view;
     }
 
     private void initData() {
-        v.loadVideoData(videoType,"fp");
+        sfresh.autoRefresh();
+        videoType=getArguments().getString("title");
+        if (UserUtil.isUserLogin()){
+            v.loadVideoData("login",videoType,"fp");
+
+        }else {
+            v.loadVideoData("",videoType,"fp");
+
+        }
         if (!NetUtil.isNetworkConnected()){
 
             Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
@@ -86,7 +92,13 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
             public void onRefresh(RefreshLayout refreshlayout) {
 
                 if (NetUtil.isNetworkConnected()){
-                    v.loadVideoData(videoType,"fp");
+                    if (UserUtil.isUserLogin()){
+                        v.loadVideoData("login",videoType,"fp");
+
+                    }else {
+                        v.loadVideoData("",videoType,"fp");
+
+                    }
 
 
                 }else {
@@ -103,7 +115,13 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
             public void onLoadMore(RefreshLayout refreshlayout) {
 
                 if (NetUtil.isNetworkConnected()){
-                    v.loadVideoData(videoType,"null");
+                    if (UserUtil.isUserLogin()){
+                        v.loadVideoData("login",videoType,"null");
+
+                    }else {
+                        v.loadVideoData("",videoType,"null");
+
+                    }
 
 
                 }else {
@@ -150,7 +168,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     public void loadVideoDataSuccess(VideoModel v) {
         videoRecyclerAdapter.changeData(v.getData());
         sfresh.finishRefresh(true);
-        sfresh.setEnableLoadMore(true);
+        sfresh.setNoMoreData(false);
 
 
 
@@ -159,6 +177,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     @Override
     public void loadVideoDataFail() {
         sfresh.finishRefresh(false);
+        sfresh.finishLoadMore();
 
 
     }
@@ -166,23 +185,20 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     @Override
     public void loadVideoMoreVideoDataSuccesss(VideoModel v) {
         videoRecyclerAdapter.addData(v.getData());
-
-        sfresh.finishLoadMore(true);
+        sfresh.finishRefresh();
+        sfresh.finishLoadMore();
 
     }
 
 
     @Override
     public void loadVideoMoreVideoDataFail() {
-sfresh.finishLoadMoreWithNoMoreData();
+    sfresh.finishLoadMoreWithNoMoreData();
 
     }
 
     @Override
     public void noMoreData() {
-
         sfresh.finishLoadMoreWithNoMoreData();
-        sfresh.setEnableLoadMore(false);
-
     }
 }

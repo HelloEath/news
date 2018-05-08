@@ -26,7 +26,7 @@ public class HomeTypeFragmentPresenterImpl implements IHomeTypeFragmentPresenter
 
 
     @Override
-    public void loadData(final String f, String contentType) {
+    public void loadData(String u,final String f, String contentType) {
         if ("fp".equals(f)){
 
             nextPage=1;
@@ -34,66 +34,136 @@ public class HomeTypeFragmentPresenterImpl implements IHomeTypeFragmentPresenter
 
 
         if (contentType.equals("推荐")) {
-            RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "ArticleService").getTuiJianArticle(contentType,nextPage)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(new Action0() {
-                        @Override
-                        public void call() {
-                        }
-                    })
-                    .map(new Func1<ArticleModel, ArticleModel>() {
-                        @Override
-                        public ArticleModel call(ArticleModel articleModel) {
-                            return articleModel;
-                        }
-                    })
-                    .subscribe(new Action1<ArticleModel>() {
-                        @Override
-                        public void call(ArticleModel articleModel) {
-                            // mPbLoading.setVisibility(View.GONE);
-                            if (articleModel == null) {
-                                if ("fp".equals(f)){
+            if ("login".equals(u)){
 
-                                    mIHomeTypeFragmentView.onLoadDataFail();
+                RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "ArticleService").getTuiJianArticle("isinterest",contentType,nextPage)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(new Action0() {
+                            @Override
+                            public void call() {
+                            }
+                        })
+                        .map(new Func1<ArticleModel, ArticleModel>() {
+                            @Override
+                            public ArticleModel call(ArticleModel articleModel) {
+                                return articleModel;
+                            }
+                        })
+                        .subscribe(new Action1<ArticleModel>() {
+                            @Override
+                            public void call(ArticleModel articleModel) {
+                                // mPbLoading.setVisibility(View.GONE);
+                                if (articleModel == null) {
+                                    if ("fp".equals(f)){
 
-                                }else {
+                                        mIHomeTypeFragmentView.onLoadDataFail();
 
-
-                                    mIHomeTypeFragmentView.onLoadMoreDataFail();
-
-                                }
-                            } else {
-
-                                if (!articleModel.isHaveNextPage()){
-                                    mIHomeTypeFragmentView.onLoadEmptyData();
-
-                                }else {
-                                    if ("fp".equals(f)){//加载第一页
+                                    }else {
 
 
-                                        mIHomeTypeFragmentView.onloadDataSuccess(articleModel.getData());
-                                    }else {//加载更多
-
-
-                                        mIHomeTypeFragmentView.onloadMoreDataSuccess(articleModel.getData());
+                                        mIHomeTypeFragmentView.onLoadMoreDataFail();
 
                                     }
+                                } else {
 
-                                    nextPage= articleModel.getNextpage();
+                                    if (!articleModel.isHaveNextPage()){
+                                        mIHomeTypeFragmentView.onloadMoreDataSuccess(articleModel.getData());
+                                        mIHomeTypeFragmentView.onLoadEmptyData();
+
+                                    }else {
+                                        if ("fp".equals(f)){//加载第一页
+
+
+                                            mIHomeTypeFragmentView.onloadDataSuccess(articleModel.getData());
+                                        }else {//加载更多
+
+
+                                            mIHomeTypeFragmentView.onloadMoreDataSuccess(articleModel.getData());
+
+                                        }
+
+                                        nextPage= articleModel.getNextpage();
+
+                                    }
 
                                 }
 
                             }
-
-                        }
-                    }, new Action1<Throwable>() {
-                        @Override
-                        public void call(Throwable throwable) {
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
 
 
-                        }
-                    });
+                            }
+                        });
+            }else {
+
+                RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "ArticleService").getTuiJianArticle("nointerest",contentType,nextPage)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(new Action0() {
+                            @Override
+                            public void call() {
+                            }
+                        })
+                        .map(new Func1<ArticleModel, ArticleModel>() {
+                            @Override
+                            public ArticleModel call(ArticleModel articleModel) {
+                                return articleModel;
+                            }
+                        })
+                        .subscribe(new Action1<ArticleModel>() {
+                            @Override
+                            public void call(ArticleModel articleModel) {
+                                // mPbLoading.setVisibility(View.GONE);
+                                if (articleModel == null) {
+                                    if ("fp".equals(f)){
+
+                                        mIHomeTypeFragmentView.onLoadDataFail();
+
+                                    }else {
+
+
+                                        mIHomeTypeFragmentView.onLoadMoreDataFail();
+
+                                    }
+                                } else {
+
+                                    if (!articleModel.isHaveNextPage()){
+                                        mIHomeTypeFragmentView.onLoadEmptyData();
+
+                                    }else {
+                                        if ("fp".equals(f)){//加载第一页
+
+
+                                            mIHomeTypeFragmentView.onloadDataSuccess(articleModel.getData());
+                                        }else {//加载更多
+
+
+                                            mIHomeTypeFragmentView.onloadMoreDataSuccess(articleModel.getData());
+
+                                        }
+
+                                        nextPage= articleModel.getNextpage();
+
+                                    }
+
+                                }
+
+                            }
+                        }, new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+
+
+                            }
+                        });
+
+
+            }
+
+
         } else {
             RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "ArticleService").getTypeArticle(contentType, nextPage)
                     .subscribeOn(Schedulers.io())

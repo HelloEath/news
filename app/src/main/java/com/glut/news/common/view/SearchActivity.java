@@ -48,6 +48,7 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
     private String SearchValue;
     private LoadingView mLoadingView;
     private FloatingSearchView mFloatingSearchView;
+    private boolean noMoreData=false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,6 +103,8 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
         mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                searchAdater.changeDta(new ArrayList<ArticleModel.ArticleList>());
+
                 s.search(SearchValue,"fp");//执行搜索
 
             }
@@ -163,8 +166,10 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
             @Override
             public void onSearchAction(String currentQuery) {
                 SearchValue=currentQuery;
+                searchAdater.changeDta(new ArrayList<ArticleModel.ArticleList>());
                 s.search(currentQuery,"fp");
                 mLoadingView.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -196,25 +201,36 @@ public class SearchActivity extends AppCompatActivity implements ISearchActivity
         mRefreshLayout.finishRefresh();
         searchAdater.changeDta(h.getData());
         mLoadingView.setVisibility(View.GONE);
+        mRefreshLayout.setNoMoreData(false);
+        Toast.makeText(this,"刷新成功",Toast.LENGTH_SHORT).show();
+        noMoreData=false;
     }
 
     @Override
     public void onMoreSearchSuccess(ArticleModel h) {
-        mRefreshLayout.finishLoadMore(true);
         searchAdater.addData(h.getData());
+        mRefreshLayout.finishLoadMore();
+        noMoreData=true;
     }
 
     @Override
     public void onSearchFail() {
-        mRefreshLayout.finishRefresh();
-        Toast.makeText(this, "搜索失败", Toast.LENGTH_SHORT).show();
-        mLoadingView.setVisibility(View.GONE);
+            mRefreshLayout.finishLoadMore();
+            Toast.makeText(this, "搜索失败,数据库没有该数据，换个词试试？", Toast.LENGTH_SHORT).show();
+            mLoadingView.setVisibility(View.GONE);
+        mRefreshLayout.setEnableRefresh(false);
+        mRefreshLayout.setEnableLoadMore(false);
+
+
 
     }
 
     @Override
     public void noMoreData() {
+        mLoadingView.setVisibility(View.GONE);
         mRefreshLayout.setNoMoreData(true);
-        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setEnableRefresh(true);
+        mRefreshLayout.setEnableLoadMore(true);
+        mRefreshLayout.finishRefresh();
     }
 }

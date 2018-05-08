@@ -18,6 +18,7 @@ import com.glut.news.home.model.entity.ArticleModel;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
+import com.glut.news.weather.model.HeWeather6;
 
 import okhttp3.RequestBody;
 import retrofit2.http.Body;
@@ -51,8 +52,10 @@ public interface RetrofitService {
 
     //视频APi
 
+    //String VIDEO_BASE_URL="http://47.100.243.11/NewsServerApi/";
     String VIDEO_BASE_URL="http://192.168.191.1:8085/NewsServerApi/";
 
+    String HE_WEATHER_URL="https://free-api.heweather.com/s6/";
     //"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3"
     	//"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
     interface ZhuhuService{
@@ -130,13 +133,13 @@ public interface RetrofitService {
     /*视频*/
     public  interface VideoService{
         @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
-        @GET("video/getVideo")
-        Observable<VideoModel> getVideo(@Query("pageNo")int pageno);
+        @GET("video/tuijian/{u}")
+        Observable<VideoModel> getVideo(@Path("u") String u,@Query("pageNo")int pageno);
 
         @GET("video/getDetailVideo")
         Observable<VideoModel> getDetailVideo(@Query("video_KeyWord")String videoType);
 
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_CONTROL_NETWORK)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @GET("video/getTypeVideo")
         Observable<VideoModel> getTypeVideo(@Query("Video_Type") String type, @Query("pageNo")int pageno);
 
@@ -153,8 +156,8 @@ public interface RetrofitService {
 
        /* 获取新闻推荐列表*/
        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
-       @GET("article/tuijian")
-       Observable<ArticleModel> getTuiJianArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
+       @GET("article/tuijian/{u}")
+       Observable<ArticleModel> getTuiJianArticle(@Path("u") String u,@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
 
     }
@@ -222,7 +225,7 @@ public interface RetrofitService {
         //修改用户头像
         @Multipart
         @POST("user/alterUserLogo")
-        Observable<UserModel> alterUserLogo(@Query("UserId") String UserId, @Part("uploadFile\"; filename=\"UserLogo.jpg\"")RequestBody requestBody);
+        Observable<UserModel> alterUserLogo(@Query("UserId") String UserId, @Part("photo") RequestBody requestBody);
 
         //更新用户兴趣点
         @POST("user/updateUser")
@@ -268,8 +271,20 @@ public interface RetrofitService {
 
     /*搜索*/
     public interface SearchService{
-
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_CONTROL_NETWORK)
         @GET("search/searchData")
         Observable<ArticleModel> doSearch(@Query("Article_Type") String value,@Query("pageNo") int NextPage);
+    }
+
+    interface WeatherService{
+
+        //获得天气概况
+        @GET("weather")
+        Observable<HeWeather6> getWeather(@Query("location") String weatherId, @Query("key") String key);
+
+        //获得天气空气质量
+        @GET("air")
+        Observable<String> getAir(@Query("location") String weatherId,@Query("key") String key);
+
     }
 }

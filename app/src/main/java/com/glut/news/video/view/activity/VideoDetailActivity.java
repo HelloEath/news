@@ -167,11 +167,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void initData() {
         contentType=getIntent().getStringExtra("ContentType");
-
          id=getIntent().getStringExtra("id");
-        UserId=SpUtil.getUserFromSp("UserId");
-
-
 
     }
     private void share() {
@@ -328,6 +324,8 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
 
     private void  recordStar(){
+        UserId=SpUtil.getUserFromSp("UserId");
+
         Star s=new Star();
         s.setStar_UserId(Integer.parseInt(UserId));
         s.setStar_ContentId(Integer.parseInt(id));
@@ -368,6 +366,7 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         linearLayout1.addView(textView);
     }
     private void SendComment() {
+        UserId=SpUtil.getUserFromSp("UserId");
 
 //点击发表后收起虚拟键盘
         InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

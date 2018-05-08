@@ -14,7 +14,9 @@ import com.glut.news.my.model.entity.CommonData;
 
 import java.util.List;
 
-/**
+import cn.jzvd.JZVideoPlayerStandard;
+
+/**User_Stars
  * Created by yy on 2018/2/12.
  */
 public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener{
@@ -73,11 +75,13 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
         Glide.with(c).load(historyList.get(position).getVideo_Image()).into((((HistoryViewHolder) holder).imageView));
         ((HistoryViewHolder)holder).date.setText(historyList.get(position).getVideo_PutTime());
         ((HistoryViewHolder)holder).author.setText(historyList.get(position).getVideo_Author_Name());
+            ((HistoryViewHolder)holder).mJZVideoPlayer.setUp(historyList.get(position).getVideo_Player(),JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,"");
+            ((HistoryViewHolder)holder).mJZVideoPlayer.setVisibility(View.VISIBLE);
+            ((HistoryViewHolder)holder).imageView.setVisibility(View.GONE);
+            Glide.with(c).load(historyList.get(position).getVideo_Image()).into( ((HistoryViewHolder)holder).mJZVideoPlayer.thumbImageView);
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_id,historyList.get(position).getVideo_Id()+"");
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type,"v");
             ((HistoryViewHolder)holder).itemView.setTag(R.string.h_type2,historyList.get(position).getArticle_Type());
-
-            ((HistoryViewHolder)holder).itemView.setTag(R.string.player,historyList.get(position).getVideo_Player());
         }
         ((HistoryViewHolder)holder).itemView.setOnClickListener(this);
     }
@@ -107,12 +111,14 @@ public class HistoryAdater<T> extends RecyclerView.Adapter<RecyclerView.ViewHold
         private TextView title;
         private TextView date;
         private TextView author;
+        private JZVideoPlayerStandard mJZVideoPlayer;
         public HistoryViewHolder(View v) {
             super(v);
             imageView=v.findViewById(R.id.h_logo);
             title=v.findViewById(R.id.h_title);
             date=v.findViewById(R.id.h_date);
             author=v.findViewById(R.id.h_author);
+            mJZVideoPlayer=v.findViewById(R.id.custom_videoplayer_standard);
         }
     }
 }

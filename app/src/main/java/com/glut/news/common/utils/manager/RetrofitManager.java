@@ -26,6 +26,7 @@ import com.glut.news.my.model.entity.InterestTag;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
+import com.glut.news.weather.model.HeWeather6;
 
 import java.io.File;
 import java.io.IOException;
@@ -79,6 +80,7 @@ public class RetrofitManager {
     private RetrofitService.StarService mStarService=null;
     private RetrofitService.SearchService mSearchService=null;
     private RetrofitService.InterestTag mInterestTagService=null;
+    private RetrofitService.WeatherService mWeatherService=null;
 
     public static RetrofitManager builder(String url, String type) {
         return new RetrofitManager(url, type);
@@ -120,6 +122,8 @@ public class RetrofitManager {
             mSearchService=retrofit.create(RetrofitService.SearchService.class);
         }else if ("InterestTagService".equals(type)){
             mInterestTagService=retrofit.create(RetrofitService.InterestTag.class);
+        }else if ("WeatherService".equals(type)){
+            mWeatherService=retrofit.create(RetrofitService.WeatherService.class);
         }
     }
 
@@ -339,9 +343,9 @@ public class RetrofitManager {
     /*News视频*/
 
     //首页推荐
-            public Observable<VideoModel> getVideo (int pageno) {
+            public Observable<VideoModel> getVideo (String u,int pageno) {
 
-                return mVideoService.getVideo(pageno);
+                return mVideoService.getVideo(u,pageno);
             }
     //详情页推荐
     public Observable<VideoModel> getDetailVideo (String videoType) {
@@ -365,8 +369,8 @@ public class RetrofitManager {
         return  mArticleService.getTypeArticle(type,pageno);
     }
     //获得推荐列表
-    public Observable<ArticleModel> getTuiJianArticle(String type, int pageno){
-        return  mArticleService.getTuiJianArticle(type,pageno);
+    public Observable<ArticleModel> getTuiJianArticle(String u,String type, int pageno){
+        return  mArticleService.getTuiJianArticle(u,type,pageno);
     }
 /*评论*/
 
@@ -490,6 +494,16 @@ public class RetrofitManager {
     /*兴趣标签*/
     public Observable<Integer> doInterestTag(InterestTag interestTag){
         return mInterestTagService.setUserInterestTag(interestTag);
+    }
+
+    //获得天气概况数据
+    public Observable<HeWeather6> getWeather(String weatherId, String key){
+        return mWeatherService.getWeather(weatherId,key);
+    }
+
+    //获得天气空气质量数据
+    public Observable<String> getAir(String weatherId,String key){
+        return mWeatherService.getAir(weatherId,key);
     }
 }
 
