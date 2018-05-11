@@ -8,12 +8,6 @@ import com.glut.news.discover.model.entity.GuoKrListModel;
 
 public interface IGuoKrFragmentView {
 
-    void showLoading();
-    void hideLoading();
-    void showEmpty();
-    void hideEnpty();
-    void showLoadError();
-    void hideLoadError();
     void setAdaterData(GuoKrListModel guoKrListModel);
 
 }

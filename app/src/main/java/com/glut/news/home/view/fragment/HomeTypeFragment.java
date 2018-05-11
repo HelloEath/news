@@ -45,11 +45,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
 
     private int nextPage;
     private String Article_Type;
-
-
-
-
-
     private LoadingView loadingView;
 
     private HomeTypeFragmentPresenterImpl hyf = new HomeTypeFragmentPresenterImpl(this);
@@ -65,7 +60,8 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
 
     private void initData() {
         Article_Type=getArguments().getString("title");
-        loadData("fp", Article_Type);
+        //loadData("fp", Article_Type);
+        refresh.autoRefresh();
     }
 
     private void initView(View v) {
@@ -81,7 +77,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
         //创建适配器
         //loadData();
         adapter = new HomeRecyclerAdater(getActivity(), newslist);
-        refresh.autoRefresh();
         recyclerView.setAdapter(adapter);
         refresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -91,7 +86,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
                 } else {
                     Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
                     refresh.finishRefresh();
-
                 }
             }
         });
@@ -106,12 +100,10 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
                     Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
                     refresh.finishLoadMore();
                 }
-
             }
 
 
         });
-
 
         //recycler中每一项的点击事件
         adapter.setOnItemClickListener(new HomeRecyclerAdater.OnItemClickListener() {
@@ -120,7 +112,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
                 if (NetUtil.isNetworkConnected()) {
                     Intent i = new Intent(getActivity(), ArticleDetailActivity.class);
                     String id = positoin + "";
-
                     i.putExtra("id", id);
                     i.putExtra("ContentType", ContentType);
                     startActivity(i);
@@ -152,7 +143,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
     private void loadData(String fp, String article_Type) {
         if(UserUtil.isUserLogin()){
             hyf.loadData("login",fp, article_Type);//加载数据
-
         }else {
             hyf.loadData("",fp, article_Type);//加载数据
 

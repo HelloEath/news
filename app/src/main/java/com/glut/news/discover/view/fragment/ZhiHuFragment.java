@@ -2,8 +2,8 @@ package com.glut.news.discover.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,7 +22,10 @@ import com.glut.news.discover.model.entity.ZhiHuList;
 import com.glut.news.discover.model.entity.ZhiHuNewsModel;
 import com.glut.news.discover.presenter.impl.ZhiHufragmentPresenterImpl;
 import com.glut.news.discover.view.fragment.activity.ZhiHuDetailActivity;
-import com.yalantis.phoenix.PullToRefreshView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,20 +35,16 @@ import java.util.List;
 /**
  * Created by yy on 2018/2/4.
  */
-public class ZhiHuFragment extends android.support.v4.app.Fragment implements PullToRefreshView.OnRefreshListener,IZhiHuFragmentView
+public class ZhiHuFragment extends android.support.v4.app.Fragment implements IZhiHuFragmentView
 {
 
     private RecyclerView recyclerView;
-    private PullToRefreshView refreshLayout;
+    private SmartRefreshLayout refreshLayout;
     private List<ZhiHuNewsModel> zhiHuList = new ArrayList<>();
     private ZhiHuAdater zhiHuAdater;
-    private boolean isloading=false;
-    private String currentDate;
     TextView mTvLoadEmpty;
     TextView mTvLoadError;
     ContentLoadingProgressBar mPbLoading;
-    private Snackbar mLoadLatestSnackbar;
-    private Snackbar mLoadBeforeSnackbar;
 
 private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
 
@@ -53,9 +52,8 @@ private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my, container, false);
-
         initView(v);
-        loadDta();
+        loadData();
         return v;
     }
 
@@ -63,14 +61,12 @@ private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
 
     private void initView(View v) {
         recyclerView = v.findViewById(R.id.dicover_recycler);
-        refreshLayout = v.findViewById(R.id.dicover_refresh);
+        refreshLayout = v.findViewById(R.id.refreshLayout);
         mTvLoadEmpty=v.findViewById(R.id.tv_load_empty);
         mTvLoadError=v.findViewById(R.id.tv_load_error);
         mPbLoading=v.findViewById(R.id.pb_loading);
         LinearLayoutManager l = new LinearLayoutManager(getContext());
         l.setOrientation(OrientationHelper.VERTICAL);
-        refreshLayout.setOnRefreshListener(this);
-
         recyclerView.setLayoutManager(l);
         zhiHuAdater = new ZhiHuAdater(getActivity(), zhiHuList);
         //设置列表动画
@@ -91,55 +87,29 @@ private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
             }
         });
 
-        //上拉加载更多
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-                    isloading=true;
-                    loadDataBefore();
-
-
-                }
-
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                loadData();
             }
         });
 
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                loadDataBefore();
+            }
+        });
+        refreshLayout.autoRefresh();
 
-        mLoadLatestSnackbar = Snackbar.make(recyclerView, R.string.load_fail, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.refresh, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        loadDta();
-                    }
-                });
-
-
-        mLoadBeforeSnackbar = Snackbar.make(recyclerView, R.string.load_more_fail, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.refresh, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        loadDataBefore();
-                    }
-                });
     }
 
-    public void loadDta() {
-        if (NetUtil.isNetworkConnected()){
-            z.loadData();
-
-        }else {
-            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+    public void loadData() {
+        z.loadData();
+        if (!NetUtil.isNetworkConnected()) {
+            Toast.makeText(getContext(), "网络走失了", Toast.LENGTH_SHORT).show();
         }
+
 
 
 
@@ -154,49 +124,32 @@ private ZhiHufragmentPresenterImpl z=new ZhiHufragmentPresenterImpl(this);
         }
     }
 
-    @Override
-    public void onRefresh() {
-        if (NetUtil.isNetworkConnected()){
-            loadDta();
-
-        }else {
-            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
     @Override
     public void onLoadDataSuccess(ZhiHuList zhiHuList) {
         zhiHuAdater.changeData(zhiHuList.getStories());
-        mPbLoading.setVisibility(View.GONE);
-        mTvLoadEmpty.setVisibility(View.GONE);
-   mLoadLatestSnackbar.dismiss();
-                        refreshLayout.setRefreshing(false);
-                        mTvLoadError.setVisibility(View.GONE);
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
+
     }
 
     @Override
     public void onLoadMoreDataSuccess(ZhiHuList zhiHuList) {
         zhiHuAdater.addData(zhiHuList.getStories());
-        mTvLoadEmpty.setVisibility(View.GONE);
-        mLoadBeforeSnackbar.dismiss();
-        mTvLoadError.setVisibility(View.GONE);
-        isloading=false;
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
     }
 
     @Override
     public void onLoadDataFail() {
-        mLoadBeforeSnackbar.show();
-        mPbLoading.setVisibility(View.GONE);
-        mTvLoadError.setVisibility(View.VISIBLE);
-        mTvLoadEmpty.setVisibility(View.GONE);
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
+        Toast.makeText(getContext(),"加载数据失败",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onLoadMoreDataFail() {
-        mLoadBeforeSnackbar.show();
-        mPbLoading.setVisibility(View.GONE);
-        mTvLoadError.setVisibility(View.VISIBLE);
-        mTvLoadEmpty.setVisibility(View.GONE);
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
     }
 }

@@ -25,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -33,7 +32,6 @@ import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.glut.news.R;
 import com.glut.news.common.utils.ApiConstants;
-import com.glut.news.common.utils.Base64CoderUtil;
 import com.glut.news.common.utils.NetUtil;
 import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.SpUtil;
@@ -161,11 +159,16 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(new RequestOptions().circleCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(ilogo);
-        Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
-                RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mLogo);
+        Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
+        Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
+                RequestOptions.circleCropTransform()).into(mLogo);
         UserName.setText(SpUtil.getUserFromSp("UserName"));
 
     }
@@ -184,9 +187,9 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
             UserName.setText(SpUtil.getUserFromSp("UserName"));
             homeFragment.loadHistoryCount();//获取历史记录数
             homeFragment.loadStarCount();//获取我的收藏数
-            Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(new RequestOptions().circleCrop().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(ilogo);
-            Glide.with(getContext()).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
-                    RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mLogo);
+            Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
+            Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
+                    RequestOptions.circleCropTransform()).into(mLogo);
 
 
         }else {

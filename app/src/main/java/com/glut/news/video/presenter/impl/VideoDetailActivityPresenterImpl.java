@@ -68,7 +68,7 @@ public class VideoDetailActivityPresenterImpl implements IVideoDetailActivityPre
                                 }else {
                                     mIVideoDetailActivityView.addCommentAdater(comment);
                                 }
-                            NextPage=comment.getNextpage();
+                                NextPage=comment.getNextpage();
                                 }else {
                                     mIVideoDetailActivityView.addCommentAdater(comment);
                                     mIVideoDetailActivityView.noMoreVideoComment();

@@ -44,14 +44,14 @@ public class DicoverFragment extends android.support.v4.app.Fragment{
     private void initView(View view) {
 
         titles.add("知乎日报");
-        titles.add("果壳精选");
         titles.add("One轻阅");
         titles.add("每日开眼");
+        titles.add("果壳精选");
         flist=new ArrayList<>();
         flist.add(new ZhiHuFragment());
-        flist.add(new GuoKrFragment());
         flist.add(new OneFragment());
         flist.add(new KaiYanFragment());
+        flist.add(new GuoKrFragment());
         mViewPager=view.findViewById(R.id.dviewpager);
         mpager=view.findViewById(R.id.myHorizeontal);
         tabLayout= view.findViewById(R.id.tabLayout);
@@ -61,12 +61,6 @@ public class DicoverFragment extends android.support.v4.app.Fragment{
         tabLayout.addTab(tabLayout.newTab().setText(titles.get(1)));
         tabLayout.addTab(tabLayout.newTab().setText(titles.get(2)));
         tabLayout.addTab(tabLayout.newTab().setText(titles.get(3)));
-
-
-       /* mpager.changeTextViewTitle(titles[0],0);
-        mpager.changeTextViewTitle(titles[1],1);
-        mpager.changeTextViewTitle(titles[2],2);
-        mpager.addTextViewTitle(titles[3],getContext());*/
 
 FragmentPagerAdapter f=new FragmentPagerAdapter(getChildFragmentManager()) {
 

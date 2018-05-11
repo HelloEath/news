@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Weather2 {
     public String status;
-    public Weather.Basic basic;
+    public HeWeather6.HeWeather6Bean.BasicBean basic;
     /* public Aqi aqi;*/
-    public Weather.Update update;
+    public HeWeather6.HeWeather6Bean.UpdateBean update;
     @SerializedName("air_now_city")
     public AirNow now;
 

@@ -116,8 +116,6 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         nested= (NestedScrollView) findViewById(R.id.nested_view);
         mWebView= (WebView) findViewById(R.id.dicover_webview);
-        mTvLoadEmpty= (TextView) findViewById(R.id.tv_load_empty);
-        mTvLoadError= (TextView) findViewById(R.id.tv_load_error);
         setSupportActionBar(toolbar);
         actionBar =getSupportActionBar();
         //动态改变Toolbar返回按钮颜色：改为黑色
@@ -147,7 +145,6 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
         WebSettings w = mWebView.getSettings();
         w.setJavaScriptCanOpenWindowsAutomatically(true);
         w.setJavaScriptEnabled(true);
-        // mWebView.setWebViewClient(new onc);
 
 
     }
@@ -162,7 +159,6 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<ZhiHuDetailModel, ZhiHuDetailModel>() {
@@ -175,10 +171,8 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
                     @Override
                     public void call(ZhiHuDetailModel zhiHuDetailModel) {
 
-                        mPbLoading.setVisibility(View.GONE);
                         if (zhiHuDetailModel ==null){
 
-                            mTvLoadEmpty.setVisibility(View.VISIBLE);
                         }else{
                             loadingView.setVisibility(View.GONE);
                         Glide.with(ZhiHuDetailActivity.this).load(zhiHuDetailModel.getImage()).into(image);
@@ -190,18 +184,12 @@ public class ZhiHuDetailActivity extends AppCompatActivity {
                         //actionBar.setTitle(zhiHuDetailModel.getTitle());
                         String htmlData = HttpUtil.createHtmlData(zhiHuDetailModel);
                         mWebView.loadData(htmlData, HttpUtil.MIME_TYPE,HttpUtil.ENCODING);
-                            mTvLoadEmpty.setVisibility(View.GONE);
-
                         }
-                        mTvLoadError.setVisibility(View.GONE);
                         }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
 
-                        loadingView.setVisibility(View.GONE);
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);
                     }
                 });
 

@@ -25,7 +25,7 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
     private OnItemClickListener o;
 
     public interface OnItemClickListener{
-        void OnItemclick(View v,String id,String author);
+        void OnItemclick(View v,String id,String author,String img);
     }
     public void setOnItemClickListener(OnItemClickListener o){
         this.o=o;
@@ -81,7 +81,7 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
 
             ((OneViewHolder) holder).mType.setText("- 音乐 -");
         }
-
+        holder.itemView.setTag(R.string.one_img,oneList.get(position).getImg_url());
         holder.itemView.setTag(R.string.content,oneList.get(position).getItem_id());
         holder.itemView.setTag(R.string.author,"文/"+oneList.get(position).getAuthor().getUser_name());
         Glide.with(c).load(oneList.get(position).getImg_url()).into(((OneViewHolder)holder).mImageview);
@@ -117,7 +117,7 @@ public class OneAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> imp
     }
     @Override
     public void onClick(View v) {
-        o.OnItemclick(v,v.getTag(R.string.content)+"",v.getTag(R.string.author)+"");
+        o.OnItemclick(v,v.getTag(R.string.content)+"",v.getTag(R.string.author)+"", (String) v.getTag(R.string.one_img));
 
     }
 

@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +33,7 @@ import com.glut.news.login.presenter.impl.LoginActivityPresenterImpl;
  * Created by yy on 2018/3/17.
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,ILoginActivityView {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, ILoginActivityView {
 
     private EditText etUsername;
 
@@ -44,13 +43,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private CardView cv;
 
-    private ImageView btn_WeChat;
-    private ImageView btn_QQ;
+
     private TextView btn_forGetPwd;
     private FloatingActionButton fab2;
     private RelativeLayout login_bg;
     private FloatingActionButton fab;
-private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
+    private LoginActivityPresenterImpl l = new LoginActivityPresenterImpl(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,26 +72,22 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
             }
         };
         Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);
-        Glide.with(this).load(R.drawable.login_btn_qq).into(btn_QQ);
-        Glide.with(this).load(R.drawable.login_btn_wechat).into(btn_WeChat);
+
 
     }
 
     private void initView() {
-        login_bg= (RelativeLayout) findViewById(R.id.login_bg);
-        btn_QQ= (ImageView) findViewById(R.id.btn_QQ);
-        btn_WeChat= (ImageView) findViewById(R.id.btn_WeChat);
+        login_bg = (RelativeLayout) findViewById(R.id.login_bg);
+
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         btGo = (Button) findViewById(R.id.bt_go);
         cv = (CardView) findViewById(R.id.cv);
         fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab2= (FloatingActionButton) findViewById(R.id.fab2);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab.setOnClickListener(this);
         //cv.setOnClickListener(this);
         btGo.setOnClickListener(this);
-        btn_WeChat.setOnClickListener(this);
-        btn_QQ.setOnClickListener(this);
         fab2.setOnClickListener(this);
     }
 
@@ -102,10 +96,6 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
 
         switch (view.getId()) {
             case R.id.fab:
-
-                getWindow().setExitTransition(null);
-                getWindow().setEnterTransition(null);
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     ActivityOptions options =
                             ActivityOptions.makeSceneTransitionAnimation(this, fab, fab.getTransitionName());
@@ -114,60 +104,58 @@ private LoginActivityPresenterImpl l=new LoginActivityPresenterImpl(this);
                     startActivity(new Intent(this, RegisterActivity.class));
                 }
                 break;
-           case R.id.bt_go:
-if (NetUtil.isNetworkConnected()){
+            case R.id.bt_go:
+                if (NetUtil.isNetworkConnected()) {
 
-    UserInfo u=new UserInfo();
-    String t=etUsername.getText().toString();
-    String UserPwd=etPassword.getText().toString();
-    if (valiLogin(u,t,UserPwd)){
-        ToastUtil.showOnLoading("登陆是需要时间的...",LoginActivity.this);
-
-        l.toLogin(u);
-
-    }else {
-        //lt.error();
-    }
+                    UserInfo u = new UserInfo();
+                    String t = etUsername.getText().toString();
+                    String UserPwd = etPassword.getText().toString();
+                    if (valiLogin(u, t, UserPwd)) {
+                        ToastUtil.showOnLoading("登陆是需要时间的...", LoginActivity.this);
+                        l.toLogin(u);
+                    } else {
+                        //lt.error();
+                    }
 
 
-}else {
-    Toast.makeText(LoginActivity.this,"网络走失了",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "网络走失了", Toast.LENGTH_SHORT).show();
 
-}
+                }
                 break;
 
             case R.id.fab2:
-                startActivity(new Intent(LoginActivity.this,ForgetPwdActivity.class));
+                startActivity(new Intent(LoginActivity.this, ForgetPwdActivity.class));
                 break;
         }
 
     }
 
-    private boolean valiLogin(UserInfo u,String t,String UserPwd) {
-       boolean f=false;
-        if (!"".equals(t)){
+    private boolean valiLogin(UserInfo u, String t, String UserPwd) {
+        boolean f = false;
+        if (!"".equals(t)) {
 
-            if (t.contains("@")){
+            if (t.contains("@")) {
                 u.setUserEmail(t);
 
 
-            }else {
+            } else {
 
                 u.setUserPhone(t);
             }
-            f=true;
-        }else{
+            f = true;
+        } else {
             etUsername.setError("账户不能为空");
-            f=false;
+            f = false;
         }
 
 
-        if (!"".equals(UserPwd)){
-            f=true;
+        if (!"".equals(UserPwd)) {
+            f = true;
             u.setUserPwd(UserPwd);
-        }else{
+        } else {
             etPassword.setError("密码不能为空");
-            f=false;
+            f = false;
         }
 
         return f;
@@ -176,12 +164,6 @@ if (NetUtil.isNetworkConnected()){
 
     @Override
     public void onLoginSuccess() {
-       /* Explode explode = new Explode();
-        explode.setDuration(500);
-
-        getWindow().setExitTransition(explode);
-        getWindow().setEnterTransition(explode);
-        ActivityOptionsCompat oc2 = ActivityOptionsCompat.makeSceneTransitionAnimation(this);*/
         Intent i2 = new Intent(this, MainActivity.class);
         i2.putExtra("UserId", SpUtil.getUserFromSp("UserId"));
         startActivity(i2);
@@ -190,12 +172,12 @@ if (NetUtil.isNetworkConnected()){
 
     @Override
     public void onUserUnExist() {
-        ToastUtil.showError("我的数据库没有你的信息...",3000,LoginActivity.this);
+        ToastUtil.showError("我的数据库没有你的信息...", 3000, LoginActivity.this);
     }
 
     @Override
     public void onUserPwdError() {
-        ToastUtil.showError("你的密码有点问题...",3000,LoginActivity.this);
+        ToastUtil.showError("你的密码有点问题...", 3000, LoginActivity.this);
 
     }
 

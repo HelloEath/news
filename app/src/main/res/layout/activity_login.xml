@@ -111,35 +111,7 @@
             </RelativeLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="---其他登录方式---"
-                />
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/btn_QQ"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="80dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_alignParentLeft="true"/>
-
-
-
-                <ImageView
-                    android:id="@+id/btn_WeChat"
-                    android:layout_width="40dp"
-                    android:layout_marginRight="80dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-
-                    android:layout_alignParentRight="true"/>
-            </RelativeLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

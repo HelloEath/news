@@ -86,7 +86,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
     private ImageView videoAuthorLogo;
     private TextView videoAuthorName;
-    private TextView videoAbstract;
     private LinearLayout mLinearLayout_tuijian;
     private LinearLayout mLinearLayout_comment;
     private TextView mTextView_time;
@@ -97,6 +96,14 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     private LinearLayout linearLayout1;
     private TextView textView;
     private  LinearLayout linearLayout;
+    private TextView videoTime;
+    private TextView videoAbstract;
+    private TextView videoComment;
+    private TextView videoFrom;
+    private ImageView mBtn_dianzan;
+    private TextView mFooter;
+    private boolean isHaveNextPage;
+
 
     private VideoDetailActivityPresenterImpl videoPresenter=new VideoDetailActivityPresenterImpl(this);
     @Override
@@ -207,10 +214,15 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void initView() {
+        mFooter=findViewById(R.id.footer);
+        mBtn_dianzan=findViewById(R.id.btn_dianzan);
+        videoFrom=findViewById(R.id.video_from);
+        //videoComment=findViewById(R.id.video_comments);
+        videoTime=findViewById(R.id.video_time);
+        videoAbstract=findViewById(R.id.videoDetail_videoAbstract);
         loadView= (LoadingView) findViewById(R.id.loadView);
-
         mRefreshLayout=findViewById(R.id.refreshLayout);
-        mTextView_time=findViewById(R.id.video_time);
+        mTextView_time=findViewById(R.id.video_puttime);
         mLinearLayout_comment=findViewById(R.id.comment_lay);
         mLinearLayout_tuijian=findViewById(R.id.tuijian_lay);
         videoAuthorLogo=findViewById(R.id.videoDetail_AuthorLogo);
@@ -238,7 +250,6 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         mRecyclerView_recomment.setNestedScrollingEnabled(false);
         mComments.setNestedScrollingEnabled(false);
         mRecyclerView_recomment.setLayoutManager(l);
-
         mComments.setAdapter(vda);
 
         mRecyclerView_recomment.setAdapter(mRecommentVideoAdater);
@@ -271,6 +282,34 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
+
+        mNestRefresh.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (scrollY > oldScrollY) {
+                   // Log.i(TAG, "Scroll DOWN");
+                }
+                if (scrollY < oldScrollY) {
+                    //Log.i(TAG, "Scroll UP");
+                }
+
+                if (scrollY == 0) {
+                    //Log.i(TAG, "TOP SCROLL");//到顶
+                    loadData();
+
+                }
+
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    //Log.i(TAG, "BOTTOM SCROLL");//到底
+                    if (!isHaveNextPage){
+                        mRefreshLayout.autoLoadMore();
+                    }
+
+
+                }
+            }
+        });
     }
 
     @Override
@@ -404,6 +443,9 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         vda.changeData(v.getData());
         mLinearLayout_comment.setVisibility(View.VISIBLE);
         mRefreshLayout.finishRefresh(true);
+        mRefreshLayout.setNoMoreData(false);
+        mFooter.setVisibility(View.VISIBLE);
+        isHaveNextPage=false;
     }
 
     @Override
@@ -463,13 +505,21 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
         VideoModel.VideoList v=videoModel.getData().get(0);
         Glide.with(this).load(v.getVideo_Author_Logo()).apply(new RequestOptions().circleCrop()).into(videoAuthorLogo);
         videoAuthorName.setText(v.getVideo_Author_Name());
-        mTextView_time.setText("发表于"+v.getVideo_PutTime());
-        videoAbstract.setText(v.getVideo_Abstract());
+        mTextView_time.setText("发表时间:"+v.getVideo_PutTime());
+        if (!"".equals(v.getVideo_Abstract())){
+            videoAbstract.setVisibility(View.VISIBLE);
+            videoAbstract.setText(v.getVideo_Abstract());
+        }
+
+        if (!"".equals(v.getVideo_time())){
+            videoTime.setText("视频时长:"+v.getVideo_time());
+        }
+       if (!"".equals(v.getVideo_From())){
+           videoFrom.setText("来源于："+v.getVideo_From());
+       }
         j.setUp(v.getVideo_Player(),JZVideoPlayerStandard.SCREEN_WINDOW_NORMAL,v.getVideo_Title());
         j.backButton.setVisibility(View.VISIBLE);
-
         Glide.with(this).load(v.getVideo_Image()).into(j.thumbImageView);
-
         if (NetUtil.isWifiConnected()){//wifi网络自动播放视频
             boolean d=SpUtil.getSetingFromSp("video_auto_play");
             if (SpUtil.getSetingFromSp("video_auto_play"))
@@ -480,18 +530,22 @@ public class VideoDetailActivity extends BaseActivity implements View.OnClickLis
 
         }
 
-        mRefreshLayout.finishRefresh(true);
+        mRefreshLayout.finishRefresh();
     }
 
     @Override
     public void onloadVideoCommentFail() {
         mRefreshLayout.finishRefresh(false);
+        mRefreshLayout.finishLoadMore();
     }
 
     @Override
     public void noMoreVideoComment() {
         loadView.setVisibility(View.GONE);
         mRefreshLayout.setNoMoreData(true);
+        //mNestRefresh.setEnabled(false);
+        isHaveNextPage=true;
+
     }
 
     @Override

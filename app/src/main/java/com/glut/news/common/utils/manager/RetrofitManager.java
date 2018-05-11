@@ -137,16 +137,10 @@ public class RetrofitManager {
                     Cache cache = new Cache(new File(AppApplication.getContext().getCacheDir(), "HttpCache"), 1024 * 1024 * 100);
                     mOkHttpClient = new OkHttpClient.Builder()
                             .cache(cache)
-
-
-
                             .addInterceptor(interceptor)
                             .addInterceptor(new AddCookiesInterceptor(AppApplication.getContext()))
-
                             .addInterceptor(new SaveCookiesInterceptor(AppApplication.getContext()))
-
                             .addInterceptor(mRewriteCacheControlInterceptor)
-
                             .addNetworkInterceptor(mRewriteCacheControlInterceptor)
                             .retryOnConnectionFailure(true)
                             .connectTimeout(30, TimeUnit.SECONDS)
@@ -448,8 +442,8 @@ public class RetrofitManager {
     }
 
     //修改用户头像
-    public Observable<UserModel> alterUserLogo(String UserId, RequestBody requestBody){
-        return mUserService.alterUserLogo(UserId,requestBody);
+    public Observable<UserModel> alterUserLogo(String UserId,  RequestBody requestBody){
+        return mUserService.alterUserLogo(requestBody);
     }
     //修改用户头像
     public Observable<UserModel> alterUserLogoByBase64(UserInfo userInfo){

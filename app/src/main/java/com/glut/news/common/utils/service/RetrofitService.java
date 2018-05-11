@@ -60,12 +60,12 @@ public interface RetrofitService {
     	//"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
     interface ZhuhuService{
         //获得最新知乎每一一报数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
         @GET("stories/latest")
         Observable<ZhiHuList> getLatestNews();
 
         //根据id获取详情数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
         @GET("story/{id}")
         Observable<ZhiHuDetailModel> getNewsDetail(@Path("id") String id);
         //根据日期获取以前的数据
@@ -77,7 +77,7 @@ public interface RetrofitService {
 
     interface OneService{
         //获得one列表数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
 
         @GET("onelist/idlist/?channel=wdj&version=4.0.2&uuid=ffffffff-a90e-706a-63f7-ccf973aae5ee&platform=android")
         Observable<OneDateListModel> getDateList();
@@ -209,7 +209,7 @@ public interface RetrofitService {
         Observable<UserModel> login(@Body UserInfo userInfo);
 
         //注册
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG+"Content-type:application/json;charset=UTF-8")
         @POST("user/register")
         Observable<UserModel> register(@Body UserInfo userInfo);
         //登出
@@ -222,10 +222,11 @@ public interface RetrofitService {
         Observable<UserModel> alterUserInfo(@Body UserInfo userInfo);
 
 
+
         //修改用户头像
         @Multipart
         @POST("user/alterUserLogo")
-        Observable<UserModel> alterUserLogo(@Query("UserId") String UserId, @Part("photo") RequestBody requestBody);
+        Observable<UserModel> alterUserLogo( @Part("file") RequestBody requestBody);
 
         //更新用户兴趣点
         @POST("user/updateUser")

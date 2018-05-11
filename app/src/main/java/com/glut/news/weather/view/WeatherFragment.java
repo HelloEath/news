@@ -30,7 +30,6 @@ import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.weather.model.HeWeather6;
-import com.glut.news.weather.model.Weather;
 import com.glut.news.weather.model.Weather2;
 import com.glut.news.weather.model.WeatherUtili;
 import com.google.gson.Gson;
@@ -232,9 +231,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
         CityPicker.getInstance()
                 .setFragmentManager(getActivity().getSupportFragmentManager())    //此方法必须调用
                 .enableAnimation(true)    //启用动画效果
-
-
-
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
@@ -243,8 +239,6 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                         initData(data.getName());//第一次初始化数据
 
                     }
-
-
                     @Override
                     public void onLocate() {
                         locationClient.start();//开始定位
@@ -280,7 +274,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
         String key="7c6f7ed1b2e749a688a2f858294281cd";
         Log.d("和风天气api", weatherUrl);
         //请求基本天气数据
-        RetrofitManager.builder(RetrofitService.HE_WEATHER_URL, "WeatherService").getWeather(weatherCity,key)
+       RetrofitManager.builder(RetrofitService.HE_WEATHER_URL, "WeatherService").getWeather(weatherCity,key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -299,7 +293,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                     public void call(final HeWeather6 response) {
 
                         //final Weather weather = WeatherUtili.handleWeatherResponse(responseText);
-                         final Weather weather =null;
+                         final HeWeather6.HeWeather6Bean weather =null;
                        final String responseText= new Gson().toJson(response, HeWeather6.class);
                         if (weather != null) {
 
@@ -309,9 +303,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("weather.status", weather.status);
+                                    Log.d("weather.status", weather.getStatus());
                                     //判断请求到的数据是否合法
-                                    if (weather != null && "ok".equals(weather.status)) {
+                                    if (weather != null && "ok".equals(weather.getStatus())) {
                                         //把数据存入本地缓存
                                         SpUtil.saveUserToSp("weather", responseText);
                                         showWeatherInfo(weather);
@@ -367,16 +361,14 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
 
 
-/*
 
+/*
         NetUtil.sendHttpRequest(weatherUrl, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
-
                         Snackbar s = Snackbar.make(getView(), "获取天气数据失败", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -451,8 +443,8 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
 
             }
-        });
-*/
+        });*/
+
 
 
 
@@ -544,20 +536,20 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     private void showWeatherInfo(Object o) {
 
         String updateTime = null;
-        if (o instanceof Weather) {
+        if (o instanceof HeWeather6.HeWeather6Bean) {
 
-            Weather weather = (Weather) o;
+            HeWeather6.HeWeather6Bean weather = (HeWeather6.HeWeather6Bean) o;
 
-            String t_max = weather.forecast.get(0).tmp_max;
-            String t_min = weather.forecast.get(0).tmp_min;
+            String t_max = weather.getDaily_forecast().get(0).getTmp_max();
+            String t_min =weather.getDaily_forecast().get(0).getTmp_min();
             t_min_max.setText(t_min + "℃~" + t_max + "℃");
-            String cityName = weather.basic.location;
+            String cityName = weather.getBasic().getParent_city();
 
-            updateTime = weather.update.loc;
+            updateTime = weather.getUpdate().getLoc();
 
 
-            String degree = weather.now.temperature + "℃";
-            String weatherInfo = weather.now.cond_txt;
+            String degree = weather.getNow().getTmp() + "℃";
+            String weatherInfo = weather.getNow().getCond_txt();
             //titleCity.setText(cityName);
             //titleUpdateTime.setText(updateTime);
             degreeText.setText(degree);
@@ -565,23 +557,23 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
             forcastLayout.removeAllViews();
 
 
-            for (Weather.Forecast forcast : weather.forecast) {
+            for (HeWeather6.HeWeather6Bean.DailyForecastBean forcast : weather.getDaily_forecast()) {
                 View view = LayoutInflater.from(getContext()).inflate(R.layout.forecast_item, forcastLayout, false);
 
                 TextView dateText = (TextView) view.findViewById(R.id.date_text);
                 TextView infoText = (TextView) view.findViewById(R.id.info_text);
                 TextView maxText = (TextView) view.findViewById(R.id.max_text);
                 TextView minText = (TextView) view.findViewById(R.id.min_text);
-                dateText.setText(forcast.date);
+                dateText.setText(forcast.getDate());
                 // infoText.setText(forcast.more.info);
-                maxText.setText(forcast.tmp_max + "℃");
-                minText.setText(forcast.tmp_min + "℃");
+                maxText.setText(forcast.getTmp_max() + "℃");
+                minText.setText(forcast.getTmp_min() + "℃");
                 forcastLayout.addView(view);
             }
 
-            String comfort = "舒适度：" + weather.suggestionList.get(0).txt;
-            String carWash = "洗车指数：" + weather.suggestionList.get(6).txt;
-            String sport = "运动指数：" + weather.suggestionList.get(3).txt;
+            String comfort = "舒适度：" + weather.getLifestyle().get(0).getTxt();
+            String carWash = "洗车指数：" + weather.getLifestyle().get(6).getTxt();
+            String sport = "运动指数：" + weather.getLifestyle().get(3).getTxt();
             comfortText.setText(comfort);
             carWashText.setText(carWash);
             sportText.setText(sport);

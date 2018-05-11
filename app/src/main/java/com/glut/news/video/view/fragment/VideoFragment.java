@@ -57,8 +57,6 @@ public class VideoFragment extends android.support.v4.app.Fragment {
         titles.add("头条");
         titles.add("搞笑");
         titles.add("旅游");
-        titles.add("音乐");
-        titles.add("影视");
         titles.add("原创");
         titles.add("汽车");
         titles.add("美食");

@@ -108,19 +108,40 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:orientation="vertical"
-                    android:gravity="center_horizontal"
                     android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/videoDetail_videoAbstract"
                         android:layout_width="match_parent"
+                        android:visibility="gone"
                         android:layout_margin="10dp"
                         android:layout_height="wrap_content" />
                     <TextView
                         android:id="@+id/video_time"
                         android:layout_width="wrap_content"
-                        android:layout_margin="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/video_puttime"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_height="wrap_content" />
+                   <!-- <TextView
+                        android:id="@+id/video_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_margin="10dp"
+                        android:layout_height="wrap_content" />-->
+                    <TextView
+                        android:id="@+id/video_from"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_height="wrap_content" />
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -216,11 +237,11 @@
             </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-                <include layout="@layout/include_empty" />
+              <!--  <include layout="@layout/include_empty" />
 
                 <include layout="@layout/include_error" />
 
-                <include layout="@layout/include_loading" />
+                <include layout="@layout/include_loading" />-->
 
 
             </LinearLayout>
@@ -228,6 +249,7 @@
                 android:id="@+id/footer"
                 android:layout_width="match_parent"
                 android:background="@color/app_main_tab"
+                android:visibility="gone"
                 android:layout_height="45dp" />
         </LinearLayout>
 
@@ -248,6 +270,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="3"
             android:hint="在此输入你的评论" />
+
+        <RelativeLayout
+            android:id="@+id/f"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/btn_dianzan"
+                android:layout_width="30dp"
+                android:layout_centerInParent="true"
+                android:layout_height="30dp" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="0dp"

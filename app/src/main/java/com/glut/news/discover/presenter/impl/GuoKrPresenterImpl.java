@@ -36,7 +36,6 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        iGuoKrFragmentView.showLoading();
                     }
                 })
                 .map(new Func1<GuoKrListModel, GuoKrListModel>() {
@@ -48,26 +47,16 @@ public class GuoKrPresenterImpl implements IGuoKrPresenter {
                 .subscribe(new Action1<GuoKrListModel>() {
                     @Override
                     public void call(GuoKrListModel guoKrListModel) {
-                        iGuoKrFragmentView.hideLoading();
                         if (guoKrListModel ==null){
-                            iGuoKrFragmentView.showEmpty();
                         }else{
 
                             iGuoKrFragmentView.setAdaterData(guoKrListModel);
-                            iGuoKrFragmentView.hideEnpty();
                         }
-                       // mLoadLatestSnackbar.dismiss();
-                        //refreshLayout.setRefreshing(false);
-                        iGuoKrFragmentView.hideLoadError();
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();*/
-                        iGuoKrFragmentView.hideEnpty();
-                        iGuoKrFragmentView.showLoadError();
 
 
                     }

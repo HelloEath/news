@@ -8,6 +8,8 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     app:cardElevation="0dp"
+    android:foreground="?android:attr/selectableItemBackground"
+
     >
 <LinearLayout
     android:orientation="horizontal"
@@ -69,7 +71,7 @@
 
         android:layout_width="0dp"
         android:orientation="horizontal"
-        android:layout_weight="1.2"
+        android:layout_weight="1.5"
         android:layout_margin="10dp"
         android:layout_height="match_parent">
       <cn.jzvd.JZVideoPlayerStandard

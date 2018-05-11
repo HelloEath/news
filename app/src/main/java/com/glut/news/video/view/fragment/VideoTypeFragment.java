@@ -56,15 +56,8 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
     }
 
     private void initData() {
-        sfresh.autoRefresh();
         videoType=getArguments().getString("title");
-        if (UserUtil.isUserLogin()){
-            v.loadVideoData("login",videoType,"fp");
-
-        }else {
-            v.loadVideoData("",videoType,"fp");
-
-        }
+        sfresh.autoRefresh();
         if (!NetUtil.isNetworkConnected()){
 
             Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();

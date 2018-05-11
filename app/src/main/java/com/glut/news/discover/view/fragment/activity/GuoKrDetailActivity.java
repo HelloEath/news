@@ -139,7 +139,7 @@ public class GuoKrDetailActivity extends AppCompatActivity {
         Drawable upArrow2 = getResources().getDrawable(R.drawable.ic_share);
 
         upArrow.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
-        upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
+       // upArrow2.setColorFilter(getResources().getColor(R.color.tab_color3), PorterDuff.Mode.SRC_ATOP);
 
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
 

@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     android:clipToPadding="true"
     android:id="@+id/test2"
     android:background="@color/app_bg">
 
-    <com.yalantis.phoenix.PullToRefreshView
-        android:id="@+id/dicover_refresh"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:fitsSystemWindows="true"
-        android:clipToPadding="true"
+        app:srlPrimaryColor="@color/app_bg"
+        app:srlAccentColor="@color/side_1"
         android:layout_height="match_parent">
+
+        <com.scwang.smartrefresh.header.BezierCircleHeader
+            android:layout_width="match_parent"
+app:layout_srlBackgroundColor="@color/side_1"
+
+            android:layout_height="wrap_content"/>
 
 
         <android.support.v7.widget.RecyclerView
@@ -25,10 +32,15 @@
 
         </android.support.v7.widget.RecyclerView>
 
-    </com.yalantis.phoenix.PullToRefreshView>
-    <include layout="@layout/include_empty" />
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            app:srlAnimatingColor="@color/side_1"
+            android:layout_height="180dp"/>
 
-    <include layout="@layout/include_error" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    <!--<include layout="@layout/include_empty" />-->
 
-    <include layout="@layout/include_loading" />
+    <!--<include layout="@layout/include_error" />-->
+
+    <!--<include layout="@layout/include_loading" />-->
 </android.support.design.widget.CoordinatorLayout>

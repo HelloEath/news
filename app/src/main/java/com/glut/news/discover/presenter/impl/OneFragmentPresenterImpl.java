@@ -46,28 +46,19 @@ public class OneFragmentPresenterImpl implements IOneFragmentPresenter {
                 .subscribe(new Action1<OneDateListModel>() {
                     @Override
                     public void call(OneDateListModel oneDateListModel) {
-                       // mPbLoading.setVisibility(View.GONE);
                         if (oneDateListModel ==null){
-                            //mTvLoadEmpty.setVisibility(View.VISIBLE);
-                        }else{
 
+                        }else{
                             currentDate=Integer.parseInt(oneDateListModel.getData().get(0))-1;
                             loadData2(oneDateListModel.getData().get(0));
-                            //oneAdater.changeData(douBanList.getPosts());
-                            //mTvLoadEmpty.setVisibility(View.GONE);
+
                         }
-                        //mLoadLatestSnackbar.dismiss();
-                        //refreshLayout.setRefreshing(false);
-                       // mTvLoadError.setVisibility(View.GONE);
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
@@ -81,7 +72,6 @@ public class OneFragmentPresenterImpl implements IOneFragmentPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                       // mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<OneModel, OneModel>() {
@@ -93,26 +83,16 @@ public class OneFragmentPresenterImpl implements IOneFragmentPresenter {
                 .subscribe(new Action1<OneModel>() {
                     @Override
                     public void call(OneModel oneModel) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (oneModel ==null){
-                            //mTvLoadEmpty.setVisibility(View.VISIBLE);
                         }else{
                             iOneFragmentView.loadDataSuccess(oneModel);
-                           // oneAdater.changeData(oneModel.getData().getContent_list());
-                            //mTvLoadEmpty.setVisibility(View.GONE);
                         }
-                        //mLoadLatestSnackbar.dismiss();
-                       // refreshLayout.setRefreshing(false);
-                       // mTvLoadError.setVisibility(View.GONE);
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                      /*  mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();
-                        mTvLoadError.setVisibility(View.VISIBLE);
-                        mTvLoadEmpty.setVisibility(View.GONE);*/
+
 
                     }
                 });
@@ -139,26 +119,18 @@ public class OneFragmentPresenterImpl implements IOneFragmentPresenter {
                 .subscribe(new Action1<OneModel>() {
                     @Override
                     public void call(OneModel oneModel) {
-                       // mPbLoading.setVisibility(View.GONE);
                         if (oneModel ==null){
-                           // mTvLoadEmpty.setVisibility(View.VISIBLE);
                         }else{
                             currentDate = currentDate-1;
                             iOneFragmentView.loadMoreDataSuccess(oneModel);
-                            //oneAdater.addData(oneModel.getData().getContent_list());
-                           // mTvLoadEmpty.setVisibility(View.GONE);
+
                         }
-                        //mLoadBeforeSnackbar.dismiss();
-                       // mTvLoadError.setVisibility(View.GONE);
-                        //isloading=false;
+
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       // mLoadBeforeSnackbar.show();
-                       // mPbLoading.setVisibility(View.GONE);
-                       // mTvLoadError.setVisibility(View.VISIBLE);
-                       // mTvLoadEmpty.setVisibility(View.GONE);
+
                     }
                 });
     }

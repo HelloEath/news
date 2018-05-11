@@ -7,12 +7,6 @@ import com.glut.news.discover.model.entity.KaiYanModel;
  */
 
 public interface IKaiYanFragmentView {
-    void showLoading();
-    void hideLoading();
-    void showEmpty();
-    void hideEnpty();
-    void showLoadError();
-    void hideLoadError();
     void addAdaterData(KaiYanModel guoKrListModel);
     void changeAdaterData(KaiYanModel guoKrListModel);
 }

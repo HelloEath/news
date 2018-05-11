@@ -95,6 +95,7 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     private LinearLayout linearLayout1;
     private NestedScrollView mNestedScrollView;
     private LinearLayout mLinearLayout_sendComment;
+    private boolean isHaveNextPage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -326,6 +327,34 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
             }
         });
 
+        mNestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                if (scrollY > oldScrollY) {
+                    // Log.i(TAG, "Scroll DOWN");
+                }
+                if (scrollY < oldScrollY) {
+                    //Log.i(TAG, "Scroll UP");
+                }
+
+                if (scrollY == 0) {
+                    //Log.i(TAG, "TOP SCROLL");//到顶
+                    loadData();
+
+                }
+
+                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                    //Log.i(TAG, "BOTTOM SCROLL");//到底
+                    if (!isHaveNextPage){
+                        mRefreshLayout.autoLoadMore();
+                    }
+
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -376,19 +405,13 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     public void sendComment(){
 
         if (UserUtil.isUserLogin()){
-
             //点击发表后收起虚拟键盘
             InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mCommentValue.getWindowToken(), 0);
             Toast.makeText(this,mCommentValue.getText(),Toast.LENGTH_SHORT).show();
-
-
-
-
             //videoCommentListModel.setAuthor_logo(R.drawable.logo);
             String userName= SpUtil.getUserFromSp("UserName");
             String userLogo=SpUtil.getUserFromSp("UserLogo");
-
             c=new Comment();
             c.setAuthor_logo(userLogo);
             c.setAuthor_name(userName);
@@ -438,9 +461,11 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
     @Override
     public void changeAdater(VideoCommentsModel commonData) {
         commentAdater.changeData(commonData.getData());
-        mRefreshLayout.setEnableLoadMore(true);
         mRefreshLayout.finishRefresh(true);
+        mRefreshLayout.finishLoadMore();
         mLayout.setVisibility(View.VISIBLE);
+        isHaveNextPage=false;
+
     }
 
     @Override
@@ -456,8 +481,8 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void noMoreData() {
-        mRefreshLayout.finishLoadMoreWithNoMoreData();
-        mRefreshLayout.setEnableLoadMore(false);
+        mRefreshLayout.setNoMoreData(true);
+        isHaveNextPage=true;
     }
 
     @Override

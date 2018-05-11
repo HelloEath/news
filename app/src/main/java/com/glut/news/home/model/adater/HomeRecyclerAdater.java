@@ -52,7 +52,6 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public HomeRecyclerAdater(Context context,List<ArticleModel.ArticleList> newsList) {
         this.layoutInflater= LayoutInflater.from(context);
-
         this.m=context;
         this.mTitles=new String[20];
         this.newsList=newsList;
@@ -81,7 +80,6 @@ public class HomeRecyclerAdater extends RecyclerView.Adapter<RecyclerView.ViewHo
         view=layoutInflater.inflate(R.layout.item_home_main,parent,false);
         viewHolder=new ItemViewHolder(view);
         view.setOnClickListener(this);
-
         return viewHolder;
     }
 

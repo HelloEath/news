@@ -33,7 +33,6 @@ public class KaiYanPresenterImpl implements IKaiYanPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        iKaiYanFragmentView.showLoading();
 
                     }
                 })
@@ -46,26 +45,21 @@ public class KaiYanPresenterImpl implements IKaiYanPresenter {
                 .subscribe(new Action1<KaiYanModel>() {
                     @Override
                     public void call(KaiYanModel kaiYanModel) {
-                        iKaiYanFragmentView.hideLoading();
                         if (kaiYanModel ==null){
-                            iKaiYanFragmentView.showEmpty();
                         }else{
 
                             iKaiYanFragmentView.changeAdaterData(kaiYanModel);
-                            iKaiYanFragmentView.hideEnpty();
                         }
                         nextPage= kaiYanModel.getNextPageUrl().substring(55, kaiYanModel.getNextPageUrl().length()-7);
 
 
                         iKaiYanFragmentView.changeAdaterData(kaiYanModel);
-                        iKaiYanFragmentView.hideEnpty();
 
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        iKaiYanFragmentView.hideEnpty();
-                        iKaiYanFragmentView.showLoadError();
+
 
                     }
                 });
@@ -80,7 +74,6 @@ public class KaiYanPresenterImpl implements IKaiYanPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        iKaiYanFragmentView.hideLoading();
                     }
                 })
                 .map(new Func1<KaiYanModel, KaiYanModel>() {
@@ -92,32 +85,20 @@ public class KaiYanPresenterImpl implements IKaiYanPresenter {
                 .subscribe(new Action1<KaiYanModel>() {
                     @Override
                     public void call(KaiYanModel kaiYanModel) {
-                        iKaiYanFragmentView.hideLoading();
                         if (kaiYanModel ==null){
-                            iKaiYanFragmentView.showEmpty();
                         }else{
 
                             iKaiYanFragmentView.addAdaterData(kaiYanModel);
-                            iKaiYanFragmentView.hideEnpty();
                         }
                             nextPage= kaiYanModel.getNextPageUrl().substring(55, kaiYanModel.getNextPageUrl().length()-7);
 
-
                             iKaiYanFragmentView.addAdaterData(kaiYanModel);
-                            iKaiYanFragmentView.hideEnpty();
                         }
-                        // mLoadLatestSnackbar.dismiss();
-                        //refreshLayout.setRefreshing(false);
-                    //iKaiYanFragmentView.hideLoadError();
 
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                       /* mLoadLatestSnackbar.show();
-                        refreshLayout.setRefreshing(false);
-                        mLoadLatestSnackbar.show();*/
-                        iKaiYanFragmentView.hideEnpty();
-                        iKaiYanFragmentView.showLoadError();
+
                     }
                 });
     }

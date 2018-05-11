@@ -27,13 +27,13 @@ public class WeatherUtili {
 
 
     }
-    public static Weather handleWeatherResponse(String response) {
+    public static HeWeather6.HeWeather6Bean handleWeatherResponse(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONArray jsonArray = jsonObject.getJSONArray("HeWeather6");
             String weatherContent = jsonArray.getJSONObject(0).toString();
             Log.d("解析的天气数据", weatherContent);
-            return new Gson().fromJson(weatherContent, Weather.class);
+            return new Gson().fromJson(weatherContent, HeWeather6.HeWeather6Bean.class);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -132,15 +132,12 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
         SetUtil.getInstance().setStatusColor(getResources().getColor(R.color.side_1),getWindow());
         AppApplication.getInstance().addActivity(this);
         initView();
-
         //获取资料默认信息
        intiUserInfo();
 
     }
 
     private void initView() {
-
-
         btn_logo= (RelativeLayout) findViewById(R.id.btn_logo);
         btn_name= (RelativeLayout) findViewById(R.id.btn_name);
         btn_desc= (RelativeLayout) findViewById(R.id.btn_desc);
@@ -171,20 +168,14 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
         setSupportActionBar(t);
         //动态改变Toolbar返回按钮颜色：改为白色
         Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
-
         upArrow.setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
-
         ActionBar a=getSupportActionBar();
         if (a!=null){
-
           a.setDisplayHomeAsUpEnabled(true);
-            //a.setHomeAsUpIndicator(R.drawable.back);
-
         }
 
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -206,7 +197,6 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
         CityPicker.getInstance()
                 .setFragmentManager(getSupportFragmentManager())    //此方法必须调用
                 .enableAnimation(true)    //启用动画效果
-
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
@@ -242,13 +232,16 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
                 .show();
     }
     public void intiUserInfo() {
-        Glide.with(this).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
+        String f=SpUtil.getUserFromSp("UserName");
+        Glide.with(this).load(SpUtil.getUserFromSp("UserLogo")).apply(
                 RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);
         mUserName.setText(SpUtil.getUserFromSp("UserName"));
         mUserDesc.setText(SpUtil.getUserFromSp("UserDesc"));
         mUserSex.setText(SpUtil.getUserFromSp("UserSex"));
         mUserBirth.setText(SpUtil.getUserFromSp("UserBirth"));
-        mUserDistrc.setText(SpUtil.getUserFromSp("UserDistric"));
+        mUserDistrc.setText(SpUtil.getUserFromSp("UserDis"));
+        mUserDesc.setText(SpUtil.getUserFromSp("UserSign"));
+
 
     }
 
@@ -503,26 +496,25 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
                 break;
             case REQUEST_CROP_PHOTO:  //剪切图片返回
                 Bundle bundle = intent.getExtras();
-
                 if (bundle != null) {
                     //在这里获得了剪裁后的Bitmap对象，可以用于上传
                     Bitmap image = bundle.getParcelable("data");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     image.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                    byte[] bytes=baos.toByteArray();
-                  String  tp = new String(Base64CoderUtil.encodeLines(bytes));
-
+                    byte[] bytes = baos.toByteArray();
+                    String tp = new String(Base64CoderUtil.encodeLines(bytes));
+                    u.alterUserLogoByBase64(tp);
                     //设置到ImageView上
-                    newLogoString=tp;
+                    newLogoString = tp;
                     Drawable drawable = new BitmapDrawable(image);
-                    /*Glide.with(this).load(newLogoString).apply(
-                            RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);*/
-                    String d=saveImage("UserLogo",image);
-                    File file=new File(d);
-                    File imageFile = new File(Environment.getExternalStorageDirectory().getPath(),"123.png");
+                    String filename = saveImage("UserLogo", image);
+                    File file = new File(filename);
+                    //File imageFile = new File(Environment.getExternalStorageDirectory().getPath(),"UserLogo.jpg");
                     RequestBody imageRequestBody = RequestBody.create(MediaType.parse("image/*"), file);
-                    RequestBody requestBody=RequestBody.create(MediaType.parse("multipart/form-data"),file);
-                    u.alterUserLogo(SpUtil.getUserFromSp("UserId"),imageRequestBody);
+                    // RequestBody requestBody=RequestBody.create(MediaType.parse("multipart/form-data"),file);
+                    //MultipartBody.Part mu= MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+                    // u.alterUserLogo(SpUtil.getUserFromSp("UserId"),imageRequestBody);
+
                     //u.alterUserLogoByBase64(tp);
                     //也可以进行一些保存、压缩等操作后上传
 //                    String path = saveImage("crop", image);
@@ -530,23 +522,6 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
                      * 下面注释的方法是将裁剪之后的图片以Base64Coder的字符方式上
                      * 传到服务器，QQ头像上传采用的方法跟这个类似
                      */
-
-            /*ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            photo.compress(Bitmap.CompressFormat.JPEG, 60, stream);
-            byte[] b = stream.toByteArray();
-            // 将图片流以字符串形式存储下来
-
-            tp = new String(Base64Coder.encodeLines(b));
-            这个地方大家可以写下给服务器上传图片的实现，直接把tp直接上传就可以了，
-            服务器处理的方法是服务器那边的事了，吼吼
-
-            如果下载到的服务器的数据还是以Base64Coder的形式的话，可以用以下方式转换
-            为我们可以用的图片类型就OK啦...吼吼
-            Bitmap dBitmap = BitmapFactory.decodeFile(tp);
-            Drawable drawable = new BitmapDrawable(dBitmap);
-            */
-                    //ib.setBackgroundDrawable(drawable);
-                    //iv.setBackgroundDrawable(drawable);
                 }
                 break;
         }
@@ -582,40 +557,45 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
 
 
         if (newLogoString!=null){
-
-            SpUtil.saveUserToSp("UserLogo",newLogoString);
-
-            Glide.with(this).load(Base64CoderUtil.decodeLines(SpUtil.getUserFromSp("UserLogo"))).apply(
-                    RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);
+            SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
+            Glide.with(this).load(userModel.getUserInfo().getUserLogo()).apply(
+                    RequestOptions.circleCropTransform()).into(mUserLogo);
+            newLogoString=null;
 
         }
         if (newSexString!=null){
             SpUtil.saveUserToSp("UserSex",newSexString);
             mUserSex.setText(newSexString);
+            newSexString=null;
         }
         if (newNameString!=null){
             SpUtil.saveUserToSp("UserName",newNameString);
             mUserName.setText(newNameString);
+            newNameString=null;
         }
 
         if (newSexString!=null){
             SpUtil.saveUserToSp("UserSex",newSexString);
             mUserSex.setText(newSexString);
+            newSexString=null;
         }
 
         if (newBirthString!=null){
             SpUtil.saveUserToSp("UserBirth",newBirthString);
             mUserBirth.setText(newBirthString);
+            newBirthString=null;
         }
 
         if (newDescString!=null){
             SpUtil.saveUserToSp("UserDesc",newDescString);
             mUserDesc.setText(newDescString);
+            newDescString=null;
         }
 
         if (newDistrcString!=null){
             SpUtil.saveUserToSp("UserDistric",newDistrcString);
             mUserDistrc.setText(newDistrcString);
+            newDistrcString=null;
         }
     }
 

@@ -14,6 +14,6 @@ public interface IUserAlterActivityPresenter {
     void alterUserDistrc(String newDistrc);
     void logOut();
 
-    void alterUserLogo(String userId, RequestBody requestBody);
+    void alterUserLogo(String userId,RequestBody requestBody);
     void alterUserLogoByBase64(String newLogo);
 }

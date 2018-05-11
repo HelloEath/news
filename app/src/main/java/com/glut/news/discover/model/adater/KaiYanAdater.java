@@ -63,13 +63,8 @@ public class KaiYanAdater extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v=null;
         RecyclerView.ViewHolder viewHolder=null;
-
-
-
             v=l.inflate(R.layout.item_dicover_kaiyan,parent,false);
             viewHolder=new ItemViewHolder(v);
-
-
         return viewHolder;
     }
 

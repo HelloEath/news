@@ -34,7 +34,6 @@ public class LoginActivityPresenterImpl implements ILoginActivityPresenter {
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<UserModel, UserModel>() {
@@ -48,10 +47,8 @@ public class LoginActivityPresenterImpl implements ILoginActivityPresenter {
                     public void call(UserModel userModel) {
 
                         if ("0".equals(userModel.getStus())){
-
                             loginActivityView.onUserPwdError();
                         }else if("1".equals(userModel.getStus())) {
-
                             SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
                             SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
                             SpUtil.saveUserToSp("UserBirth",userModel.getUserInfo().getUserBirthder());

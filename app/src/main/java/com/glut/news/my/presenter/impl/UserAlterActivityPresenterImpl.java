@@ -349,7 +349,6 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<UserModel , UserModel>() {
@@ -399,7 +398,6 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<UserModel , UserModel>() {
@@ -411,9 +409,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
                 .subscribe(new Action1<UserModel>() {
                     @Override
                     public void call(UserModel userModel) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (userModel == null) {
-                            // mTvLoadEmpty.setVisibility(View.VISIBLE);
                             iUserAlterActivityView.alterFail();
                         } else {
 

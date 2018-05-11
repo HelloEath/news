@@ -1,6 +1,7 @@
 package com.glut.news.discover.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,10 @@ import com.glut.news.common.view.customview.VideoPlayer;
 import com.glut.news.discover.model.adater.KaiYanAdater;
 import com.glut.news.discover.model.entity.KaiYanModel;
 import com.glut.news.discover.presenter.impl.KaiYanPresenterImpl;
-import com.yalantis.phoenix.PullToRefreshView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +34,10 @@ import java.util.List;
  * Created by yy on 2018/2/7.
  */
 
-public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefreshListener,IKaiYanFragmentView {
+public class KaiYanFragment extends Fragment implements IKaiYanFragmentView {
 
     private RecyclerView recyclerView;
-    private PullToRefreshView refreshLayout;
+    private SmartRefreshLayout refreshLayout;
     private List<KaiYanModel.KaiYanList> kaiYanList = new ArrayList<>();
     private KaiYanAdater kaiYanAdater;
     private boolean isloading=false;
@@ -64,52 +68,17 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
 
     private void initView(View v) {
         recyclerView = v.findViewById(R.id.dicover_recycler);
-        refreshLayout = v.findViewById(R.id.dicover_refresh);
+        refreshLayout = v.findViewById(R.id.refreshLayout);
         mTvLoadEmpty=v.findViewById(R.id.tv_load_empty);
         mTvLoadError=v.findViewById(R.id.tv_load_error);
         mPbLoading=v.findViewById(R.id.pb_loading);
         LinearLayoutManager l = new LinearLayoutManager(getContext());
         l.setOrientation(OrientationHelper.VERTICAL);
-        refreshLayout.setOnRefreshListener(this);
-
         recyclerView.setLayoutManager(l);
         kaiYanAdater = new KaiYanAdater(getActivity(), kaiYanList);
         //设置列表动画
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(kaiYanAdater);
-      /*  //item点击事件
-        kaiYanAdater.setOnItemClickListener(new ZhiHuAdater.OnItemClickListener() {
-            @Override
-            public void itemClick(View v, String id) {
-                Intent i = new Intent(getActivity(), ZhiHuDetailActivity.class);
-                i.putExtra("id", id);
-                startActivity(i);
-            }
-        });*/
-
-        //上拉加载更多
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-
-                //获取所有item数目
-                int totalItemCount = layoutManager.getItemCount();
-
-                //获取最后一个item位置
-                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
-
-                if (!isloading && totalItemCount < (lastVisibleItem + 2)) {
-                    isloading=true;
-                    kaiYanPresenter.loadBeforeData();
-
-
-                }
-
-            }
-        });
-
 
         mLoadLatestSnackbar = Snackbar.make(recyclerView, R.string.load_fail, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.refresh, new View.OnClickListener() {
@@ -127,14 +96,28 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
                         loadDataBefore();
                     }
                 });
+
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                loadDta();
+            }
+        });
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
+                loadDataBefore();
+            }
+        });
+        refreshLayout.autoRefresh();
     }
 
     public void loadDta() {
-        if (NetUtil.isNetworkConnected()){
-            kaiYanPresenter.loadData();
-
-        }else {
+        kaiYanPresenter.loadData();
+        if (!NetUtil.isNetworkConnected()){
             Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+
         }
 
     }
@@ -149,17 +132,13 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
 
     }
 
+
     @Override
-    public void onRefresh() {
-        if (NetUtil.isNetworkConnected()){
-            loadDta();
+    public void onStop() {
+        super.onStop();
+        VideoPlayer.releaseAllVideos();
 
-        }else {
-            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
-        }
     }
-
-
 
     @Override
     public void onPause() {
@@ -167,50 +146,23 @@ public class KaiYanFragment extends Fragment implements PullToRefreshView.OnRefr
         VideoPlayer.releaseAllVideos();
     }
 
-    @Override
-    public void showLoading() {
-        mPbLoading.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void hideLoading() {
-        mPbLoading.setVisibility(View.GONE);
 
 
-    }
 
-    @Override
-    public void showEmpty() {
-        mTvLoadEmpty.setVisibility(View.VISIBLE);
 
-    }
-
-    @Override
-    public void hideEnpty() {
-        mTvLoadEmpty.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLoadError() {
-        mTvLoadError.setVisibility(View.VISIBLE);
-
-    }
-
-    @Override
-    public void hideLoadError() {
-        mTvLoadEmpty.setVisibility(View.GONE);
-
-    }
 
     @Override
     public void addAdaterData(KaiYanModel guoKrListModel) {
         kaiYanAdater.addData(guoKrListModel.getItemList());
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
     }
 
     @Override
     public void changeAdaterData(KaiYanModel guoKrListModel) {
         kaiYanAdater.changeData(guoKrListModel.getItemList());
+        refreshLayout.finishRefresh();
+        refreshLayout.finishLoadMore();
     }
 
 

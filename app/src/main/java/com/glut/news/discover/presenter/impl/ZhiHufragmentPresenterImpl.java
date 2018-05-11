@@ -34,7 +34,6 @@ private IZhiHuFragmentView iZhiHuFragmentView;
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        //mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<ZhiHuList, ZhiHuList>() {
@@ -76,7 +75,6 @@ private IZhiHuFragmentView iZhiHuFragmentView;
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                       // mPbLoading.setVisibility(View.VISIBLE);
                     }
                 })
                 .map(new Func1<ZhiHuList, ZhiHuList>() {
@@ -88,9 +86,7 @@ private IZhiHuFragmentView iZhiHuFragmentView;
                 .subscribe(new Action1<ZhiHuList>() {
                     @Override
                     public void call(ZhiHuList zhiHuList) {
-                        //mPbLoading.setVisibility(View.GONE);
                         if (zhiHuList==null){
-                           // mTvLoadEmpty.setVisibility(View.VISIBLE);
                         }else{
                             currentDate = zhiHuList.getDate();
                             for (ZhiHuNewsModel z:zhiHuList.getStories()){
