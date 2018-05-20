@@ -18,17 +18,14 @@ import com.glut.news.home.model.entity.ArticleModel;
 import com.glut.news.my.model.entity.HistoryWithStarModel;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
-import com.glut.news.weather.model.HeWeather6;
+import com.glut.news.weather.model.MeiZuWeather;
 
-import okhttp3.RequestBody;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -55,7 +52,7 @@ public interface RetrofitService {
     //String VIDEO_BASE_URL="http://47.100.243.11/NewsServerApi/";
     String VIDEO_BASE_URL="http://192.168.191.1:8085/NewsServerApi/";
 
-    String HE_WEATHER_URL="https://free-api.heweather.com/s6/";
+    String HE_WEATHER_URL="http://aider.meizu.com/app/weather/";
     //"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3"
     	//"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3
     interface ZhuhuService{
@@ -77,40 +74,29 @@ public interface RetrofitService {
 
     interface OneService{
         //获得one列表数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
-
         @GET("onelist/idlist/?channel=wdj&version=4.0.2&uuid=ffffffff-a90e-706a-63f7-ccf973aae5ee&platform=android")
         Observable<OneDateListModel> getDateList();
-        //获得one最新或之前数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
 
+        //获得one最新或之前数据
         @GET("onelist/{date}/0?channel=wdj&version=4.0.2&uuid=ffffffff-a90e-706a-63f7-ccf973aae5ee&platform=android")
         Observable<OneModel> getOneLatestNews(@Path("date") String date);
 
 
         //获得one文章详情页数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
-
         @GET("essay/{id}?channel=wdj&source=summary&source_id=9261&version=4.0.2&uuid=ffffffff-a90e-706a-63f7-ccf973aae5ee&platform=android")
         Observable<OneDetailModel> getDetailtNews(@Path("id") String id);
 
         //获得文章评论数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
-
         @GET("comment/praiseandtime/essay/{id}/0?channel=wdj&version=4.0.2&uuid=ffffffff-a90e-706a-63f7-ccf973aae5ee&platform=android")
         Observable<OneCommentsModel> getOneComment(@Path("id") String id);
     }
 
     interface GuoKrService{
         //获得果壳精选最新数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
-
         @GET("article.json?retrieve_type=by_minisite")
         Observable<GuoKrListModel> getLatestNews();
 
         //获得果壳文章详情页数据
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
-
         @GET("article/{id}.json")
         Observable<GuoKrDetail> getNewsDetail(@Path("id") int id);
 
@@ -132,14 +118,12 @@ public interface RetrofitService {
     }
     /*视频*/
     public  interface VideoService{
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @GET("video/tuijian/{u}")
         Observable<VideoModel> getVideo(@Path("u") String u,@Query("pageNo")int pageno);
 
         @GET("video/getDetailVideo")
         Observable<VideoModel> getDetailVideo(@Query("video_KeyWord")String videoType);
 
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @GET("video/getTypeVideo")
         Observable<VideoModel> getTypeVideo(@Query("Video_Type") String type, @Query("pageNo")int pageno);
 
@@ -150,12 +134,10 @@ public interface RetrofitService {
    /* 新闻*/
     public interface  ArticleService{
        /* 获取新闻列表*/
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
         @GET("article/typeArticle")
         Observable<ArticleModel> getTypeArticle(@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
        /* 获取新闻推荐列表*/
-       @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_SHORT)
        @GET("article/tuijian/{u}")
        Observable<ArticleModel> getTuiJianArticle(@Path("u") String u,@Query("Article_Type") String type, @Query("pageNo")int pageno);
 
@@ -209,7 +191,7 @@ public interface RetrofitService {
         Observable<UserModel> login(@Body UserInfo userInfo);
 
         //注册
-        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG+"Content-type:application/json;charset=UTF-8")
+        @Headers(RetrofitManager.CACHE_CONTROL_AGE + RetrofitManager.CACHE_STALE_LONG)
         @POST("user/register")
         Observable<UserModel> register(@Body UserInfo userInfo);
         //登出
@@ -217,20 +199,15 @@ public interface RetrofitService {
         @POST("user/logOut")
         Observable<UserModel> logOut(@Body UserInfo userInfo);
 
-        //修改用户名/用户性别/用户desc/用户地区/用户密码/用户生日/
+        //修改用户名/用户性别/用户desc/用户地区/用户密码/用户生日/头像
         @POST("user/updateUser")
         Observable<UserModel> alterUserInfo(@Body UserInfo userInfo);
 
 
 
-        //修改用户头像
-        @Multipart
-        @POST("user/alterUserLogo")
-        Observable<UserModel> alterUserLogo( @Part("file") RequestBody requestBody);
-
         //更新用户兴趣点
         @POST("user/updateUser")
-        Observable<Integer> alterUserInterest(@Body UserInfo userInfo);
+        Observable<UserModel> alterUserInterest(@Body UserInfo userInfo);
         //修改用户头像2
 
         @POST("user/updateUser")
@@ -280,8 +257,8 @@ public interface RetrofitService {
     interface WeatherService{
 
         //获得天气概况
-        @GET("weather")
-        Observable<HeWeather6> getWeather(@Query("location") String weatherId, @Query("key") String key);
+        @GET("listWeather")
+        Observable<MeiZuWeather> getWeather(@Query("cityIds") String weatherId);
 
         //获得天气空气质量
         @GET("air")

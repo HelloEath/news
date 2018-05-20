@@ -56,6 +56,9 @@ public class LoginActivityPresenterImpl implements ILoginActivityPresenter {
                             SpUtil.saveUserToSp("UserDis",userModel.getUserInfo().getUserDistrc());
                             SpUtil.saveUserToSp("UserSex",userModel.getUserInfo().getUserSex());
                             SpUtil.saveUserToSp("UserSign",userModel.getUserInfo().getUserSign());
+                            SpUtil.saveUserToSp("UserPhone",userModel.getUserInfo().getUserPhone());
+                            SpUtil.saveUserToSp("UserPwd",userModel.getUserInfo().getUserPwd());
+
 
                             loginActivityView.onLoginSuccess();
                         }else {

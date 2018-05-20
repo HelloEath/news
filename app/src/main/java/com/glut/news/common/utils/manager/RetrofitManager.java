@@ -26,7 +26,7 @@ import com.glut.news.my.model.entity.InterestTag;
 import com.glut.news.my.model.entity.Star;
 import com.glut.news.video.model.entity.VideoCommentsModel;
 import com.glut.news.video.model.entity.VideoModel;
-import com.glut.news.weather.model.HeWeather6;
+import com.glut.news.weather.model.MeiZuWeather;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,7 +41,6 @@ import okhttp3.CacheControl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -74,13 +73,13 @@ public class RetrofitManager {
     private RetrofitService.KaiYanService mKaiYanSevice = null;
     private RetrofitService.VideoService mVideoService = null;
     private RetrofitService.ArticleService mArticleService = null;
-    private RetrofitService.CommentService mCommentService=null;
-    private RetrofitService.HistoryService mHistoryService=null;
-    private RetrofitService.UserService mUserService=null;
-    private RetrofitService.StarService mStarService=null;
-    private RetrofitService.SearchService mSearchService=null;
-    private RetrofitService.InterestTag mInterestTagService=null;
-    private RetrofitService.WeatherService mWeatherService=null;
+    private RetrofitService.CommentService mCommentService = null;
+    private RetrofitService.HistoryService mHistoryService = null;
+    private RetrofitService.UserService mUserService = null;
+    private RetrofitService.StarService mStarService = null;
+    private RetrofitService.SearchService mSearchService = null;
+    private RetrofitService.InterestTag mInterestTagService = null;
+    private RetrofitService.WeatherService mWeatherService = null;
 
     public static RetrofitManager builder(String url, String type) {
         return new RetrofitManager(url, type);
@@ -108,22 +107,22 @@ public class RetrofitManager {
             mKaiYanSevice = retrofit.create(RetrofitService.KaiYanService.class);
         } else if ("VideoService".equals(type)) {
             mVideoService = retrofit.create(RetrofitService.VideoService.class);
-        }else if ("ArticleService".equals(type)){
-            mArticleService=retrofit.create(RetrofitService.ArticleService.class);
-        }else if ("CommentService".equals(type)){
-            mCommentService=retrofit.create(RetrofitService.CommentService.class);
-        }else if ("HistoryService".equals(type)){
-            mHistoryService=retrofit.create(RetrofitService.HistoryService.class);
-        }else if ("UserService".equals(type)){
-            mUserService=retrofit.create(RetrofitService.UserService.class);
-        }else if ("StarService".equals(type)){
-            mStarService=retrofit.create(RetrofitService.StarService.class);
-        }else if ("SearchService".equals(type)){
-            mSearchService=retrofit.create(RetrofitService.SearchService.class);
-        }else if ("InterestTagService".equals(type)){
-            mInterestTagService=retrofit.create(RetrofitService.InterestTag.class);
-        }else if ("WeatherService".equals(type)){
-            mWeatherService=retrofit.create(RetrofitService.WeatherService.class);
+        } else if ("ArticleService".equals(type)) {
+            mArticleService = retrofit.create(RetrofitService.ArticleService.class);
+        } else if ("CommentService".equals(type)) {
+            mCommentService = retrofit.create(RetrofitService.CommentService.class);
+        } else if ("HistoryService".equals(type)) {
+            mHistoryService = retrofit.create(RetrofitService.HistoryService.class);
+        } else if ("UserService".equals(type)) {
+            mUserService = retrofit.create(RetrofitService.UserService.class);
+        } else if ("StarService".equals(type)) {
+            mStarService = retrofit.create(RetrofitService.StarService.class);
+        } else if ("SearchService".equals(type)) {
+            mSearchService = retrofit.create(RetrofitService.SearchService.class);
+        } else if ("InterestTagService".equals(type)) {
+            mInterestTagService = retrofit.create(RetrofitService.InterestTag.class);
+        } else if ("WeatherService".equals(type)) {
+            mWeatherService = retrofit.create(RetrofitService.WeatherService.class);
         }
     }
 
@@ -153,9 +152,6 @@ public class RetrofitManager {
 
     }
 
-    // init cookie manager
-    //CookieHandler cookieHandler = new CookiesManager();
-
     public class SaveCookiesInterceptor implements Interceptor {
         private static final String COOKIE_PREF = "cookies_prefs";
         private Context mContext;
@@ -171,334 +167,334 @@ public class RetrofitManager {
             Response response = chain.proceed(request); //set-cookie可能为多个
             if (!response.headers("set-cookie").isEmpty()) {
                 List<String> cookies = response.headers("set-cookie");
-
-
-            String cookie = encodeCookie(cookies);
-            saveCookie(request.url().toString(), request.url().host(), cookie);
+                String cookie = encodeCookie(cookies);
+                saveCookie(request.url().toString(), request.url().host(), cookie);
             }
 
-        return response;
-    }
+            return response;
+        }
 
 
-    //整合cookie为唯一字符串
+        //整合cookie为唯一字符串
 
-    private String encodeCookie(List<String> cookies) {
-        StringBuilder sb = new StringBuilder();
-        Set<String> set = new HashSet<>();
-        for (String cookie : cookies) {
-            String[] arr = cookie.split(";");
-            for (String s : arr) {
-                if (set.contains(s)) continue;
-                set.add(s);
+        private String encodeCookie(List<String> cookies) {
+            StringBuilder sb = new StringBuilder();
+            Set<String> set = new HashSet<>();
+            for (String cookie : cookies) {
+                String[] arr = cookie.split(";");
+                for (String s : arr) {
+                    if (set.contains(s)) continue;
+                    set.add(s);
+                }
             }
+            Iterator<String> ite = set.iterator();
+            while (ite.hasNext()) {
+                String cookie = ite.next();
+                sb.append(cookie).append(";");
+            }
+            int last = sb.lastIndexOf(";");
+            if (sb.length() - 1 == last) {
+                sb.deleteCharAt(last);
+            }
+            return sb.toString();
         }
-        Iterator<String> ite = set.iterator();
-        while (ite.hasNext()) {
-            String cookie = ite.next();
-            sb.append(cookie).append(";");
-        }
-        int last = sb.lastIndexOf(";");
-        if (sb.length() - 1 == last) {
-            sb.deleteCharAt(last);
-        }
-        return sb.toString();
-    }
 
         //保存cookie到本地，这里我们分别为该url和host设置相同的cookie，其中host可选 //这样能使得该cookie的应用范围更广
 
-    private void saveCookie(String url, String domain, String cookies) {
-        SharedPreferences sp = AppApplication.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        if (TextUtils.isEmpty(url)) {
-            throw new NullPointerException("url is null.");
-        } else {
-            editor.putString(url, cookies);
-        }
-        if (!TextUtils.isEmpty(domain)) {
-            editor.putString(domain, cookies);
-        }
-        editor.apply();
-    }
-}
-
-
-
-
-
-            public class AddCookiesInterceptor implements Interceptor {
-                private static final String COOKIE_PREF = "cookies_prefs";
-                private Context mContext;
-
-                public AddCookiesInterceptor(Context context) {
-                    mContext = context;
-                }
-
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request();
-                    Request.Builder builder = request.newBuilder();
-                    //取出cookie
-                    String cookie = getCookie(request.url().toString(), request.url().host());
-                    if (!TextUtils.isEmpty(cookie)) {
-                        builder.addHeader("Cookie", cookie);
-                    }
-                    return chain.proceed(builder.build());
-                }
-
-                private String getCookie(String url, String domain) {
-                    SharedPreferences sp = mContext.getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
-                    if (!TextUtils.isEmpty(url) && sp.contains(url) && !TextUtils.isEmpty(sp.getString(url, ""))) {
-                        return sp.getString(url, "");
-                    }
-                    if (!TextUtils.isEmpty(domain) && sp.contains(domain) && !TextUtils.isEmpty(sp.getString(domain, ""))) {
-                        return sp.getString(domain, "");
-                    }
-                    return null;
-                }
-
+        private void saveCookie(String url, String domain, String cookies) {
+            SharedPreferences sp = AppApplication.getContext().getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            if (TextUtils.isEmpty(url)) {
+                throw new NullPointerException("url is null.");
+            } else {
+                editor.putString(url, cookies);
             }
+            if (!TextUtils.isEmpty(domain)) {
+                editor.putString(domain, cookies);
+            }
+            editor.apply();
+        }
+    }
+
+    public class AddCookiesInterceptor implements Interceptor {
+        private static final String COOKIE_PREF = "cookies_prefs";
+        private Context mContext;
+
+        public AddCookiesInterceptor(Context context) {
+            mContext = context;
+        }
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request.Builder builder = request.newBuilder();
+            //取出cookie
+            String cookie = getCookie(request.url().toString(), request.url().host());
+            if (!TextUtils.isEmpty(cookie)) {
+                builder.addHeader("Cookie", cookie);
+            }
+            return chain.proceed(builder.build());
+        }
+
+        private String getCookie(String url, String domain) {
+            SharedPreferences sp = mContext.getSharedPreferences(COOKIE_PREF, Context.MODE_PRIVATE);
+            if (!TextUtils.isEmpty(url) && sp.contains(url) && !TextUtils.isEmpty(sp.getString(url, ""))) {
+                return sp.getString(url, "");
+            }
+            if (!TextUtils.isEmpty(domain) && sp.contains(domain) && !TextUtils.isEmpty(sp.getString(domain, ""))) {
+                return sp.getString(domain, "");
+            }
+            return null;
+        }
+
+    }
 
 
+    // 云端响应头拦截器，用来配置缓存策略
+    private Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            if (!NetUtil.isNetworkConnected()) {
+                //没网时拦截请求，从缓存获取数据
+                request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
+            }
+            Response originalResponse = chain.proceed(request);
+            if (NetUtil.isNetworkConnected()) {
+                //有网的时候读接口上的@Headers里的配置，拦截返回的response数据并添加头数据，设置缓存策略
+                String cacheControl = request.cacheControl().toString();
 
-            // 云端响应头拦截器，用来配置缓存策略
-            private Interceptor mRewriteCacheControlInterceptor = new Interceptor() {
-                @Override
-                public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request();
-                    if (!NetUtil.isNetworkConnected()) {
-                        //没网时拦截请求，从缓存获取数据
-                        request = request.newBuilder().cacheControl(CacheControl.FORCE_CACHE).build();
-                    }
-                    Response originalResponse = chain.proceed(request);
-                    if (NetUtil.isNetworkConnected()) {
-                        //有网的时候读接口上的@Headers里的配置，拦截返回的response数据并添加头数据，设置缓存策略
-                        String cacheControl = request.cacheControl().toString();
-
-                        return originalResponse.newBuilder().header("Cache-Control", cacheControl)
-                                .removeHeader("Pragma")
-                                .build();
-                    } else {
-                        return originalResponse.newBuilder()
-                                .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
-                                .removeHeader("Pragma").build();
-                    }
-                }
-            };
+                return originalResponse.newBuilder().header("Cache-Control", cacheControl)
+                        .removeHeader("Pragma")
+                        .build();
+            } else {
+                return originalResponse.newBuilder()
+                        .header("Cache-Control", "public, only-if-cached, max-stale=" + CACHE_STALE_LONG)
+                        .removeHeader("Pragma").build();
+            }
+        }
+    };
 
     /*知乎日报*/
-            public Observable<ZhiHuList> getLatestNews () {
-                return mZhihuService.getLatestNews();
-            }
+    public Observable<ZhiHuList> getLatestNews() {
+        return mZhihuService.getLatestNews();
+    }
 
-            public Observable<ZhiHuDetailModel> getZhiHuDetail (String id){
-                return mZhihuService.getNewsDetail(id);
-            }
+    public Observable<ZhiHuDetailModel> getZhiHuDetail(String id) {
+        return mZhihuService.getNewsDetail(id);
+    }
 
-            public Observable<ZhiHuList> getBeforeData (String date){
-                return mZhihuService.getBeforeNews(date);
-            }
+    public Observable<ZhiHuList> getBeforeData(String date) {
+        return mZhihuService.getBeforeNews(date);
+    }
 
     /*果壳精选*/
-            public Observable<GuoKrListModel> getLatestNews1 () {
-                return mGuokrService.getLatestNews();
-            }
+    public Observable<GuoKrListModel> getLatestNews1() {
+        return mGuokrService.getLatestNews();
+    }
 
-            public Observable<GuoKrDetail> getZhiHuDetail2 (int id){
-                return mGuokrService.getNewsDetail(id);
-            }
+    public Observable<GuoKrDetail> getZhiHuDetail2(int id) {
+        return mGuokrService.getNewsDetail(id);
+    }
 
     /*OneModel*/
-            public Observable<OneDateListModel> getOneDateList () {
-                return mOneService.getDateList();
-            }
+    public Observable<OneDateListModel> getOneDateList() {
+        return mOneService.getDateList();
+    }
 
-            public Observable<OneModel> getOneLasteNews (String date){
-                return mOneService.getOneLatestNews(date);
-            }
+    public Observable<OneModel> getOneLasteNews(String date) {
+        return mOneService.getOneLatestNews(date);
+    }
 
-            public Observable<OneCommentsModel> getOneComment (String id){
-                return mOneService.getOneComment(id);
-            }
+    public Observable<OneCommentsModel> getOneComment(String id) {
+        return mOneService.getOneComment(id);
+    }
 
-            public Observable<OneDetailModel> getOneDetail (String id){
-                return mOneService.getDetailtNews(id);
-            }
+    public Observable<OneDetailModel> getOneDetail(String id) {
+        return mOneService.getDetailtNews(id);
+    }
 
     /* 开眼视频*/
-            public Observable<KaiYanModel> getLatestNews3 () {
-                return mKaiYanSevice.getLateseNews3();
-            }
+    public Observable<KaiYanModel> getLatestNews3() {
+        return mKaiYanSevice.getLateseNews3();
+    }
 
-            public Observable<KaiYanModel> getNextPageNews (String page){
-                return mKaiYanSevice.getNextPageNews(page);
-            }
+    public Observable<KaiYanModel> getNextPageNews(String page) {
+        return mKaiYanSevice.getNextPageNews(page);
+    }
 
     /*News视频*/
 
     //首页推荐
-            public Observable<VideoModel> getVideo (String u,int pageno) {
+    public Observable<VideoModel> getVideo(String u, int pageno) {
 
-                return mVideoService.getVideo(u,pageno);
-            }
+        return mVideoService.getVideo(u, pageno);
+    }
+
     //详情页推荐
-    public Observable<VideoModel> getDetailVideo (String videoType) {
+    public Observable<VideoModel> getDetailVideo(String videoType) {
 
         return mVideoService.getDetailVideo(videoType);
     }
 
     //获得分类视频列表
-            public Observable<VideoModel> getTypeVideo (String type, int pageno){
-                return mVideoService.getTypeVideo(type, pageno);
-            }
+    public Observable<VideoModel> getTypeVideo(String type, int pageno) {
+        return mVideoService.getTypeVideo(type, pageno);
+    }
+
     //获得视频详情页视频信息
-    public Observable<VideoModel> getVideoDetailInfo (int ContentId){
+    public Observable<VideoModel> getVideoDetailInfo(int ContentId) {
         return mVideoService.getVideoDetailInfo(ContentId);
     }
 
     /*News文章*/
 
     //获得文章列表
-    public Observable<ArticleModel> getTypeArticle(String type, int pageno){
-        return  mArticleService.getTypeArticle(type,pageno);
+    public Observable<ArticleModel> getTypeArticle(String type, int pageno) {
+        return mArticleService.getTypeArticle(type, pageno);
     }
+
     //获得推荐列表
-    public Observable<ArticleModel> getTuiJianArticle(String u,String type, int pageno){
-        return  mArticleService.getTuiJianArticle(u,type,pageno);
+    public Observable<ArticleModel> getTuiJianArticle(String u, String type, int pageno) {
+        return mArticleService.getTuiJianArticle(u, type, pageno);
     }
 /*评论*/
 
     //获得对应文章/视频的评论数据
-    public Observable<VideoCommentsModel> getCOmment(String id, int pageno){
-        return  mCommentService.getComment(id,pageno);
+    public Observable<VideoCommentsModel> getCOmment(String id, int pageno) {
+        return mCommentService.getComment(id, pageno);
     }
+
     //用户发表评论
-    public Observable<Comment> putComment(String ComentContent,String ArticleId, String AuthorId, String CommentTime,String Author_logo,String Author_name){
-        return  mCommentService.putComment(ComentContent,ArticleId,AuthorId,CommentTime,Author_logo,Author_name);
+    public Observable<Comment> putComment(String ComentContent, String ArticleId, String AuthorId, String CommentTime, String Author_logo, String Author_name) {
+        return mCommentService.putComment(ComentContent, ArticleId, AuthorId, CommentTime, Author_logo, Author_name);
     }
 
     //用户删除评论
-    public Observable<Comment> deleteComment(String ArticleId, String AuthorId){
-        return  mCommentService.deleteComment(ArticleId,AuthorId);
+    public Observable<Comment> deleteComment(String ArticleId, String AuthorId) {
+        return mCommentService.deleteComment(ArticleId, AuthorId);
     }
 
     //更新文章/视频评论数
-    public Observable<Integer> updateComment(String ContentId,int Type){
-        return  mCommentService.updateComment(ContentId,Type);
+    public Observable<Integer> updateComment(String ContentId, int Type) {
+        return mCommentService.updateComment(ContentId, Type);
     }
+
     /* 厉害记录*/
     //获得记录列表
-    public Observable<HistoryWithStarModel> getHistoryList(String UserId, int PageNo){
-        return mHistoryService.getHistoryList(UserId,PageNo);
+    public Observable<HistoryWithStarModel> getHistoryList(String UserId, int PageNo) {
+        return mHistoryService.getHistoryList(UserId, PageNo);
     }
 
     //获得记录总数
-    public Observable<Integer> getHistoryCount(){
+    public Observable<Integer> getHistoryCount() {
         return mHistoryService.getHistoryCount();
     }
 
     //插入记录
-    public Observable<Integer> insertHistory(History history){
-        return mHistoryService.insertHistory(history.getHistory_Persion(),history.getHistory_Article(),history.getHistory_Time(),history.getHistory_Type(),history.getContent_type());
+    public Observable<Integer> insertHistory(History history) {
+        return mHistoryService.insertHistory(history.getHistory_Persion(), history.getHistory_Article(), history.getHistory_Time(), history.getHistory_Type(), history.getContent_type());
     }
 
     /*用户*/
     //登录请求
-    public Observable<UserModel> login(UserInfo userInfo){
+    public Observable<UserModel> login(UserInfo userInfo) {
         return mUserService.login(userInfo);
     }
 
     //注册请求
-    public Observable<UserModel> register(UserInfo userInfo){
+    public Observable<UserModel> register(UserInfo userInfo) {
         return mUserService.register(userInfo);
     }
 
     //修改用户名请求
-    public Observable<UserModel> alterUserName(UserInfo userInfo){
+    public Observable<UserModel> alterUserName(UserInfo userInfo) {
         return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户性别
-    public Observable<UserModel> alterUserSex(UserInfo userInfo){
+    public Observable<UserModel> alterUserSex(UserInfo userInfo) {
         return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户desc
-    public Observable<UserModel> alterUserDesc(UserInfo userInfo){
+    public Observable<UserModel> alterUserDesc(UserInfo userInfo) {
         return mUserService.alterUserInfo(userInfo);
     }
 
     //修改用户地区
-    public Observable<UserModel> alterUserDistrc(UserInfo userInfo){
-        return mUserService.alterUserInfo(userInfo);
-    }
-    //修改用户密码
-    public Observable<UserModel> alterUserPwd(UserInfo userInfo){
-        return mUserService.alterUserInfo(userInfo);
-    }
-    //修改用户生日
-    public Observable<UserModel> alterUserBitrth(UserInfo userInfo){
+    public Observable<UserModel> alterUserDistrc(UserInfo userInfo) {
         return mUserService.alterUserInfo(userInfo);
     }
 
-    //修改用户头像
+    //修改用户密码
+    public Observable<UserModel> alterUserPwd(UserInfo userInfo) {
+        return mUserService.alterUserInfo(userInfo);
+    }
+
+    //修改用户生日
+    public Observable<UserModel> alterUserBitrth(UserInfo userInfo) {
+        return mUserService.alterUserInfo(userInfo);
+    }
+
+    /*//修改用户头像
     public Observable<UserModel> alterUserLogo(String UserId,  RequestBody requestBody){
         return mUserService.alterUserLogo(requestBody);
-    }
+    }*/
     //修改用户头像
-    public Observable<UserModel> alterUserLogoByBase64(UserInfo userInfo){
+    public Observable<UserModel> alterUserLogoByBase64(UserInfo userInfo) {
         return mUserService.alterUserLogoByBase64(userInfo);
     }
+
     //修改用户兴趣点
-    public Observable<Integer> alterUserInterest(UserInfo userInfo){
+    public Observable<UserModel> alterUserInterest(UserInfo userInfo) {
         return mUserService.alterUserInterest(userInfo);
     }
+
     //登出
-    public Observable<UserModel> logOut(UserInfo userInfo){
+    public Observable<UserModel> logOut(UserInfo userInfo) {
         return mUserService.logOut(userInfo);
     }
 
 
     /*收藏*/
 
-   //查询收藏列表
-    public Observable<HistoryWithStarModel> getStarList(int UserId,int NextPage ){
-        return mStarService.getStarList(UserId,NextPage);
+    //查询收藏列表
+    public Observable<HistoryWithStarModel> getStarList(int UserId, int NextPage) {
+        return mStarService.getStarList(UserId, NextPage);
 
     }
-   //插入收藏
-    public Observable<Integer> putStar(Star s){
 
-        return mStarService.inserStar(s.getStar_UserId(),s.getStar_ContentId(),s.getStar_Time(),s.getStar_Type());
+    //插入收藏
+    public Observable<Integer> putStar(Star s) {
+
+        return mStarService.inserStar(s.getStar_UserId(), s.getStar_ContentId(), s.getStar_Time(), s.getStar_Type());
 
     }
 
     //获得收藏数
-    public Observable<Integer> getStarCount(){
+    public Observable<Integer> getStarCount() {
 
         return mStarService.getStarCount();
 
     }
     /*搜索*/
 
-    public Observable<ArticleModel> doSearch(String v,int NextPage){
-        return mSearchService.doSearch(v,NextPage);
+    public Observable<ArticleModel> doSearch(String v, int NextPage) {
+        return mSearchService.doSearch(v, NextPage);
     }
 
     /*兴趣标签*/
-    public Observable<Integer> doInterestTag(InterestTag interestTag){
+    public Observable<Integer> doInterestTag(InterestTag interestTag) {
         return mInterestTagService.setUserInterestTag(interestTag);
     }
 
     //获得天气概况数据
-    public Observable<HeWeather6> getWeather(String weatherId, String key){
-        return mWeatherService.getWeather(weatherId,key);
+    public Observable<MeiZuWeather> getWeather(String weatherId) {
+        return mWeatherService.getWeather(weatherId);
     }
 
-    //获得天气空气质量数据
-    public Observable<String> getAir(String weatherId,String key){
-        return mWeatherService.getAir(weatherId,key);
-    }
+
 }
 
 

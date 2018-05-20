@@ -343,7 +343,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
 
     @Override
     public void alterUserLogo(String userId, RequestBody requestBody) {
-        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserLogo(userId,requestBody)
+       /* RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").alterUserLogo(userId,requestBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -384,7 +384,7 @@ public class UserAlterActivityPresenterImpl implements IUserAlterActivityPresent
 
 
                     }
-                });
+                });*/
     }
 
     @Override

@@ -72,22 +72,18 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     private TextView mStarNum;
     private TextView UserName;
     private Menu m;
+    SimpleTarget<Drawable> simpleTarget;
 
     private HomeFragmentPresenterImpl homeFragment=new HomeFragmentPresenterImpl(this);
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-
         View v=inflater.inflate(R.layout.fragment_home,container,false);
         initView(v);
         initData(v);
         if (SetUtil.getInstance().getIsFirstTime()){
             showTapTarget();
         }
-
-
-
         return v;
 
     }
@@ -109,13 +105,13 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
                                 .outerCircleColor(R.color.colorPrimary)
                                 .drawShadow(true)
                                 .targetRadius(60)
-                                .id(2)
-                        /*TapTarget.forToolbarNavigationIcon(toolbar, "点击这里展开侧栏")
-                                .dimColor(android.R.color.black)
+                                .id(2),
+                        TapTarget.forView(tabLayout, "界面下拉可刷新数据，上滑可加载更多")
+                                .dimColor(android.R.color.transparent)
                                 .outerCircleColor(R.color.colorPrimary)
                                 .drawShadow(true)
-                                .id(2),
-                        TapTarget.forBounds(target, "点击这里切换新闻", "双击返回顶部\n再次双击刷新当前页面")
+                                .id(3)/*,
+                        ,forBounds(target, "点击这里切换新闻", "双击返回顶部\n再次双击刷新当前页面")
                                 .dimColor(android.R.color.black)
                                 .outerCircleColor(R.color.colorPrimary)
                                 .targetRadius(60)
@@ -154,7 +150,12 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         mAddVideo = v.findViewById(R.id.addVideo);
         mLogo = v.findViewById(R.id.circlrimage);
         viewpager = v.findViewById(R.id.viewger_home);
-
+        simpleTarget= new SimpleTarget<Drawable>() {
+            @Override
+            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                nacigation_header.setBackground(resource);
+            }
+        };
 
     }
 
@@ -166,10 +167,16 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     @Override
     public void onResume() {
         super.onResume();
-        Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
-        Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
-                RequestOptions.circleCropTransform()).into(mLogo);
-        UserName.setText(SpUtil.getUserFromSp("UserName"));
+        Glide.with(getContext()).load(ApiConstants.welcomeImageAPi).apply(new RequestOptions().fitCenter()).into(simpleTarget);
+        if (UserUtil.isUserLogin()){
+            if (!"null".equals(SpUtil.getUserFromSp("UserLogo"))){
+                Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
+                Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
+                        RequestOptions.circleCropTransform()).into(mLogo);
+            }
+            UserName.setText(SpUtil.getUserFromSp("UserName"));
+        }
+
 
     }
 
@@ -182,44 +189,50 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
             Toast.makeText(getContext(),"网络走失了...",Toast.LENGTH_SHORT).show();
         }
-        if (UserUtil.isUserLogin()){
+         if (UserUtil.isUserLogin()){
 
             UserName.setText(SpUtil.getUserFromSp("UserName"));
             homeFragment.loadHistoryCount();//获取历史记录数
             homeFragment.loadStarCount();//获取我的收藏数
-            Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
-            Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
-                    RequestOptions.circleCropTransform()).into(mLogo);
+             if (!"null".equals(SpUtil.getUserFromSp("UserLogo"))){
+                 Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(new RequestOptions().circleCrop()).into(ilogo);
+                 Glide.with(getContext()).load(SpUtil.getUserFromSp("UserLogo")).apply(
+                         RequestOptions.circleCropTransform()).into(mLogo);
+             }else {
+
+                 Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(new RequestOptions().circleCrop()).into(ilogo);
+                 Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(
+                         RequestOptions.circleCropTransform()).into(mLogo);
+             }
 
 
         }else {
-            UserName.setText("我是谁");
+            UserName.setText(R.string.home_unlogin_username);
             m.findItem(R.id.navigation_item_info).setVisible(false);
             Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(new RequestOptions().circleCrop()).into(ilogo);
             Glide.with(getContext()).load(R.drawable.home_icon_unlogin_logo).apply(
                     RequestOptions.circleCropTransform()).into(mLogo);
         }
-
+        Glide.with(getContext()).load(ApiConstants.welcomeImageAPi).apply(new RequestOptions().fitCenter()).into(simpleTarget);
         navigationView.setItemIconTintList(null);
         titles.add("推荐");
         titles.add("互联网");
         titles.add("军事");
         titles.add("旅游");
+        titles.add("国际");
         titles.add("国内");
         titles.add("科技");
-        SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                nacigation_header.setBackground(resource);
-            }
-        };
-        if (NetUtil.isWifiConnected()){
 
-            Glide.with(getContext()).load(ApiConstants.welcomeImageAPi).apply(new RequestOptions().fitCenter()).into(simpleTarget);
+        titles.add("时尚");
+        titles.add("社会");
+        titles.add("亲子");
 
-        }else {
-            nacigation_header.setBackgroundColor(getResources().getColor(R.color.side_1));
-        }
+        titles.add("科学");
+        titles.add("星座");
+        titles.add("游戏");
+        titles.add("电影");
+        titles.add("健康");
+        titles.add("理财");
 
         for (int i=0;i<titles.size();i++){
 

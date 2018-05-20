@@ -17,8 +17,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
+import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.model.entity.UserModel;
 import com.glut.news.common.utils.ApiConstants;
 import com.glut.news.common.utils.DateUtil;
+import com.glut.news.common.utils.SetUtil;
+import com.glut.news.common.utils.SpUtil;
+import com.glut.news.common.utils.UserUtil;
+import com.glut.news.common.utils.manager.RetrofitManager;
+import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.common.view.IntroActivity;
 import com.glut.news.login.view.fragment.LoginActivity;
 
@@ -27,6 +37,11 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -57,14 +72,13 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_welcome);
         String updateTime = String.valueOf(System.currentTimeMillis()); // 在需要重新获取更新的图片时调用
         ImageView imageView = (ImageView) findViewById(R.id.welcomeimage);
-      /*  Glide.with(this).load(ApiConstants.welcomeImageAPi)
-
-                .apply(new RequestOptions().signature(new ObjectKey(updateTime)))
-
-                .into(imageView);*/
-
-        Glide.with(this).load(ApiConstants.welcomeImageAPi)
+       Glide.with(this).load(ApiConstants.welcomeImageAPi)
+               .transition(new DrawableTransitionOptions().crossFade(2000))
+                .apply(new RequestOptions().signature(new ObjectKey(updateTime)).placeholder(R.drawable.welcome1))
                 .into(imageView);
+
+        /*Glide.with(this).load(ApiConstants.welcomeImageAPi)
+                .into(imageView);*/
         initPermission();
         //WelcomeActivityPermissionsDispatcher.initLocationPermissionWithCheck(WelcomeActivity.this);
 
@@ -90,23 +104,81 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void run() {
 
-              /*  if (SetUtil.getInstance().getIsFirstTime()){//第一次进入APP
+                if (SetUtil.getInstance().getIsFirstTime()){
                     Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
                     startActivity(intent);
                     finish();
-                }else{//第二次进入APP
-                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }*/
+                }else {
+                    if (UserUtil.isUserLogin()){
+                        goLogin();
 
-                Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
-                startActivity(intent);
-                finish();
+                    }else {
+                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                }
+
 
             }
         }, 5000);//延迟5S后发送handler信息
 
+    }
+
+    private void goLogin() {
+        String pnohe=SpUtil.getUserFromSp("UserPhone");
+if ("null".equals("pnohe")){
+    Intent i2 = new Intent(WelcomeActivity.this, LoginActivity.class);
+    startActivity(i2);
+    finish();
+
+}else {
+   UserInfo userInfo=new UserInfo();
+    userInfo.setUserPhone(SpUtil.getUserFromSp("UserPhone"));
+    userInfo.setUserPwd(SpUtil.getUserFromSp("UserPwd"));
+        RetrofitManager.builder(RetrofitService.VIDEO_BASE_URL, "UserService").login(userInfo)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                    }
+                })
+                .map(new Func1<UserModel, UserModel>() {
+                    @Override
+                    public UserModel call(UserModel h) {
+                        return h;
+                    }
+                })
+                .subscribe(new Action1<UserModel>() {
+                    @Override
+                    public void call(UserModel userModel) {
+
+                        if ("0".equals(userModel.getStus())){
+                        }else if("1".equals(userModel.getStus())) {
+                            SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
+                            SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
+                            SpUtil.saveUserToSp("UserBirth",userModel.getUserInfo().getUserBirthder());
+                            SpUtil.saveUserToSp("UserName",userModel.getUserInfo().getUserName());
+                            SpUtil.saveUserToSp("UserDis",userModel.getUserInfo().getUserDistrc());
+                            SpUtil.saveUserToSp("UserSex",userModel.getUserInfo().getUserSex());
+                            SpUtil.saveUserToSp("UserSign",userModel.getUserInfo().getUserSign());
+                            Intent i2 = new Intent(WelcomeActivity.this, MainActivity.class);
+                            //i2.putExtra("UserId", SpUtil.getUserFromSp("UserId"));
+                            startActivity(i2);
+                        }else {
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+
+                    }
+                });
+
+}
     }
 
 
@@ -178,19 +250,21 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_tiaoguo:
-                //从闪屏界面跳转到首界面
-                  /*  if (SetUtil.getInstance().getIsFirstTime()){//第一次进入APP
+
+                if (SetUtil.getInstance().getIsFirstTime()){
                     Intent intent = new Intent(WelcomeActivity.this, IntroActivity.class);
                     startActivity(intent);
                     finish();
-                }else{//第二次进入APP
-                    Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }*/
-                Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                }else {
+                    if (UserUtil.isUserLogin()) {
+                        goLogin();
+
+                    } else {
+                        Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
                 if (runnable != null) {
                     handler.removeCallbacks(runnable);
                 }

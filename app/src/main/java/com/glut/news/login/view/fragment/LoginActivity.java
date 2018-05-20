@@ -2,7 +2,6 @@ package com.glut.news.login.view.fragment;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,8 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.glut.news.AppApplication;
 import com.glut.news.MainActivity;
 import com.glut.news.R;
@@ -48,6 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private FloatingActionButton fab2;
     private RelativeLayout login_bg;
     private FloatingActionButton fab;
+    private Button btn_main;
     private LoginActivityPresenterImpl l = new LoginActivityPresenterImpl(this);
 
     @Override
@@ -65,18 +63,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initData() {
-        SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+        /*SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
             @Override
             public void onResourceReady(Drawable resource, com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
                 login_bg.setBackground(resource);
             }
-        };
-        Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);
+        };*/
+        //Glide.with(this).load(R.drawable.login_bg2).into(simpleTarget);
 
 
     }
 
     private void initView() {
+        btn_main=findViewById(R.id.bt_goMain);
         login_bg = (RelativeLayout) findViewById(R.id.login_bg);
 
         etUsername = (EditText) findViewById(R.id.et_username);
@@ -86,6 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         fab.setOnClickListener(this);
+        btn_main.setOnClickListener(this);
         //cv.setOnClickListener(this);
         btGo.setOnClickListener(this);
         fab2.setOnClickListener(this);
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String t = etUsername.getText().toString();
                     String UserPwd = etPassword.getText().toString();
                     if (valiLogin(u, t, UserPwd)) {
-                        ToastUtil.showOnLoading("登陆是需要时间的...", LoginActivity.this);
+                        ToastUtil.showOnLoading("正在拼命登录...", LoginActivity.this);
                         l.toLogin(u);
                     } else {
                         //lt.error();
@@ -119,7 +119,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
                 } else {
-                    Toast.makeText(LoginActivity.this, "网络走失了", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "网络走失了...", Toast.LENGTH_SHORT).show();
 
                 }
                 break;
@@ -127,6 +127,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.fab2:
                 startActivity(new Intent(LoginActivity.this, ForgetPwdActivity.class));
                 break;
+            case R.id.bt_goMain:
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                finish();
+
         }
 
     }

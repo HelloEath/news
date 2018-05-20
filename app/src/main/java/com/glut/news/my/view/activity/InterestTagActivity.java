@@ -34,9 +34,11 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
     private Button btn_go;
     private Map<String,Integer> tagList;
     private String[] mVals = new String[]
-            {"科技", "互联网", "热点", "时尚", "游戏", "军事", "社会", "旅游",
-                    "国内", "国际", "电影", "搞笑", "音乐", "生活","开眼","科学",
-                    "数码","语录","情感","健康","财经","教育","宠物","故事"};
+            {"科技", "互联网", "热点", "时尚",
+                    "军事","搞笑","旅游","国际",
+                    "时尚","社会","亲子","科学",
+                    "星座","游戏","国内","电影",
+                    "生活", "健康","理财","教育"};
 
     private InterestTagActivityPresenterImpl i=new InterestTagActivityPresenterImpl(this);
 
@@ -68,15 +70,14 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
                 gson.toJson(tagList);
                 UserInfo userInfo=new UserInfo();
                 userInfo.setUserId(Integer.parseInt(SpUtil.getUserFromSp("UserId")));
-
-
-
-
                 userInfo.setUserInterest(gson.toJson(tagList).toString());
-                i.getUserTagData(userInfo);//发送数据
-                Toast.makeText(InterestTagActivity.this,userInfo.toString(),Toast.LENGTH_LONG).show();
-                startActivity(new Intent(InterestTagActivity.this, MainActivity.class));
-                finish();
+                if (tagList.size()==0){
+                    Toast.makeText(InterestTagActivity.this,"必须选中一样兴趣点",Toast.LENGTH_SHORT).show();
+                }else {
+                    i.getUserTagData(userInfo);//发送数据
+                }
+
+
             }
         });
         //初始化标签
@@ -92,7 +93,7 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
             @Override
             public void onSelected(int position, View view) {
                 super.onSelected(position, view);
-                tagList.put(mVals[position],0);
+                tagList.put(mVals[position],1);
 
                // Toast.makeText(InterestTagActivity.this, mVals[position], Toast.LENGTH_SHORT).show();
 
@@ -111,5 +112,7 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
     @Override
     public void interestTagsuccess() {
         ToastUtil.showSuccess("兴趣点设置成功",3000,InterestTagActivity.this);
+        startActivity(new Intent(InterestTagActivity.this, MainActivity.class));
+        finish();
     }
 }

@@ -1,5 +1,7 @@
 package com.glut.news.weather.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,7 @@ import java.util.List;
 public class HeWeather6 {
 
 
+    @SerializedName("HeWeather5")
     private List<HeWeather6Bean> HeWeather6;
 
     public List<HeWeather6Bean> getHeWeather6() {

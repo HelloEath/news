@@ -12,13 +12,17 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
+        app:srlAccentColor="@color/side_1"
         android:layout_height="match_parent">
 
-        <com.scwang.smartrefresh.header.WaveSwipeHeader
+    <!--    <com.scwang.smartrefresh.header.WaveSwipeHeader
             android:layout_width="match_parent"
             app:wshPrimaryColor="@color/side_1"
             android:layout_height="wrap_content"/>
-
+-->
+        <com.scwang.smartrefresh.header.BezierCircleHeader
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     <android.support.v7.widget.RecyclerView
         android:background="@color/app_bg"

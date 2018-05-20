@@ -3,7 +3,6 @@ package com.glut.news.login.view.fragment;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
@@ -22,8 +21,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserInfo;
@@ -65,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     private RelativeLayout logister_bg;
     private EditText mEditText_seriCode;
     private Button mButton_sendVeriCode;
+    private boolean isCodeEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +97,13 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         et_userPwd= (EditText) findViewById(R.id.et_password);
         et_rePwd= (EditText) findViewById(R.id.et_repeatpassword);
         bt_go= (Button) findViewById(R.id.bt_go);
-        SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
+       /* SimpleTarget<Drawable> simpleTarget = new SimpleTarget<Drawable>() {
             @Override
             public void onResourceReady(Drawable resource, com.bumptech.glide.request.transition.Transition<? super Drawable> transition) {
                 logister_bg.setBackground(resource);
             }
         };
-        Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);
+        Glide.with(this).load(R.drawable.login_bg).into(simpleTarget);*/
         bt_go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,20 +115,24 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                     String Test=et_useremail.getText().toString();
                     UserInfo userInfo =new UserInfo();
                     String veriCCode=mEditText_seriCode.getText().toString().trim();
-                    if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test)){
-                        ToastUtil.showOnLoading("正在注册",RegisterActivity.this);
-                        //submitCode("86",Test,veriCCode,userInfo);
-                        iRr.toRegister(userInfo);//发送请求
+                    if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test,veriCCode)){
+                        ToastUtil.showOnLoading("正在注册...",RegisterActivity.this);
 
+                        if (isCodeEnable){
+                            iRr.toRegister(userInfo);
+                        }else {
+                            mEditText_seriCode.setError("验证码有误");
+
+                        }
                     }else{
-                        ToastUtil.showError("注册失败",3000,RegisterActivity.this);
+                        ToastUtil.showError("注册失败...",3000,RegisterActivity.this);
 
 
                     }
 
                 }else {
 
-                    Toast.makeText(RegisterActivity.this,"网络走失了",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this,"网络走失了...",Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -161,6 +163,22 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
             }
         });
+
+        mEditText_seriCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b){
+                }else {
+                    if (et_useremail.getText().toString().trim().equals("")){
+                        ToastUtil.showError("手机号码不能为空",3000,RegisterActivity.this);
+
+                    }else {
+                        submitCode("86",et_useremail.getText().toString().trim(),mEditText_seriCode.getText().toString().trim());
+
+                    }
+                }
+            }
+        });
     }
     // 请求验证码，其中country表示国家代码，如“86”；phone表示手机号码，如“13800138000”
     public void sendCode(String country, String phone) {
@@ -179,9 +197,6 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                             // 进入loop中的循环，查看消息队列
 
                             }.start();
-
-
-
 
 
                     // 请注意，此时只是完成了发送验证码的请求，验证码短信还需要几秒钟之后才送达
@@ -208,16 +223,26 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
 
     // 提交验证码，其中的code表示验证码，如“1357”
-    public void submitCode(String country, String phone, String code,final  UserInfo userInfo) {
+    public void submitCode(String country, String phone, String code) {
         // 注册一个事件回调，用于处理提交验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // TODO 处理验证成功的结果
-                    iRr.toRegister(userInfo);//发送请求
+                    isCodeEnable=true;
                 } else{
+                    isCodeEnable=false;
+                   /* new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            ToastUtil.showError("验证码有误",3000,RegisterActivity.this);
+                            Looper.loop();
+                        }
+                        // 进入loop中的循环，查看消息队列
+
+                    }.start();*/
                     // TODO 处理错误的结果
-                    ToastUtil.showError("验证码有误",3000,RegisterActivity.this);
                 }
 
             }
@@ -231,7 +256,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         //用完回调要注销掉，否则可能会出现内存泄露
         SMSSDK.unregisterAllEventHandler();
     }
-    private Boolean vailUserInfo(UserInfo userInfo, String UserName, String UserPwd, String UserRePwd, String Test) {
+    private Boolean vailUserInfo(UserInfo userInfo, String UserName, String UserPwd, String UserRePwd, String Test,String code) {
       boolean f=true;
         if (!"".equals(UserName)){
             userInfo.setUserName(UserName);
@@ -264,6 +289,12 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
             f=false;
         }
 
+        if ("".equals(code)){
+            f=false;
+            mEditText_seriCode.setError("验证码为空");
+        }else {
+
+        }
 
 
         if (!"".equals(Test)){
@@ -388,24 +419,18 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
         SpUtil.saveUserToSp("UserName",UserName);
         SpUtil.saveUserToSp("UserPwd",UserPwd);
 
-        if (userModel.getUserInfo().getUserEmail()!=null){
-            SpUtil.saveUserToSp("UserEmail",userModel.getUserInfo().getUserEmail());
-        }
         if (userModel.getUserInfo().getUserPhone()!=null){
             SpUtil.saveUserToSp("UserPhone",userModel.getUserInfo().getUserPhone());
         }
         SpUtil.saveUserToSp("UserId",userModel.getUserInfo().getUserId()+"");
         SpUtil.saveUserToSp("UserLogo",userModel.getUserInfo().getUserLogo());
-
-
-        //i.putExtra("UserId",userModel.getUserInfo().getUserId());
         startActivity(i);
         finish();
     }
 
     @Override
     public void onRegisterFail() {
-        ToastUtil.showError("注册失败，你早就存在于我的脑海里了",3000,RegisterActivity.this);
+        ToastUtil.showError("注册失败，你早就存在于我的数据库里了",3000,RegisterActivity.this);
 
     }
 }

@@ -25,6 +25,10 @@
     android:layout_alignParentLeft="true"
     android:layout_height="wrap_content">
 
+<!--    <android.support.v4.widget.CircleImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@drawable/home_icon_unlogin_logo"/>-->
     <ImageView
         android:id="@+id/circlrimage"
         android:layout_width="33dp"

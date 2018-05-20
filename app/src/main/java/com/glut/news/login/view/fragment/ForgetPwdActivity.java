@@ -1,6 +1,7 @@
 package com.glut.news.login.view.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -48,12 +50,16 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
     private String mPwdString;
     private Button btn_gotoLogin;
     UserInfo userInfo;
+    private boolean isCodeEnable=false;
 
 
     //private Rx2Timer timer;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         //切换需要使用动画定义
         getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         //要做的动画
@@ -87,6 +93,24 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
         mButton_goBack.setOnClickListener(this);
         mButton_confirm.setOnClickListener(this);
         btn_gotoLogin.setOnClickListener(this);
+        //输入框验证码触发事件
+        mEditText_veriCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if (b) {
+                    // 此处为得到焦点时的处理内容
+                } else {
+                    // 此处为失去焦点时的处理内容
+                    if (mEditText_phone.getText().toString().trim().equals("")){
+
+                    }else {
+                        submitCode("86",mEditText_phone.getText().toString().trim(),mEditText_veriCode.getText().toString().trim());
+
+                    }
+
+                }
+            }
+        });
     }
 
     @Override
@@ -94,30 +118,51 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
         switch (v.getId()){
 
             case R.id.btn_sendCode:
-                sendCode("86",mEditText_phone.getText().toString().trim());
+                if (mEditText_phone.getText().toString().trim().equals("")){
+                    mEditText_phone.setError("手机号码不能为空");
+
+                }else {
+                    sendCode("86",mEditText_phone.getText().toString().trim());
+
+                }
 
                 break;
             case R.id.btn_confirm:
                 String newPwd=mEditText_newPwd.getText().toString().trim();
                 String reNewPwd=mEditText_reNewPwd.getText().toString().trim();
                 String phoneNum=mEditText_phone.getText().toString().trim();
-                if (!"".equals(phoneNum)){
+                if (!"".equals(mEditText_veriCode.getText().toString().trim())){
+
+                    if ("".equals(reNewPwd)){
+                        mEditText_newPwd.setError("密码不能为空");
+
+                    }else {
+
+
                     if (newPwd.equals(reNewPwd)){
-                        submitCode("86",mEditText_phone.getText().toString().trim(),mEditText_veriCode.getText().toString().trim());
-                        mPwdString=reNewPwd;
-                         userInfo=new UserInfo();
-                        userInfo.setUserPhone(phoneNum);
-                        userInfo.setUserPwd(reNewPwd);
-                       // alterUserPwd(userInfo);
+
+                        if(isCodeEnable){
+                            mPwdString=reNewPwd;
+                            userInfo=new UserInfo();
+                            userInfo.setUserPhone(phoneNum);
+                            userInfo.setUserPwd(reNewPwd);
+                            alterUserPwd(userInfo);
+                            //submitCode("86",mEditText_phone.getText().toString().trim(),mEditText_veriCode.getText().toString().trim());
+
+
+                        }else{
+                            Toast.makeText(ForgetPwdActivity.this,"验证码无效",Toast.LENGTH_SHORT).show();
+
+                        }
 
                     }else {
                         Toast.makeText(ForgetPwdActivity.this,"两次输入的密码不一致,请重新输入",Toast.LENGTH_SHORT).show();
 
                     }
+                    }
 
                 }else {
-
-                    Toast.makeText(ForgetPwdActivity.this,"手机号码不能为空",Toast.LENGTH_SHORT).show();
+                    mEditText_veriCode.setError("验证码不能为空");
                 }
 
                 break;
@@ -203,7 +248,10 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
                         public void run() {
                             Log.i("log", "run");
                             Looper.prepare();
-                            Toast.makeText(ForgetPwdActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+                            if (!isCodeEnable){
+                                Toast.makeText(ForgetPwdActivity.this,"发送成功",Toast.LENGTH_SHORT).show();
+
+                            }
                             Looper.loop();
                         }
                         // 进入loop中的循环，查看消息队列
@@ -237,9 +285,19 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // TODO 处理验证成功的结果
-                    alterUserPwd(userInfo);
+                    isCodeEnable=true;
+
                 } else{
-                    // TODO 处理错误的结果
+                    new Thread() {
+                        public void run() {
+                            Log.i("log", "run");
+                            Looper.prepare();
+                            Toast.makeText(ForgetPwdActivity.this,"验证码有误",Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                        // 进入loop中的循环，查看消息队列
+
+                    }.start();
                 }
 
             }

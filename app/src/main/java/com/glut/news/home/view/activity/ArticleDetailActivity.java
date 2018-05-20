@@ -149,12 +149,12 @@ public class ArticleDetailActivity extends AppCompatActivity implements View.OnC
 
         if (NetUtil.isNetworkConnected()){
             //String url="http://47.100.243.11/NewsServerApi/article/detailArticle?Article_Id="+articleId;
-            String url="http://192.168.191.1:8085/NewsServerApi/article/detailArticle?Article_Id="+articleId;
+            String url="http://47.100.243.11/NewsServerApi/article/detailArticle?Article_Id="+articleId;
 
             initWebView(url);
 
         }else {
-            Toast.makeText(ArticleDetailActivity.this,"网络已走失",Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArticleDetailActivity.this,"网络已走失...",Toast.LENGTH_SHORT).show();
         }
 
 

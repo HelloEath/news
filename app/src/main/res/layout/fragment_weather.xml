@@ -43,7 +43,7 @@
                         android:id="@+id/title_city"
                         android:layout_width="wrap_content"
                         android:textSize="20sp"
-                        android:layout_marginLeft="90dp"
+                        android:layout_marginLeft="80dp"
                         android:layout_height="wrap_content" />
 
                 </LinearLayout>
@@ -65,8 +65,10 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:background="@color/app_bg"
+        app:srlPrimaryColor="@color/app_bg"
+        app:srlAccentColor="@color/side_1"
         android:layout_height="match_parent">
-        <com.scwang.smartrefresh.header.WaveSwipeHeader
+        <com.scwang.smartrefresh.header.BezierCircleHeader
             android:layout_width="match_parent"
             app:wshPrimaryColor="@color/side_1"
             android:layout_height="wrap_content"/>
@@ -81,7 +83,9 @@
 
 
         <include layout="@layout/now"/>
+<!--
         <include layout="@layout/forecast"/>
+-->
         <include layout="@layout/aqi"/>
         <include layout="@layout/suggestion"/>
         <TextView

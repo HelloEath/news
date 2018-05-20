@@ -201,4 +201,6 @@
     <string name="menu_search">搜索</string>
  <string name="nohistoryData">没有历史记录</string>
     <string name="one_img">one图片img</string>
+    <string name="home_unlogin_username">我是谁</string>
+    <string name="goMain">主页</string>
 </resources>

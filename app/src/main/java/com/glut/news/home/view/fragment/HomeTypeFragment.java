@@ -60,7 +60,6 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
 
     private void initData() {
         Article_Type=getArguments().getString("title");
-        //loadData("fp", Article_Type);
         refresh.autoRefresh();
     }
 
@@ -75,31 +74,21 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
         //给recyclerview设置布局
         recyclerView.setLayoutManager(linearLayoutManager);
         //创建适配器
-        //loadData();
         adapter = new HomeRecyclerAdater(getActivity(), newslist);
         recyclerView.setAdapter(adapter);
         refresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-                if (NetUtil.isNetworkConnected()) {
-                    loadData("fp", Article_Type);
-                } else {
-                    Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
-                    refresh.finishRefresh();
-                }
+                loadData("fp", Article_Type);
+
             }
         });
         refresh.setOnLoadMoreListener(new OnLoadMoreListener() {
 
-
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                if (NetUtil.isNetworkConnected()) {
-                    loadMoreData(null, Article_Type);
-                } else {
-                    Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
-                    refresh.finishLoadMore();
-                }
+                loadMoreData(null, Article_Type);
+
             }
 
 
@@ -120,6 +109,7 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
 
                 }
 
+
             }
         });
 
@@ -135,6 +125,10 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
             hyf.loadData("","null", article_Type);//加载数据
 
         }
+        if (!NetUtil.isNetworkConnected()) {
+            Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
+            refresh.finishLoadMore();
+        }
 
 
     }
@@ -146,6 +140,10 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
         }else {
             hyf.loadData("",fp, article_Type);//加载数据
 
+        }
+        if (!NetUtil.isNetworkConnected()) {
+            Toast.makeText(getContext(), "网络走失了...", Toast.LENGTH_SHORT).show();
+            refresh.finishRefresh();
         }
 
     }
@@ -175,7 +173,7 @@ public class HomeTypeFragment extends Fragment implements IHomeTypeFragmentView 
     public void onloadMoreDataSuccess(List<ArticleModel.ArticleList> data) {
         adapter.addData(data);
         refresh.finishLoadMore(true);
-        refresh.finishRefresh();
+        refresh.finishRefresh(false);
 
 
     }

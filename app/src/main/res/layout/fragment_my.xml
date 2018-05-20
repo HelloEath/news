@@ -19,7 +19,6 @@
         <com.scwang.smartrefresh.header.BezierCircleHeader
             android:layout_width="match_parent"
 app:layout_srlBackgroundColor="@color/side_1"
-
             android:layout_height="wrap_content"/>
 
 

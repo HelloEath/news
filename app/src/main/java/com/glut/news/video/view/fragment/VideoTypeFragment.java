@@ -59,9 +59,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
         videoType=getArguments().getString("title");
         sfresh.autoRefresh();
         if (!NetUtil.isNetworkConnected()){
-
             Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -83,22 +81,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
         sfresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-
-                if (NetUtil.isNetworkConnected()){
-                    if (UserUtil.isUserLogin()){
-                        v.loadVideoData("login",videoType,"fp");
-
-                    }else {
-                        v.loadVideoData("",videoType,"fp");
-
-                    }
-
-
-                }else {
-                    Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
-
-                    refreshlayout.finishRefresh();
-                }
+             loadData();
 
             }
         });
@@ -106,24 +89,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
         sfresh.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
-
-                if (NetUtil.isNetworkConnected()){
-                    if (UserUtil.isUserLogin()){
-                        v.loadVideoData("login",videoType,"null");
-
-                    }else {
-                        v.loadVideoData("",videoType,"null");
-
-                    }
-
-
-                }else {
-                    Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
-
-                    refreshlayout.finishRefresh();
-
-                }
-
+                loadeMoreData();
             }
         });
 
@@ -149,6 +115,37 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
         });
     }
 
+    private void loadData() {
+        if (UserUtil.isUserLogin()){
+            v.loadVideoData("login",videoType,"fp");
+
+        }else {
+            v.loadVideoData("",videoType,"fp");
+
+        }
+        if (!NetUtil.isNetworkConnected()){
+            Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
+            sfresh.finishRefresh();
+
+        }
+    }
+
+    private void loadeMoreData() {
+        if (UserUtil.isUserLogin()){
+            v.loadVideoData("login",videoType,"null");
+
+        }else {
+            v.loadVideoData("",videoType,"null");
+
+        }
+        if (!NetUtil.isNetworkConnected()){
+            Toast.makeText(getContext(),"网络已走失",Toast.LENGTH_SHORT).show();
+            sfresh.finishRefresh();
+
+        }
+
+    }
+
 
     @Override
     public void onPause() {
@@ -169,7 +166,7 @@ public  class VideoTypeFragment extends Fragment implements IVideoTypeFragmentVi
 
     @Override
     public void loadVideoDataFail() {
-        sfresh.finishRefresh(false);
+        sfresh.finishRefresh(true);
         sfresh.finishLoadMore();
 
 

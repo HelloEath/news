@@ -46,6 +46,7 @@ import com.glut.news.AppApplication;
 import com.glut.news.R;
 import com.glut.news.common.model.entity.UserModel;
 import com.glut.news.common.utils.Base64CoderUtil;
+import com.glut.news.common.utils.CacheDataManager;
 import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.ToastUtil;
@@ -233,11 +234,19 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
     }
     public void intiUserInfo() {
         String f=SpUtil.getUserFromSp("UserName");
-        Glide.with(this).load(SpUtil.getUserFromSp("UserLogo")).apply(
-                RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);
+        if(SpUtil.getUserFromSp("UserLogo").equals("null")){
+            Glide.with(this).load(R.drawable.home_icon_unlogin_logo).apply(
+                    RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);
+        }else{
+            Glide.with(this).load(SpUtil.getUserFromSp("UserLogo")).apply(
+                    RequestOptions.circleCropTransform().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)).into(mUserLogo);
+        }
+
         mUserName.setText(SpUtil.getUserFromSp("UserName"));
         mUserDesc.setText(SpUtil.getUserFromSp("UserDesc"));
         mUserSex.setText(SpUtil.getUserFromSp("UserSex"));
+        mUserSex.setText("未知");
+
         mUserBirth.setText(SpUtil.getUserFromSp("UserBirth"));
         mUserDistrc.setText(SpUtil.getUserFromSp("UserDis"));
         mUserDesc.setText(SpUtil.getUserFromSp("UserSign"));
@@ -614,10 +623,11 @@ public class UserAlterActivity extends AppCompatActivity implements OnClickListe
         SpUtil.saveUserToSp("UserSex","null");
 
         SpUtil.saveUserToSp("UserLogo","null");
-        SpUtil.saveUserToSp("UserDistric","null");
+        SpUtil.saveUserToSp("UserDis","null");
 
         SpUtil.saveUserToSp("UserDesc","null");
 
+        CacheDataManager.clearAllCache(this);//清除cookie缓存数据
 
         Intent intent=new Intent(UserAlterActivity.this, LoginActivity.class);
         startActivity(intent);

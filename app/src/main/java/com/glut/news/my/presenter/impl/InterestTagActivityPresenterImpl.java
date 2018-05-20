@@ -1,6 +1,7 @@
 package com.glut.news.my.presenter.impl;
 
 import com.glut.news.common.model.entity.UserInfo;
+import com.glut.news.common.model.entity.UserModel;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.my.presenter.IInterestTagActivityPresenter;
@@ -34,16 +35,16 @@ public class InterestTagActivityPresenterImpl implements IInterestTagActivityPre
                     public void call() {
                     }
                 })
-                .map(new Func1<Integer, Integer>() {
+                .map(new Func1<UserModel, UserModel>() {
                     @Override
-                    public Integer call(Integer h) {
+                    public UserModel call(UserModel h) {
                         return h;
                     }
                 })
-                .subscribe(new Action1<Integer>() {
+                .subscribe(new Action1<UserModel>() {
                     @Override
-                    public void call(Integer historyModel) {
-                     if (historyModel==1){
+                    public void call(UserModel userModel) {
+                     if (userModel.getStus().equals("1")){
                          i.interestTagsuccess();
                      }
                     }

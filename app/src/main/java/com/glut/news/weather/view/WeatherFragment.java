@@ -25,14 +25,11 @@ import com.baidu.mapapi.SDKInitializer;
 import com.glut.news.AppApplication;
 import com.glut.news.BaseFragment;
 import com.glut.news.R;
+import com.glut.news.common.model.db.DBManager;
 import com.glut.news.common.utils.NetUtil;
-import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
-import com.glut.news.weather.model.HeWeather6;
-import com.glut.news.weather.model.Weather2;
-import com.glut.news.weather.model.WeatherUtili;
-import com.google.gson.Gson;
+import com.glut.news.weather.model.MeiZuWeather;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -40,14 +37,12 @@ import com.zaaach.citypicker.CityPicker;
 import com.zaaach.citypicker.adapter.OnPickListener;
 import com.zaaach.citypicker.model.City;
 import com.zaaach.citypicker.model.HotCity;
+import com.zaaach.citypicker.model.LocateState;
+import com.zaaach.citypicker.model.LocatedCity;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -69,6 +64,9 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     private TextView comfortText;
     private TextView carWashText;
     private TextView sportText;
+    private TextView comfortText1;
+    private TextView carWashText1;
+    private TextView sportText1;
     private TextView t_min_max;
     private CardView suggtion_car;
     private MyLocationListener myLocationListener = new MyLocationListener();
@@ -80,30 +78,34 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     private Toolbar toolbar;
     private SmartRefreshLayout sfresh;
     private String localtionId;
+    private DBManager dbManager;
+    private City mCity;
+    CityPicker cityPicker;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_weather, container, false);
-
 //在使用SDK各组件之前初始化context信息，传入ApplicationContext（初始化百度地图API）
         SDKInitializer.initialize(AppApplication.getContext());
-
         locationClient = new LocationClient(AppApplication.getContext());
+        dbManager = new DBManager(getContext());
         initView(v);
         initLocation();
-        //initData(mWeatherId2);
         return v;
+
     }
 
     //地理位置定位
     private void initLocation() {
-        if (NetUtil.isNetworkConnected()){
+        if (NetUtil.isNetworkConnected()) {
+            getCityInfo();
             locationClient.registerLocationListener(myLocationListener);
             initLocationOption();//初始化定位设置
             locationClient.start();
-        }else {
-            Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+
+        } else {
+            Toast.makeText(getContext(), "网络走失了", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -177,20 +179,24 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
             String district = bdLocation.getDistrict();    //获取区县
             String street = bdLocation.getStreet();    //获取街道信息
             Log.d("国家", country);
+            String cityCode = bdLocation.getCityCode();
+            String dfdif = bdLocation.getCountryCode();
+            String dd = bdLocation.getDistrict();
+
             Log.d("省份", city);
             stringBuilder.append(latitude + "," + longitude);
             //定位完成之后更新数据
-            //CityPicker.getInstance()
-                  //  .locateComplete(new LocatedCity(city, province, "101280601"), LocateState.SUCCESS);
 
-            localtionId = stringBuilder.toString();
-            if (district!=null){
-                city=city+district;
+            List<City> cities = dbManager.searchCitys(city.substring(0, city.length() - 1));
+            localtionId =cities.get(0).getCode();
+            CityPicker.getInstance()
+                    .locateComplete(new LocatedCity(city, province, cities.get(0).getCode()), LocateState.SUCCESS);
+            if (district != null) {
+                city =district;
             }
             locationClient.stop();
             titleCity.setText(city);
-            initData(localtionId);//
-
+            initData(cities.get(0).getCode());//
 
         }
 
@@ -208,16 +214,16 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (NetUtil.isNetworkConnected()){
-                    getCityInfo();
-
-                }else {
-                    Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+                if (NetUtil.isNetworkConnected()) {
+                    cityPicker.show();
+                } else {
+                    Toast.makeText(getContext(), "网络走失了", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void getCityInfo() {
         List<HotCity> hotCities = new ArrayList<>();
@@ -226,55 +232,28 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
         hotCities.add(new HotCity("广州", "广东", "101280101"));
         hotCities.add(new HotCity("深圳", "广东", "101280601"));
         hotCities.add(new HotCity("杭州", "浙江", "101210101"));
-
-
-        CityPicker.getInstance()
+        cityPicker = CityPicker.getInstance()
                 .setFragmentManager(getActivity().getSupportFragmentManager())    //此方法必须调用
                 .enableAnimation(true)    //启用动画效果
                 .setOnPickListener(new OnPickListener() {
                     @Override
                     public void onPick(int position, City data) {
-                        Toast.makeText(getActivity(), data.getName(), Toast.LENGTH_SHORT).show();
                         titleCity.setText(data.getName());
-                        initData(data.getName());//第一次初始化数据
-
+                        initData(data.getCode());//
                     }
                     @Override
                     public void onLocate() {
                         locationClient.start();//开始定位
-                       /* //开始定位，这里模拟一下定位
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                //定位完成之后更新数据
-                                CityPicker.getInstance()
-                                        .locateComplete(new LocatedCity("深圳", "广东", "101280601"), LocateState.SUCCESS);
-
-                                Toast.makeText(getActivity(),mWeatherId2 , Toast.LENGTH_SHORT).show();
-
-                                titleCity.setText(mWeatherId2);
-                            }
-
-
-                        }, 2000);*/
                     }
                 })
-                .show();
+        ;
     }
 
     private void initData(String weatherCity) {
-
-        //http://guolin.tech/api/weather?cityid=
-//https://free-api.heweather.com/s6/weather?location=
-        String weatherUrl = "https://free-api.heweather.com/s6/weather?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
+        String weatherUrl = "http://aider.meizu.com/app/weather/listWeather";
         String weatherUrl2 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
-        String weatherUrl3 = "https://free-api.heweather.com/s6/air?location=" + weatherCity + "&key=03943ac06f46426e8bf112b074dc2f26";
-
-        String key="7c6f7ed1b2e749a688a2f858294281cd";
-        Log.d("和风天气api", weatherUrl);
         //请求基本天气数据
-       RetrofitManager.builder(RetrofitService.HE_WEATHER_URL, "WeatherService").getWeather(weatherCity,key)
+        RetrofitManager.builder(RetrofitService.HE_WEATHER_URL, "WeatherService").getWeather(weatherCity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(new Action0() {
@@ -282,52 +261,38 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                     public void call() {
                     }
                 })
-                .map(new Func1<HeWeather6, HeWeather6>() {
+                .map(new Func1<MeiZuWeather, MeiZuWeather>() {
                     @Override
-                    public HeWeather6 call(HeWeather6 h) {
+                    public MeiZuWeather call(MeiZuWeather h) {
                         return h;
                     }
                 })
-                .subscribe(new Action1<HeWeather6>() {
+                .subscribe(new Action1<MeiZuWeather>() {
                     @Override
-                    public void call(final HeWeather6 response) {
-
-                        //final Weather weather = WeatherUtili.handleWeatherResponse(responseText);
-                         final HeWeather6.HeWeather6Bean weather =null;
-                       final String responseText= new Gson().toJson(response, HeWeather6.class);
+                    public void call(final MeiZuWeather weather) {
                         if (weather != null) {
+                            Log.d("weather.status", weather.getCode());
+                            //判断请求到的数据是否合法
+                            if (weather != null && "200".equals(weather.getCode())) {
+                                //把数据存入本地缓存
+                                //SpUtil.saveUserToSp("weather", new Gson().toJson(weather, HeWeather6.class));
+                                showWeatherInfo(weather);
 
-                            //开启新线程处理请求
-
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("weather.status", weather.getStatus());
-                                    //判断请求到的数据是否合法
-                                    if (weather != null && "ok".equals(weather.getStatus())) {
-                                        //把数据存入本地缓存
-                                        SpUtil.saveUserToSp("weather", responseText);
-                                        showWeatherInfo(weather);
-
-                                    } else {
-                                        Snackbar s = Snackbar.make(getView(), "天气数据异常", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                locationClient.start();//再次定位
-
-                                            }
-                                        });
-                                        View sv = s.getView();
-//文字的颜色
-                                        ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                                        sv.setBackgroundColor(0xffffffff);
-                                        s.show();
+                            } else {
+                                Snackbar s = Snackbar.make(getView(), "天气数据异常", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        locationClient.start();//再次定位
 
                                     }
-                                    // swipeRefreshLayout.setRefreshing(false);
-                                }
-                            });
+                                });
+                                View sv = s.getView();
+//文字的颜色
+                                ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
+                                sv.setBackgroundColor(0xffffffff);
+                                s.show();
+
+                            }
 
                         } else {
                             Snackbar s = Snackbar.make(getView(), "天气数据为空", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
@@ -351,250 +316,43 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
                     public void call(Throwable throwable) {
 
 
-
                     }
                 });
 
 
-
-
-
-
-
-
-/*
-        NetUtil.sendHttpRequest(weatherUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar s = Snackbar.make(getView(), "获取天气数据失败", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                locationClient.start();//再次定位
-
-                            }
-                        });
-                        View sv = s.getView();
-//文字的颜色
-                        ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                        sv.setBackgroundColor(0xffffffff);
-                        s.show();
-
-                    }
-                });
-            }
-
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                final String responseText = response.body().string();
-
-                final Weather weather = WeatherUtili.handleWeatherResponse(responseText);
-                if (weather != null) {
-
-                    //开启新线程处理请求
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("weather.status", weather.status);
-                            //判断请求到的数据是否合法
-                            if (weather != null && "ok".equals(weather.status)) {
-                                //把数据存入本地缓存
-                                SpUtil.saveUserToSp("weather", responseText);
-                                showWeatherInfo(weather);
-
-                            } else {
-                                Snackbar s = Snackbar.make(getView(), "天气数据异常", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        locationClient.start();//再次定位
-
-                                    }
-                                });
-                                View sv = s.getView();
-//文字的颜色
-                                ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                                sv.setBackgroundColor(0xffffffff);
-                                s.show();
-
-                            }
-                            // swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-
-                } else {
-                    Snackbar s = Snackbar.make(getView(), "天气数据为空", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            locationClient.start();//再次定位
-
-                        }
-                    });
-                    View sv = s.getView();
-//文字的颜色
-                    ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                    sv.setBackgroundColor(0xffffffff);
-                    s.show();
-
-                }
-
-
-            }
-        });*/
-
-
-
-
-//请求空气质量数据
-        NetUtil.sendHttpRequest(weatherUrl2, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Snackbar s = Snackbar.make(getView(), "获取天气数据失败", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                locationClient.start();//再次定位
-
-                            }
-                        });
-                        View sv = s.getView();
-//文字的颜色
-                        ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                        sv.setBackgroundColor(0xffffffff);
-                        s.show();
-
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                final String responseText = response.body().string();
-
-                final Weather2 weather2 = WeatherUtili.handleWeatherResponse2(responseText);
-                ;
-                if (weather2 != null) {
-
-                    //开启新线程处理请求
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Log.d("weather.status", weather2.status);
-                            //判断请求到的数据是否合法
-                            if (weather2 != null && "ok".equals(weather2.status)) {
-
-                                //把数据存入本地缓存
-                                SpUtil.saveUserToSp("weather2", responseText);
-
-                                showWeatherInfo(weather2);
-
-                            } else {
-                                Snackbar s = Snackbar.make(getView(), "天气数据异常", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        locationClient.start();//再次定位
-
-                                    }
-                                });
-                                View sv = s.getView();
-//文字的颜色
-                                ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                                sv.setBackgroundColor(0xffffffff);
-                                s.show();
-                            }
-                            // swipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-
-                } else {
-                    Snackbar s = Snackbar.make(getView(), "天气数据为空", Snackbar.LENGTH_LONG).setAction("点我再次获取", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            locationClient.start();//再次定位
-
-                        }
-                    });
-                    View sv = s.getView();
-//文字的颜色
-                    ((TextView) sv.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.side_1));
-                    sv.setBackgroundColor(0xffffffff);
-                    s.show();
-
-                }
-                sfresh.finishRefresh(true);//结束刷新状态
-            }
-        });
     }
 
     /*获并展示weather实体中的数据*/
-    private void showWeatherInfo(Object o) {
-
-        String updateTime = null;
-        if (o instanceof HeWeather6.HeWeather6Bean) {
-
-            HeWeather6.HeWeather6Bean weather = (HeWeather6.HeWeather6Bean) o;
-
-            String t_max = weather.getDaily_forecast().get(0).getTmp_max();
-            String t_min =weather.getDaily_forecast().get(0).getTmp_min();
-            t_min_max.setText(t_min + "℃~" + t_max + "℃");
-            String cityName = weather.getBasic().getParent_city();
-
-            updateTime = weather.getUpdate().getLoc();
-
-
-            String degree = weather.getNow().getTmp() + "℃";
-            String weatherInfo = weather.getNow().getCond_txt();
-            //titleCity.setText(cityName);
-            //titleUpdateTime.setText(updateTime);
-            degreeText.setText(degree);
-            weatherInfoText.setText(weatherInfo);
-            forcastLayout.removeAllViews();
-
-
-            for (HeWeather6.HeWeather6Bean.DailyForecastBean forcast : weather.getDaily_forecast()) {
-                View view = LayoutInflater.from(getContext()).inflate(R.layout.forecast_item, forcastLayout, false);
-
-                TextView dateText = (TextView) view.findViewById(R.id.date_text);
-                TextView infoText = (TextView) view.findViewById(R.id.info_text);
-                TextView maxText = (TextView) view.findViewById(R.id.max_text);
-                TextView minText = (TextView) view.findViewById(R.id.min_text);
-                dateText.setText(forcast.getDate());
-                // infoText.setText(forcast.more.info);
-                maxText.setText(forcast.getTmp_max() + "℃");
-                minText.setText(forcast.getTmp_min() + "℃");
-                forcastLayout.addView(view);
-            }
-
-            String comfort = "舒适度：" + weather.getLifestyle().get(0).getTxt();
-            String carWash = "洗车指数：" + weather.getLifestyle().get(6).getTxt();
-            String sport = "运动指数：" + weather.getLifestyle().get(3).getTxt();
-            comfortText.setText(comfort);
-            carWashText.setText(carWash);
-            sportText.setText(sport);
-            // weatherLayout.setVisibility(View.VISIBLE);
-        } else {
-
-            Weather2 weather2 = (Weather2) o;
-            if (weather2.now != null) {
-                aqiText.setText(weather2.now.aqi);
-                pm25Text.setText(weather2.now.pm25);
-            }
-
-
-        }
-
-
+    private void showWeatherInfo(MeiZuWeather meiZuWeather) {
+        String t_max = meiZuWeather.getValue().get(0).getWeathers().get(0).getTemp_day_c();
+        String t_min = meiZuWeather.getValue().get(0).getWeathers().get(0).getTemp_night_c();
+        t_min_max.setText(t_min + "℃~" + t_max + "℃");
+        String updateTime = meiZuWeather.getValue().get(0).getRealtime().getTime();
+        String degree = meiZuWeather.getValue().get(0).getRealtime().getSendibleTemp() + "℃";
+        String weatherInfo = meiZuWeather.getValue().get(0).getRealtime().getWeather();
+        //titleCity.setText(cityName);
+        //titleUpdateTime.setText(updateTime)
+        degreeText.setText(degree);
+        weatherInfoText.setText(weatherInfo);
+        String comfort = "穿衣指数：" + meiZuWeather.getValue().get(0).getIndexes().get(3).getLevel();
+        String carWash = "洗车指数：" + meiZuWeather.getValue().get(0).getIndexes().get(4).getLevel();
+        String sport = "运动指数：" + meiZuWeather.getValue().get(0).getIndexes().get(2).getLevel();
+        comfortText.setText(comfort);
+        carWashText.setText(carWash);
+        sportText.setText(sport);
+        comfortText1.setText(meiZuWeather.getValue().get(0).getIndexes().get(3).getContent());
+        carWashText1.setText(meiZuWeather.getValue().get(0).getIndexes().get(4).getContent());
+        sportText1.setText(meiZuWeather.getValue().get(0).getIndexes().get(2).getContent());
+        aqiText.setText(meiZuWeather.getValue().get(0).getPm25().getAqi());
+        pm25Text.setText(meiZuWeather.getValue().get(0).getPm25().getPm25());
+        sfresh.finishRefresh();
     }
 
     private void initView(View v) {
         t_min_max = (TextView) v.findViewById(R.id.weather_info_t_min_max);
-
+        carWashText1 = v.findViewById(R.id.car_wash_text1);
+        comfortText1 = v.findViewById(R.id.comfort_text1);
+        sportText1 = v.findViewById(R.id.sport_text1);
         toolbar = v.findViewById(R.id.toolbar);
         suggtion_car = (CardView) v.findViewById(R.id.suggtion);
         titleCity = (TextView) v.findViewById(R.id.title_city);
@@ -619,23 +377,20 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
         toolbar.setNavigationIcon(R.drawable.weather_btn_location);
         sfresh = v.findViewById(R.id.refreshLayout);
-
         sfresh.setEnableLoadMore(false);
         sfresh.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
 
-                if (NetUtil.isNetworkConnected()){
-                    refreshlayout.finishRefresh(3000);
-                    if (!titleCity.getText().toString().equals("")){
+                if (NetUtil.isNetworkConnected()) {
+                    if (!titleCity.getText().toString().equals("")) {
                         initData(localtionId);
-                    }else {
+                    } else {
                         locationClient.start();
                     }
-                }else {
-                    Toast.makeText(getContext(),"网络走失了",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "网络走失了", Toast.LENGTH_SHORT).show();
                 }
-
 
 
             }

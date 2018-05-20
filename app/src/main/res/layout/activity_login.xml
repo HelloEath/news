@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_bg"
+    android:background="@color/side_1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
@@ -43,7 +44,7 @@
                     />
             </RelativeLayout>
             <LinearLayout
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="40dp"
                 android:paddingStart="50dp"
                 android:paddingEnd="30dp"
                 android:orientation="horizontal"
@@ -93,18 +94,32 @@
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
             <RelativeLayout
-                android:layout_marginTop="15dp"
-                android:gravity="center"
+                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <Button
                     android:id="@+id/bt_go"
                     android:background="@drawable/bt_shape"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_alignParentLeft="true"
                     android:layout_height="50dp"
 
                     android:textSize="20sp"
                     android:text="@string/go"
+                    android:textColor="#f9f9f9"
+                    >
+                </Button>
+                <Button
+                    android:id="@+id/bt_goMain"
+                    android:background="@drawable/bt_shape"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+
+                    android:layout_marginRight="30dp"
+                    android:layout_alignParentRight="true"
+                    android:textSize="20sp"
+                    android:text="@string/goMain"
                     android:textColor="#f9f9f9"
                     >
                 </Button>
@@ -127,6 +142,7 @@
         android:layout_marginTop="15dp"
         android:layout_alignEnd="@id/cv"
         android:layout_marginEnd="-20dp"
+        android:background="@color/side_1"
        />
 
     <android.support.design.widget.FloatingActionButton
@@ -136,9 +152,10 @@
         app:fabSize="normal"
         android:src="@drawable/login_icon_forgetpwd"
 
+        android:background="@color/side_1"
         android:transitionName="loginFab2"
         android:layout_alignTop="@id/cv"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="75dp"
         android:layout_alignEnd="@id/cv"
         android:layout_marginEnd="-20dp"
 
