@@ -36,9 +36,9 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
     private String[] mVals = new String[]
             {"科技", "互联网", "热点", "时尚",
                     "军事","搞笑","旅游","国际",
-                    "时尚","社会","亲子","科学",
-                    "星座","游戏","国内","电影",
-                    "生活", "健康","理财","教育"};
+                    "原创", "时尚","社会", "科学",
+                    "汽车", "星座","游戏", "国内",
+                    "电影", "生活", "理财","美食"};
 
     private InterestTagActivityPresenterImpl i=new InterestTagActivityPresenterImpl(this);
 
@@ -73,6 +73,9 @@ public class InterestTagActivity extends AppCompatActivity implements IInterestT
                 userInfo.setUserInterest(gson.toJson(tagList).toString());
                 if (tagList.size()==0){
                     Toast.makeText(InterestTagActivity.this,"必须选中一样兴趣点",Toast.LENGTH_SHORT).show();
+                }else if (tagList.size()<2){
+                    Toast.makeText(InterestTagActivity.this,"至少选中两个兴趣点",Toast.LENGTH_SHORT).show();
+
                 }else {
                     i.getUserTagData(userInfo);//发送数据
                 }

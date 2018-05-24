@@ -22,11 +22,14 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.glut.news.AppApplication;
 import com.glut.news.BaseFragment;
 import com.glut.news.R;
 import com.glut.news.common.model.db.DBManager;
 import com.glut.news.common.utils.NetUtil;
+import com.glut.news.common.utils.SetUtil;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 import com.glut.news.weather.model.MeiZuWeather;
@@ -359,7 +362,7 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
         //titleUpdateTime= (TextView) findViewById(R.id.title_update_time);
         degreeText = (TextView) v.findViewById(R.id.degree_text);
         weatherInfoText = (TextView) v.findViewById(R.id.weather_info_text);
-        forcastLayout = (LinearLayout) v.findViewById(R.id.forecast_layout);
+        //forcastLayout = (LinearLayout) v.findViewById(R.id.forecast_layout);
         aqiText = (TextView) v.findViewById(R.id.aqi_text);
         pm25Text = (TextView) v.findViewById(R.id.pm25_text);
         comfortText = (TextView) v.findViewById(R.id.comfort_text);
@@ -395,9 +398,40 @@ public class WeatherFragment extends BaseFragment implements IWeatherFragmentVie
 
             }
         });
-
+       /* if (SetUtil.getInstance().getIsFirstTime2()){
+            showTapTarget();
+        }*/
     }
+    private void showTapTarget() {
 
+        // 引导用户使用
+        TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                .targets(
+                        TapTarget.forToolbarNavigationIcon(toolbar, "点击这里手动切换城市").id(1)
+                                .dimColor(android.R.color.transparent)
+                                .outerCircleColor(R.color.colorPrimary)
+                                .drawShadow(true)
+                                .targetRadius(60)
+                                .id(1)
+
+                ).listener(new TapTargetSequence.Listener() {
+                    @Override
+                    public void onSequenceFinish() {
+                        SetUtil.getInstance().setIsFirstTime2(false);
+                    }
+
+                    @Override
+                    public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        SetUtil.getInstance().setIsFirstTime2(false);
+                    }
+                });
+        sequence.start();
+    }
     @Override
     public void loadWeatherSuccesss() {
 

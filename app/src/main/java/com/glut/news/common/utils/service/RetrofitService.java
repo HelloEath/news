@@ -48,9 +48,8 @@ public interface RetrofitService {
     String KAIYAB_BASE_URL="http://baobab.kaiyanapp.com/api/";
 
     //视频APi
-
-    //String VIDEO_BASE_URL="http://47.100.243.11/NewsServerApi/";
-    String VIDEO_BASE_URL="http://192.168.191.1:8085/NewsServerApi/";
+    String VIDEO_BASE_URL="http://47.100.243.11/NewsServerApi/";
+    //String VIDEO_BASE_URL="http://192.168.191.1:8085/NewsServerApi/";
 
     String HE_WEATHER_URL="http://aider.meizu.com/app/weather/";
     //"http://news-at.zhihu.com/css/news_qa.auto.css?v=4b3e3"

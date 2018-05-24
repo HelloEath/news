@@ -69,7 +69,7 @@ private GuoKrPresenterImpl guoKrPresenter=new GuoKrPresenterImpl(this);
         refreshLayout = v.findViewById(R.id.refreshLayout);
         mTvLoadEmpty=v.findViewById(R.id.tv_load_empty);
         mTvLoadError=v.findViewById(R.id.tv_load_error);
-        mPbLoading=v.findViewById(R.id.pb_loading);
+        //mPbLoading=v.findViewById(R.id.pb_loading);
         LinearLayoutManager l = new LinearLayoutManager(getContext());
         l.setOrientation(OrientationHelper.VERTICAL);
 

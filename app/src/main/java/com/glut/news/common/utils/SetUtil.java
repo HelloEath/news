@@ -34,8 +34,14 @@ public class SetUtil {
     public boolean getIsFirstTime() {
         return setting.getBoolean("first_time", true);
     }
-
+    public boolean getIsFirstTime2() {
+        return setting.getBoolean("first_time2", true);
+    }
     public void setIsFirstTime(boolean flag) {
         setting.edit().putBoolean("first_time", flag).apply();
+    }
+
+    public void setIsFirstTime2(boolean flag) {
+        setting.edit().putBoolean("first_time2", flag).apply();
     }
 }

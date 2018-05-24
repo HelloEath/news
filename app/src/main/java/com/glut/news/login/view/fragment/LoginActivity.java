@@ -25,6 +25,9 @@ import com.glut.news.common.utils.SpUtil;
 import com.glut.news.common.utils.ToastUtil;
 import com.glut.news.login.presenter.impl.LoginActivityPresenterImpl;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 /**
  * Created by yy on 2018/3/17.
@@ -137,17 +140,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private boolean valiLogin(UserInfo u, String t, String UserPwd) {
         boolean f = false;
+        String PHONE_PATTERN = "[1][34578]\\d{9}";
         if (!"".equals(t)) {
-
-            if (t.contains("@")) {
-                u.setUserEmail(t);
-
-
-            } else {
-
+            Pattern pattern = Pattern.compile(PHONE_PATTERN);
+            Matcher matcher = pattern.matcher(t);
+            if (matcher.matches()){
                 u.setUserPhone(t);
+                f = true;
+            }else {
+                etUsername.setError("账户格式有误");
+                f = false;
             }
-            f = true;
+
         } else {
             etUsername.setError("账户不能为空");
             f = false;

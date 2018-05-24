@@ -54,7 +54,6 @@ public class VideoFragment extends android.support.v4.app.Fragment {
     private void initViewPager(){
         this.fragmentList=new ArrayList<>();
         titles.add("推荐");
-        titles.add("头条");
         titles.add("搞笑");
         titles.add("旅游");
         titles.add("原创");

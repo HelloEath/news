@@ -117,13 +117,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
                     String veriCCode=mEditText_seriCode.getText().toString().trim();
                     if ( vailUserInfo(userInfo,UserName,UserPwd,UserRePwd,Test,veriCCode)){
                         ToastUtil.showOnLoading("正在注册...",RegisterActivity.this);
-
-                        if (isCodeEnable){
-                            iRr.toRegister(userInfo);
-                        }else {
-                            mEditText_seriCode.setError("验证码有误");
-
-                        }
+                        submitCode("86", Test,veriCCode,userInfo);
                     }else{
                         ToastUtil.showError("注册失败...",3000,RegisterActivity.this);
 
@@ -156,8 +150,7 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
 
 
                 }else {
-                    ToastUtil.showError("手机号码不能为空",3000,RegisterActivity.this);
-                }
+                    et_useremail.setError("手机号码不能为空");                }
 
 
 
@@ -168,14 +161,9 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
             @Override
             public void onFocusChange(View view, boolean b) {
                 if (b){
+
                 }else {
-                    if (et_useremail.getText().toString().trim().equals("")){
-                        ToastUtil.showError("手机号码不能为空",3000,RegisterActivity.this);
 
-                    }else {
-                        submitCode("86",et_useremail.getText().toString().trim(),mEditText_seriCode.getText().toString().trim());
-
-                    }
                 }
             }
         });
@@ -223,13 +211,13 @@ public class RegisterActivity extends AppCompatActivity implements IRegisterActi
     }
 
     // 提交验证码，其中的code表示验证码，如“1357”
-    public void submitCode(String country, String phone, String code) {
+    public void submitCode(String country, String phone, String code,final  UserInfo userInfo) {
         // 注册一个事件回调，用于处理提交验证码操作的结果
         SMSSDK.registerEventHandler(new EventHandler() {
             public void afterEvent(int event, int result, Object data) {
                 if (result == SMSSDK.RESULT_COMPLETE) {
                     // TODO 处理验证成功的结果
-                    isCodeEnable=true;
+                    iRr.toRegister(userInfo);
                 } else{
                     isCodeEnable=false;
                    /* new Thread() {

@@ -24,6 +24,9 @@ import com.glut.news.common.model.entity.UserModel;
 import com.glut.news.common.utils.manager.RetrofitManager;
 import com.glut.news.common.utils.service.RetrofitService;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
 import rx.android.schedulers.AndroidSchedulers;
@@ -118,12 +121,17 @@ public class ForgetPwdActivity  extends AppCompatActivity implements OnClickList
         switch (v.getId()){
 
             case R.id.btn_sendCode:
-                if (mEditText_phone.getText().toString().trim().equals("")){
-                    mEditText_phone.setError("手机号码不能为空");
-
+                  String PHONE_PATTERN = "[1][34578]\\d{9}";
+                if (!mEditText_phone.getText().toString().trim().equals("")){
+                    Pattern pattern = Pattern.compile(PHONE_PATTERN);
+                    Matcher matcher = pattern.matcher(mEditText_phone.getText().toString().trim());
+                    if (matcher.matches()){
+                        sendCode("86",mEditText_phone.getText().toString().trim());
+                    }else {
+                        mEditText_phone.setError("手机号码格式有误");
+                    }
                 }else {
-                    sendCode("86",mEditText_phone.getText().toString().trim());
-
+                    mEditText_phone.setError("手机号码不能为空");
                 }
 
                 break;

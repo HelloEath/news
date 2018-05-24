@@ -53,7 +53,7 @@ public class DicoverFragment extends android.support.v4.app.Fragment{
         flist.add(new KaiYanFragment());
         flist.add(new GuoKrFragment());
         mViewPager=view.findViewById(R.id.dviewpager);
-        mpager=view.findViewById(R.id.myHorizeontal);
+        //mpager=view.findViewById(R.id.myHorizeontal);
         tabLayout= view.findViewById(R.id.tabLayout);
 
         //给tab添加title
@@ -113,7 +113,7 @@ FragmentPagerAdapter f=new FragmentPagerAdapter(getChildFragmentManager()) {
         @Override
         public void onPageSelected(int position) {
             //标题下划线联动
-        mpager.setPagerChangeListenerToTextView(position);
+        //mpager.setPagerChangeListenerToTextView(position);
         }
 
         @Override
